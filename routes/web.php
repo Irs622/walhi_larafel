@@ -1,12 +1,22 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ContentController;
 
+// ============================================================
+// PUBLIC ROUTES (No Authentication Required)
+// ============================================================
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+// Redirect /dashboard to admin (Breeze compatibility)
+Route::get('/dashboard', function () {
+    return redirect()->route('admin.dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 Route::view('/blog', 'blog')->name('blog');
 
@@ -51,7 +61,7 @@ Route::get('/regulasi', function () {
     $countKM = $allRegulasi->filter(fn($item) => str_contains(strtolower($item->tags), 'keputusan menteri') || str_contains(strtolower($item->tags), 'peraturan menteri'))->count();
 
     return view('regulasi', compact('items', 'countUU', 'countPP', 'countPD', 'countKM', 'search', 'categoryFilter'));
-})->name('regulasi');
+})->middleware('throttle:search')->name('regulasi');
 
 Route::get('/publikasi/siaran-pers', function () {
     $items = \App\Models\Content::where('category', 'siaran-pers')
@@ -84,22 +94,38 @@ Route::get('/dukung-kami/donasi-publik', function () {
     return view('donasi');
 })->name('donasi');
 
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-    
-    // Group routes for 'tentang' prefix
-    Route::prefix('tentang')->group(function () {
-        Route::get('/{category}', [ContentController::class, 'index'])->name('content.tentang.index');
-        Route::post('/{category}', [ContentController::class, 'store'])->name('content.tentang.store');
-        Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.tentang.update');
-        Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->name('content.tentang.destroy');
-        Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.tentang.toggle-status');
-    });
+// ============================================================
+// AUTHENTICATED ROUTES (Login Required)
+// ============================================================
 
-    // Root categories
-    Route::get('/{category}', [ContentController::class, 'index'])->name('content.index');
-    Route::post('/{category}', [ContentController::class, 'store'])->name('content.store');
-    Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.update');
-    Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->name('content.destroy');
-    Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.toggle-status');
+Route::middleware('auth')->group(function () {
+    // Profile management (Breeze)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ============================================================
+    // ADMIN ROUTES (Protected by Authentication)
+    // ============================================================
+    Route::prefix('admin')->name('admin.')->middleware('throttle:admin-actions')->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+        
+        // Group routes for 'tentang' prefix
+        Route::prefix('tentang')->group(function () {
+            Route::get('/{category}', [ContentController::class, 'index'])->name('content.tentang.index');
+            Route::post('/{category}', [ContentController::class, 'store'])->name('content.tentang.store');
+            Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.tentang.update');
+            Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->name('content.tentang.destroy');
+            Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.tentang.toggle-status');
+        });
+
+        // Root categories
+        Route::get('/{category}', [ContentController::class, 'index'])->name('content.index');
+        Route::post('/{category}', [ContentController::class, 'store'])->name('content.store');
+        Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.update');
+        Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->name('content.destroy');
+        Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.toggle-status');
+    });
 });
+
+require __DIR__.'/auth.php';
