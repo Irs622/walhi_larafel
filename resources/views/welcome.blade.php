@@ -11,7 +11,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="overflow-x-auto bg-brand-cream antialiased text-brand-dark">
+    <body class="overflow-x-hidden bg-brand-cream antialiased text-brand-dark">
         @php
             $iqon = function (string $name): string {
                 return asset('iqon/'.$name);
@@ -24,12 +24,12 @@
             ];
 
             $mainNav = [
-                ['label' => 'Beranda', 'href' => '#', 'active' => true],
-                ['label' => 'Blog', 'href' => '#kabar'],
-                ['label' => 'Regulasi', 'href' => '#isu'],
-                ['label' => 'Publikasi', 'href' => '#kabar', 'dropdown' => true],
-                ['label' => 'Dukung Kami', 'href' => '#donasi', 'dropdown' => true],
-                ['label' => 'Tentang Kami', 'href' => '#tentang', 'dropdown' => true],
+                ['label' => 'Beranda', 'href' => route('home'), 'active' => true],
+                ['label' => 'Blog', 'href' => route('home').'#kabar'],
+                ['label' => 'Regulasi', 'href' => route('home').'#isu'],
+                ['label' => 'Publikasi', 'href' => route('home').'#kabar', 'dropdown' => true],
+                ['label' => 'Dukung Kami', 'href' => route('home').'#donasi', 'dropdown' => true],
+                ['label' => 'Tentang Kami', 'href' => route('about'), 'dropdown' => true],
             ];
 
             $issues = [
@@ -66,67 +66,11 @@
             ];
         @endphp
 
-        <div class="page-shell mx-auto flex w-[1470px] flex-col items-start bg-brand-cream">
-            <header class="w-full">
-                <div class="h-[41px] w-full border-b border-brand-green bg-brand-dark pb-px">
-                    <div class="mx-auto flex h-[40px] w-[1280px] items-center justify-between px-8 text-[12px] leading-[18px] text-brand-cream">
-                        <a href="#" class="font-medium tracking-[0.02em]">Kampanye Darurat: Hentikan Tambang Ilegal</a>
-                        <div class="flex items-center gap-4">
-                            @foreach ($socialLinks as $social)
-                                <a href="#" class="flex items-center gap-2 font-normal">
-                                    <img src="{{ $iqon($social['icon']) }}" alt="{{ $social['label'] }}" class="h-4 w-4 object-contain">
-                                    <span>{{ $social['label'] }}</span>
-                                </a>
-                                @if (! $loop->last)
-                                    <span class="text-brand-green">|</span>
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+        <div style="position: relative; width: 100%; height: calc(8079px * var(--canvas-scale, 1)); overflow: hidden; background: #F4F1EA;">
+            <div style="position: absolute; left: 0; top: 0; width: 1470px; height: 8079px; transform: scale(var(--canvas-scale, 1)); transform-origin: top left;">
+                @include('partials.site-header')
 
-                <div class="w-full bg-brand-cream shadow-[0_1px_2px_-1px_rgba(0,0,0,0.10),0_1px_3px_rgba(0,0,0,0.10)]">
-                    <div class="mx-auto flex h-20 w-[1280px] items-center justify-between px-8">
-                        <a href="#" class="flex h-12 w-[80px] items-center">
-                            <img src="{{ asset('assets/images/resources/logo-2.jpg') }}" alt="WALHI Jawa Barat" class="h-12 w-auto object-contain">
-                        </a>
-
-                        <nav class="flex items-center gap-[32px]">
-                            @foreach ($mainNav as $item)
-                                <a href="{{ $item['href'] }}" class="relative font-nav text-[14px] font-medium uppercase tracking-[0.07em] text-brand-dark {{ ($item['active'] ?? false) ? 'text-brand-green' : '' }}">
-                                    <span>{{ $item['label'] }}</span>
-                                    @if ($item['label'] === 'Beranda')
-                                        <span class="absolute left-0 top-[35px] h-[2px] w-full bg-brand-green"></span>
-                                    @endif
-                                    @if (! empty($item['dropdown']))
-                                        <span class="absolute -right-[18px] top-[10px] flex h-[14px] w-[14px] items-center justify-center text-[10px] text-brand-dark">▾</span>
-                                    @endif
-                                </a>
-                            @endforeach
-                        </nav>
-
-                        <div class="flex items-center gap-4">
-                            <button class="flex h-9 w-9 items-center justify-center">
-                                <img src="{{ $iqon('Icon-14.svg') }}" alt="Menu" class="h-6 w-6 object-contain">
-                            </button>
-                            <button data-mobile-menu-button aria-expanded="false" class="flex h-9 w-9 items-center justify-center">
-                                <img src="{{ $iqon('Icon-15.svg') }}" alt="Search" class="h-6 w-6 object-contain">
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div data-mobile-menu-panel class="hidden border-t border-brand-green/20 bg-brand-cream">
-                    <div class="mx-auto grid w-full max-w-[1280px] gap-2 px-4 py-4 sm:px-6">
-                        @foreach ($mainNav as $item)
-                            <a href="{{ $item['href'] }}" class="rounded-xl px-4 py-3 text-sm font-semibold text-brand-dark hover:bg-black/5">{{ $item['label'] }}</a>
-                        @endforeach
-                        <a href="#donasi" class="mt-2 rounded-xl bg-brand-orange px-4 py-3 text-sm font-bold text-white">Donasi Sekarang</a>
-                    </div>
-                </div>
-            </header>
-
-            <main class="w-full">
+                <main class="w-full">
                 <section class="relative h-[836px] w-full overflow-hidden bg-brand-dark text-brand-cream">
                     <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('iqon/Container.png') }}');"></div>
                     <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(29,29,29,0.70)_0%,rgba(29,29,29,0.50)_50%,rgba(29,29,29,0.80)_100%)]"></div>
@@ -430,70 +374,9 @@
                     </div>
                 </section>
 
-                <footer class="flex h-[689px] w-full flex-col items-start border-t-4 border-brand-cream bg-brand-dark px-[95px] pt-1 text-brand-cream">
-                    <div class="mx-auto flex h-[685px] w-[1280px] flex-col gap-12 px-8 pt-16">
-                        <div class="relative h-[260px] w-full">
-                            <div class="absolute left-0 top-0 w-[584px]">
-                                <h3 class="text-[32px] font-label uppercase leading-[48px] tracking-[0.05em]">WALHI Jawa Barat</h3>
-                                <p class="mt-4 max-w-[584px] text-[16px] leading-[27.2px]">Wahana Lingkungan Hidup Indonesia (WALHI) Jawa Barat adalah organisasi lingkungan hidup independen yang memperjuangkan keadilan ekologis dan kedaulatan rakyat atas sumber daya alam.</p>
-                                <div class="mt-6 flex items-center gap-4">
-                                    <img src="{{ $iqon('Icon-25.svg') }}" alt="Facebook" class="h-12 w-12 object-contain">
-                                    <img src="{{ $iqon('Icon-26.svg') }}" alt="Twitter" class="h-12 w-12 object-contain">
-                                    <img src="{{ $iqon('Icon-27.svg') }}" alt="Instagram" class="h-12 w-12 object-contain">
-                                    <img src="{{ $iqon('Icon-14.svg') }}" alt="YouTube" class="h-12 w-12 object-contain">
-                                </div>
-                            </div>
-
-                            <div class="absolute left-[632px] top-0 flex h-[260px] w-[268px] flex-col gap-4">
-                                <div class="border-b-2 border-brand-green pb-2 text-[20px] font-label uppercase leading-[30px] tracking-[0.05em] text-brand-green-light">Navigasi</div>
-                                <div class="flex flex-col gap-3 text-[15px] leading-[22.5px]">
-                                    <span>Tentang Kami</span>
-                                    <span>Isu Lingkungan</span>
-                                    <span>Kampanye</span>
-                                    <span>Berita & Artikel</span>
-                                    <span>Laporan</span>
-                                    <span>Kontak</span>
-                                </div>
-                            </div>
-
-                            <div class="absolute left-[948px] top-0 flex h-[260px] w-[268px] flex-col gap-4">
-                                <div class="border-b-2 border-brand-green pb-2 text-[20px] font-label uppercase leading-[30px] tracking-[0.05em] text-brand-green-light">Jaringan</div>
-                                <div class="flex flex-col gap-3 text-[15px] leading-[22.5px]">
-                                    <span>WALHI Nasional</span>
-                                    <span>Friends of the Earth</span>
-                                    <span>Greenpeace Indonesia</span>
-                                    <span>KPA (Konsorsium Pembaruan Agraria)</span>
-                                    <span>JATAM (Jaringan Advokasi Tambang)</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex h-[146px] flex-col gap-4 border border-brand-green bg-brand-green p-9">
-                            <div class="flex items-center justify-between gap-8">
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="text-[28px] font-label uppercase leading-[42px] tracking-[0.05em] text-brand-cream">Berlangganan Newsletter</h4>
-                                    <p class="text-[16px] leading-[24px] text-brand-cream">Dapatkan update terbaru tentang isu lingkungan, kampanye, dan aksi-aksi WALHI Jawa Barat.</p>
-                                </div>
-                                <div class="flex h-[52px] w-[384px] items-stretch">
-                                    <div class="relative flex h-[52px] w-[241.75px] items-center border-2 border-brand-cream bg-white pl-12 pr-4 text-[16px] text-brand-dark/50">
-                                        <img src="{{ $iqon('Icon-23.svg') }}" alt="Email" class="absolute left-4 top-[17px] h-[18px] w-[18px] object-contain">
-                                        Email kamu
-                                    </div>
-                                    <button class="h-[52px] w-[134.25px] border-2 border-brand-orange bg-brand-orange text-[14px] font-bold uppercase tracking-[0.035em] text-brand-cream">Subscribe</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between border-t-2 border-brand-green pt-8 text-[14px] leading-[21px] text-brand-cream">
-                            <p>© 2026 WALHI Jawa Barat. Organisasi Independen. Tidak Berafiliasi dengan Korporasi atau Pemerintah.</p>
-                            <div class="flex items-center gap-6 text-[12px] font-semibold uppercase tracking-[0.03em]">
-                                <span>Kebijakan Privasi</span>
-                                <span>Transparansi Dana</span>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-            </main>
+                    @include('partials.site-footer')
+                </main>
+            </div>
         </div>
     </body>
 </html>

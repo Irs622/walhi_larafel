@@ -107,6 +107,30 @@ body {
     color: var(--color-brand-green);
 }
 
+.site-nav-dropdown {
+    position: relative;
+}
+
+.site-nav-dropdown > summary {
+    position: absolute;
+    display: block;
+    list-style: none;
+}
+
+.site-nav-dropdown > summary::-webkit-details-marker {
+    display: none;
+}
+
+.site-nav-dropdown .site-nav-dropdown-panel {
+    display: none;
+}
+
+.site-nav-dropdown:hover .site-nav-dropdown-panel,
+.site-nav-dropdown[open] .site-nav-dropdown-panel,
+.site-nav-dropdown:focus-within .site-nav-dropdown-panel {
+    display: block;
+}
+
 .hero-title {
     font-family: var(--font-heading);
     color: #f4f1ea;
