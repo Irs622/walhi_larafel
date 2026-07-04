@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Regulasi - WALHI Jawa Barat</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        
+        <!-- Lucide Script for Icons -->
+        <script src="https://unpkg.com/lucide@latest"></script>
+        
+        <style>
+            .hover-stat-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 24px rgba(29, 29, 29, 0.15);
+            }
+            .hover-stat-card {
+                transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease !important;
+            }
+            .hover-search-btn:hover {
+                background: #256D4A !important;
+            }
+            .hover-clear-btn:hover {
+                background: #e9e5d9 !important;
+            }
+            .hover-action-dark-btn:hover {
+                background: #256D4A !important;
+            }
+            .hover-action-light-btn:hover {
+                background: #e9e5d9 !important;
+            }
+            
+            /* Responsive layout for cards list */
+            @media (max-width: 768px) {
+                .regulation-card {
+                    flex-direction: column !important;
+                }
+                .card-sidebar {
+                    width: 100% !important;
+                    border-right: none !important;
+                    border-bottom: 4px solid #1D1D1D !important;
+                    flex-direction: row !important;
+                    justify-content: space-between !important;
+                    align-items: center !important;
+                    padding: 16px 24px !important;
+                }
+                .card-sidebar-section {
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    gap: 12px !important;
+                }
+                .card-sidebar-divider {
+                    padding-top: 0 !important;
+                    border-top: none !important;
+                    border-left: 1px solid rgba(244, 241, 234, 0.3) !important;
+                    padding-left: 16px !important;
+                }
+            }
+        </style>
+    </head>
+    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: hidden; color: #1D1D1D; font-family: Inter, sans-serif;">
+        <div style="position: relative; width: 100%; overflow: hidden; background: #F4F1EA;">
+            @include('partials.site-header')
+
+            <main style="display: flex; flex-direction: column; align-items: stretch;">
+                
+                <!-- Hero Section -->
+                <section style="background: #1D1D1D; border-bottom: 4px #256D4A solid; padding: 64px 95px 80px; color: #F4F1EA;">
+                    <div style="width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 32px; box-sizing: border-box;">
+                        <div style="display: flex; flex-direction: column; gap: 24px; max-width: 860px; width: 100%;">
+                            <!-- Breadcrumbs -->
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">
+                                <a href="{{ route('home') }}" style="color: #F4F1EA; text-decoration: none; opacity: 0.8;">Beranda</a>
+                                <span style="color: #256D4A; font-weight: 400; font-size: 16px;">/</span>
+                                <span style="color: #5C8D59;">Regulasi</span>
+                            </div>
+                            
+                            <h1 style="margin: 0; color: #F4F1EA; font-size: clamp(52px, 7vw, 80px); font-family: Anton, sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 1.6px; text-transform: uppercase;">
+                                REGULASI
+                            </h1>
+                            <div style="width: 128px; height: 8px; background: #D95C3F;"></div>
+                            <p style="margin: 0; color: #5C8D59; font-size: 20px; line-height: 32px; font-family: Inter, sans-serif;">
+                                Database Peraturan Perundangan Lingkungan Hidup
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Main Body Section -->
+                <section style="padding: 80px 95px 96px; background: #F4F1EA; color: #1D1D1D; border-bottom: 4px #1D1D1D solid;">
+                    <div style="width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 48px;">
+                        
+                        <!-- Stats Grid -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+                            <!-- Undang-Undang -->
+                            @php
+                                $isActiveUU = $categoryFilter === 'undang-undang';
+                            @endphp
+                            <a href="{{ route('regulasi', array_merge(request()->except(['kategori', 'page']), $isActiveUU ? [] : ['kategori' => 'undang-undang'])) }}" 
+                               style="text-decoration: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; border: 4px solid {{ $isActiveUU ? '#256D4A' : '#1D1D1D' }}; background: {{ $isActiveUU ? '#1D1D1D' : 'white' }};"
+                               class="hover-stat-card">
+                                <span style="font-family: Anton, sans-serif; font-size: 48px; line-height: 1; color: #256D4A;">
+                                    {{ $countUU }}
+                                </span>
+                                <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.35px; color: {{ $isActiveUU ? '#F4F1EA' : '#1D1D1D' }}; text-align: center;">
+                                    Undang-Undang
+                                </span>
+                            </a>
+                            
+                            <!-- Peraturan Pemerintah -->
+                            @php
+                                $isActivePP = $categoryFilter === 'peraturan-pemerintah';
+                            @endphp
+                            <a href="{{ route('regulasi', array_merge(request()->except(['kategori', 'page']), $isActivePP ? [] : ['kategori' => 'peraturan-pemerintah'])) }}" 
+                               style="text-decoration: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; border: 4px solid {{ $isActivePP ? '#256D4A' : '#1D1D1D' }}; background: {{ $isActivePP ? '#1D1D1D' : 'white' }};"
+                               class="hover-stat-card">
+                                <span style="font-family: Anton, sans-serif; font-size: 48px; line-height: 1; color: #5C8D59;">
+                                    {{ $countPP }}
+                                </span>
+                                <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.35px; color: {{ $isActivePP ? '#F4F1EA' : '#1D1D1D' }}; text-align: center;">
+                                    Peraturan Pemerintah
+                                </span>
+                            </a>
+
+                            <!-- Peraturan Daerah -->
+                            @php
+                                $isActivePD = $categoryFilter === 'peraturan-daerah';
+                            @endphp
+                            <a href="{{ route('regulasi', array_merge(request()->except(['kategori', 'page']), $isActivePD ? [] : ['kategori' => 'peraturan-daerah'])) }}" 
+                               style="text-decoration: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; border: 4px solid {{ $isActivePD ? '#256D4A' : '#1D1D1D' }}; background: {{ $isActivePD ? '#1D1D1D' : 'white' }};"
+                               class="hover-stat-card">
+                                <span style="font-family: Anton, sans-serif; font-size: 48px; line-height: 1; color: #8B6B4A;">
+                                    {{ $countPD }}
+                                </span>
+                                <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.35px; color: {{ $isActivePD ? '#F4F1EA' : '#1D1D1D' }}; text-align: center;">
+                                    Peraturan Daerah
+                                </span>
+                            </a>
+
+                            <!-- Keputusan Menteri -->
+                            @php
+                                $isActiveKM = $categoryFilter === 'keputusan-menteri' || $categoryFilter === 'peraturan-menteri';
+                            @endphp
+                            <a href="{{ route('regulasi', array_merge(request()->except(['kategori', 'page']), $isActiveKM ? [] : ['kategori' => 'keputusan-menteri'])) }}" 
+                               style="text-decoration: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; border: 4px solid {{ $isActiveKM ? '#256D4A' : '#1D1D1D' }}; background: {{ $isActiveKM ? '#1D1D1D' : 'white' }};"
+                               class="hover-stat-card">
+                                <span style="font-family: Anton, sans-serif; font-size: 48px; line-height: 1; color: #D95C3F;">
+                                    {{ $countKM }}
+                                </span>
+                                <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.35px; color: {{ $isActiveKM ? '#F4F1EA' : '#1D1D1D' }}; text-align: center;">
+                                    Keputusan Menteri
+                                </span>
+                            </a>
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div style="background: white; border: 4px solid #1D1D1D; padding: 24px 32px;">
+                            <form action="{{ route('regulasi') }}" method="GET" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; width: 100%;">
+                                @if($categoryFilter)
+                                    <input type="hidden" name="kategori" value="{{ $categoryFilter }}" />
+                                @endif
+                                <div style="flex: 1 1 500px; position: relative; display: flex; align-items: center; border: 2px solid #1D1D1D; height: 60px;">
+                                    <i data-lucide="search" style="position: absolute; left: 24px; color: #1D1D1D; width: 20px; height: 20px;"></i>
+                                    <input type="text" name="search" value="{{ $search }}" 
+                                           placeholder="Cari regulasi berdasarkan judul, nomor, atau kata kunci..." 
+                                           style="width: 100%; height: 100%; border: none; padding-left: 60px; padding-right: 24px; font-size: 16px; font-family: Inter, sans-serif; background: transparent; outline: none; box-sizing: border-box; color: #1D1D1D;" />
+                                </div>
+                                <button type="submit" 
+                                        style="width: 180px; height: 60px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Oswald, sans-serif; font-weight: 500; font-size: 16px; letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s;"
+                                        class="hover-search-btn">
+                                    <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+                                    Cari
+                                </button>
+                                @if($search || $categoryFilter)
+                                    <a href="{{ route('regulasi') }}" 
+                                       style="height: 60px; background: #F4F1EA; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Oswald, sans-serif; font-weight: 500; font-size: 16px; letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0 24px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
+                                       class="hover-clear-btn">
+                                        Reset
+                                    </a>
+                                @endif
+                            </form>
+                        </div>
+
+                        <!-- Regulations Cards List -->
+                        <div style="display: flex; flex-direction: column; gap: 24px; width: 100%;">
+                            @forelse($items as $item)
+                                @php
+                                    $tags = array_map('trim', explode(',', $item->tags ?? ''));
+                                    
+                                    // Category mapping
+                                    $cardCategory = 'Undang-Undang';
+                                    $categoryColor = '#256D4A'; // Default green
+                                    if (in_array('undang-undang', $tags)) {
+                                        $cardCategory = 'Undang-Undang';
+                                        $categoryColor = '#256D4A';
+                                    } elseif (in_array('peraturan pemerintah', $tags)) {
+                                        $cardCategory = 'Peraturan Pemerintah';
+                                        $categoryColor = '#5C8D59';
+                                    } elseif (in_array('peraturan daerah', $tags)) {
+                                        $cardCategory = 'Peraturan Daerah';
+                                        $categoryColor = '#8B6B4A';
+                                    } elseif (in_array('keputusan menteri', $tags) || in_array('peraturan menteri', $tags)) {
+                                        $cardCategory = 'Peraturan Menteri';
+                                        $categoryColor = '#D95C3F';
+                                    }
+                                    
+                                    // Year
+                                    $year = $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->format('Y') : '2025';
+                                    if ($year === '2025' && preg_match('/\b(19|20)\d{2}\b/', $item->title, $matches)) {
+                                        $year = $matches[0];
+                                    }
+                                    
+                                    // Issuer
+                                    $issuer = 'Pemerintah RI';
+                                    foreach ($tags as $t) {
+                                        if (stripos($t, 'kementerian') !== false || stripos($t, 'kemen') !== false || stripos($t, 'pemprov') !== false || stripos($t, 'pemkab') !== false || stripos($t, 'pemerintah') !== false) {
+                                            $issuer = $t;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    // Status
+                                    $statusText = 'Berlaku';
+                                    if (in_array('tidak berlaku', $tags)) {
+                                        $statusText = 'Tidak Berlaku';
+                                    }
+                                @endphp
+                                
+                                <div style="background: white; border: 4px solid #1D1D1D; display: flex; flex-direction: row; overflow: hidden; min-height: 260px;" class="regulation-card">
+                                    <!-- Left Sidebar (Category & Year) -->
+                                    <div style="width: 192px; background: {{ $categoryColor }}; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; box-sizing: border-box; border-right: 4px solid #1D1D1D;" class="card-sidebar">
+                                        <div style="display: flex; flex-direction: column; gap: 8px;" class="card-sidebar-section">
+                                            <span style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; opacity: 0.8;">KATEGORI</span>
+                                            <span style="color: #F4F1EA; font-size: 24px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1.2px; line-height: 1.2;">{{ $cardCategory }}</span>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid rgba(244, 241, 234, 0.3);" class="card-sidebar-section card-sidebar-divider">
+                                            <span style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; opacity: 0.8;">TAHUN</span>
+                                            <span style="color: #F4F1EA; font-size: 32px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; line-height: 1;">{{ $year }}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Right Content Area -->
+                                    <div style="flex: 1; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; box-sizing: border-box;">
+                                        <div>
+                                            <!-- Header (Title & Status Badge) -->
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+                                                <h2 style="margin: 0; color: #1D1D1D; font-size: 24px; font-family: 'Bebas Neue', sans-serif; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; flex: 1;">
+                                                    {{ $item->title }}
+                                                </h2>
+                                                <span style="background: {{ $statusText === 'Berlaku' ? '#256D4A' : '#888' }}; color: #F4F1EA; padding: 4px 12px; font-size: 11px; font-family: Inter, sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; display: inline-block;">
+                                                    {{ $statusText }}
+                                                </span>
+                                            </div>
+                                            
+                                            <!-- Info Line (Issuer, Year) -->
+                                            <div style="display: flex; align-items: center; gap: 16px; margin-top: 12px; color: #5C8D59; font-family: Inter, sans-serif; font-size: 14px; font-weight: 600;">
+                                                <div style="display: flex; align-items: center; gap: 6px;">
+                                                    <i data-lucide="scale" style="width: 16px; height: 16px;"></i>
+                                                    <span>{{ $issuer }}</span>
+                                                </div>
+                                                <div style="display: flex; align-items: center; gap: 6px;">
+                                                    <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
+                                                    <span>{{ $year }}</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Description / Body -->
+                                            <p style="margin: 16px 0 0; color: #1D1D1D; font-size: 15px; line-height: 1.6; font-family: Inter, sans-serif;">
+                                                {{ $item->body }}
+                                            </p>
+                                        </div>
+                                        
+                                        <!-- Actions Buttons -->
+                                        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                            <a href="#" 
+                                               style="height: 48px; padding: 0 24px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s;"
+                                               class="hover-action-dark-btn">
+                                                <i data-lucide="book-open" style="width: 14px; height: 14px;"></i>
+                                                Baca Lengkap
+                                            </a>
+                                            
+                                            @if($item->image_url)
+                                                <a href="{{ $item->image_url }}" target="_blank"
+                                                   style="height: 48px; padding: 0 24px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Inter, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
+                                                   class="hover-action-light-btn">
+                                                    <i data-lucide="download" style="width: 14px; height: 14px;"></i>
+                                                    Download PDF
+                                                </a>
+                                            @else
+                                                <button disabled
+                                                        style="height: 48px; padding: 0 24px; background: white; color: #aaa; border: 2px solid #ddd; font-family: Inter, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.35px; text-transform: uppercase; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box; opacity: 0.6;">
+                                                    <i data-lucide="download" style="width: 14px; height: 14px; color: #aaa;"></i>
+                                                    Download PDF
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div style="background: white; border: 4px solid #1D1D1D; padding: 48px; text-align: center; font-size: 18px; font-family: Inter, sans-serif; color: #888;">
+                                    <i data-lucide="alert-circle" style="width: 48px; height: 48px; margin: 0 auto 16px; color: #8B6B4A; display: block;"></i>
+                                    Tidak ada regulasi yang ditemukan. Coba hapus filter atau cari kata kunci lain.
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            @include('partials.site-footer')
+        </div>
+        
+        <script>
+            // Initialize Lucide icons on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                lucide.createIcons();
+            });
+        </script>
+    </body>
+</html>

@@ -3,6 +3,9 @@
         $isHome = request()->routeIs('home');
         $isBlog = request()->routeIs('blog');
         $isAbout = request()->routeIs('about');
+        $isRegulasi = request()->routeIs('regulasi');
+        $isPublikasi = request()->routeIs('siaran-pers') || request()->routeIs('infografis') || request()->routeIs('laporan-tahunan');
+        $isDonasi = request()->routeIs('donasi');
 
         $navLinkStyle = function (bool $active): string {
             return 'left: 0; top: 8px; position: absolute; color: '.($active ? '#256D4A' : '#1D1D1D').'; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; line-height: 21px; letter-spacing: 0.70px; word-wrap: break-word; text-decoration: none;';
@@ -39,21 +42,26 @@
             <div style="width: 599.9px; height: 37px; position: relative;">
                 <div style="width: 56.48px; height: 37px; left: 0; top: 0; position: absolute;"><a href="{{ route('home') }}" style="{{ $navLinkStyle($isHome) }}">BERANDA</a>@if ($isHome)<div style="width: 56.48px; height: 2px; left: 0; top: 35px; position: absolute; background: #256D4A;"></div>@endif</div>
                 <div style="width: 32.07px; height: 37px; left: 88.48px; top: 0; position: absolute;"><a href="{{ route('blog') }}" style="{{ $navLinkStyle($isBlog) }}">BLOG</a>@if ($isBlog)<div style="width: 32.07px; height: 2px; left: 0; top: 35px; position: absolute; background: #256D4A;"></div>@endif</div>
-                <div style="width: 59.1px; height: 37px; left: 152.55px; top: 0; position: absolute;"><a href="{{ route('home').'#isu' }}" style="{{ $navLinkStyle(false) }}">REGULASI</a></div>
+                <div style="width: 59.1px; height: 37px; left: 152.55px; top: 0; position: absolute;">
+                    <a href="{{ route('regulasi') }}" style="{{ $navLinkStyle($isRegulasi) }}">REGULASI</a>
+                    @if ($isRegulasi)<div style="width: 59.1px; height: 2px; left: 0; top: 35px; position: absolute; background: #256D4A;"></div>@endif
+                </div>
                 <details class="site-nav-dropdown" style="width: 82.61px; height: 37px; left: 243.65px; top: 0; position: absolute;">
-                    <summary style="width: 82.61px; height: 37px; position: relative; display: block; color: #256D4A; cursor: pointer; list-style: none;">
-                        <span style="left: 0; top: 8px; position: absolute; text-align: center; color: #256D4A; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; line-height: 21px; letter-spacing: 0.70px; word-wrap: break-word; text-decoration: none;">PUBLIKASI</span>
+                    <summary style="width: 82.61px; height: 37px; position: relative; display: block; color: {{ $isPublikasi ? '#256D4A' : '#1D1D1D' }}; cursor: pointer; list-style: none;">
+                        <span style="left: 0; top: 8px; position: absolute; text-align: center; color: {{ $isPublikasi ? '#256D4A' : '#1D1D1D' }}; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; line-height: 21px; letter-spacing: 0.70px; word-wrap: break-word; text-decoration: none;">PUBLIKASI</span>
                     </summary>
-                    <div style="width: 14px; height: 14px; left: 68.61px; top: 11.5px; position: absolute; overflow: hidden;"><div style="width: 7px; height: 3.5px; left: 3.5px; top: 5.25px; position: absolute; outline: 1.17px #256D4A solid; outline-offset: -0.58px;"></div></div>
+                    <div style="width: 14px; height: 14px; left: 68.61px; top: 11.5px; position: absolute; overflow: hidden;"><div style="width: 7px; height: 3.5px; left: 3.5px; top: 5.25px; position: absolute; outline: 1.17px {{ $isPublikasi ? '#256D4A' : '#1D1D1D' }} solid; outline-offset: -0.58px;"></div></div>
                     <div class="site-nav-dropdown-panel" style="width: 492px; left: -160px; top: 37px; position: absolute; background: #F4F1EA; border-top: 4px solid #256D4A; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14); z-index: 30;">
-                        <a href="#" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: #F4F1EA;">Siaran Pers</a>
-                        <a href="#" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: #F4F1EA;">Infografis</a>
-                        <a href="#" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; background: #FFFFFF;">Laporan Tahunan</a>
+                        <a href="{{ route('siaran-pers') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('siaran-pers') ? '#FFFFFF' : '#F4F1EA' }};">Siaran Pers</a>
+                        <a href="{{ route('infografis') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('infografis') ? '#FFFFFF' : '#F4F1EA' }};">Infografis</a>
+                        <a href="{{ route('laporan-tahunan') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; background: {{ request()->routeIs('laporan-tahunan') ? '#FFFFFF' : '#F4F1EA' }};">Laporan Tahunan</a>
                     </div>
+                    @if ($isPublikasi)<div style="width: 82.61px; height: 2px; left: 0; top: 35px; position: absolute; background: #256D4A;"></div>@endif
                 </details>
                 <div style="width: 103.84px; height: 37px; left: 358.26px; top: 0; position: absolute;">
-                    <a href="{{ route('home').'#donasi' }}" style="left: 0; top: 8px; position: absolute; text-align: center; color: #1D1D1D; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; line-height: 21px; letter-spacing: 0.70px; word-wrap: break-word; text-decoration: none;">DUKUNG KAMI</a>
-                    <div style="width: 14px; height: 14px; left: 89.84px; top: 11.5px; position: absolute; overflow: hidden;"><div style="width: 7px; height: 3.5px; left: 3.5px; top: 5.25px; position: absolute; outline: 1.17px #1D1D1D solid; outline-offset: -0.58px;"></div></div>
+                    <a href="{{ route('donasi') }}" style="left: 0; top: 8px; position: absolute; text-align: center; color: {{ $isDonasi ? '#256D4A' : '#1D1D1D' }}; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; line-height: 21px; letter-spacing: 0.70px; word-wrap: break-word; text-decoration: none;">DUKUNG KAMI</a>
+                    <div style="width: 14px; height: 14px; left: 89.84px; top: 11.5px; position: absolute; overflow: hidden;"><div style="width: 7px; height: 3.5px; left: 3.5px; top: 5.25px; position: absolute; outline: 1.17px {{ $isDonasi ? '#256D4A' : '#1D1D1D' }} solid; outline-offset: -0.58px;"></div></div>
+                    @if ($isDonasi)<div style="width: 103.84px; height: 2px; left: 0; top: 35px; position: absolute; background: #256D4A;"></div>@endif
                 </div>
                 <div style="width: 105.8px; height: 37px; left: 494.1px; top: 0; position: absolute;">
                     <a href="{{ route('about') }}" style="{{ $navLinkStyle($isAbout) }} text-align: center;">TENTANG KAMI</a>
