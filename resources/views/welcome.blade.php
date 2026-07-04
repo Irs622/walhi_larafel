@@ -11,7 +11,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="overflow-x-hidden bg-brand-cream antialiased text-brand-dark">
+    <body class="overflow-x-clip bg-brand-cream antialiased text-brand-dark">
         @php
             $iqon = function (string $name): string {
                 return asset('iqon/'.$name);
@@ -66,7 +66,7 @@
             ];
         @endphp
 
-        <div style="position: relative; width: 100%; height: calc(8079px * var(--canvas-scale, 1)); overflow: hidden; background: #F4F1EA;">
+        <div style="position: relative; width: 100%; height: calc(8079px * var(--canvas-scale, 1)); overflow-x: clip; background: #F4F1EA;">
             <div style="position: absolute; left: 0; top: 0; width: 1470px; height: 8079px; transform: scale(var(--canvas-scale, 1)); transform-origin: top left;">
                 @include('partials.site-header')
 

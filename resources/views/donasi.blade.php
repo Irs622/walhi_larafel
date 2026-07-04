@@ -91,8 +91,8 @@
             }
         </style>
     </head>
-    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: hidden; color: #1D1D1D; font-family: Inter, sans-serif;">
-        <div style="position: relative; width: 100%; overflow: hidden; background: #F4F1EA;">
+    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Inter, sans-serif;">
+        <div style="position: relative; width: 100%; overflow-x: clip; background: #F4F1EA;">
             @include('partials.site-header')
 
             <main style="display: flex; flex-direction: column; align-items: stretch;">

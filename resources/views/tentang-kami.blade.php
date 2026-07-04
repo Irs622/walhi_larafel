@@ -9,8 +9,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: hidden; color: #1D1D1D; font-family: Inter, sans-serif;">
-        <div style="position: relative; width: 100%; height: calc(3572.13px * var(--canvas-scale, 1)); overflow: hidden; background: #F4F1EA;">
+    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Inter, sans-serif;">
+        <div style="position: relative; width: 100%; height: calc(3572.13px * var(--canvas-scale, 1)); overflow-x: clip; background: #F4F1EA;">
             <div style="position: absolute; left: 0; top: 0; width: 1470px; height: 3572.13px; transform: scale(var(--canvas-scale, 1)); transform-origin: top left;">
                 @include('partials.site-header')
 

@@ -11,7 +11,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: hidden; color: #1D1D1D; font-family: Inter, sans-serif;">
+    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Inter, sans-serif;">
         @php
             $blogCategories = ['Semua', 'Investigasi', 'Advokasi', 'Laporan', 'Kampanye', 'Pendidikan', 'Opini'];
 
@@ -35,7 +35,7 @@
             ];
         @endphp
 
-        <div style="position: relative; width: 100%; overflow: hidden; background: #F4F1EA;">
+        <div style="position: relative; width: 100%; overflow-x: clip; background: #F4F1EA;">
             @include('partials.site-header')
 
             <main style="display: flex; flex-direction: column; align-items: stretch;">
