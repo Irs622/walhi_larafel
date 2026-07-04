@@ -1,213 +1,499 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Laravel 13 - Skeleton Ready</title>
+        <title>WALHI Jawa Barat - Advokasi Lingkungan & Keadilan Ekologis</title>
 
-        <!-- Google Fonts (Plus Jakarta Sans & Outfit) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        <!-- Styles / Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-        <style>
-            body {
-                font-family: 'Plus Jakarta Sans', sans-serif;
-                background-color: #030303;
-                background-image: 
-                    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-                    radial-gradient(at 50% 0%, hsla(225,39%,10%,1) 0, transparent 50%), 
-                    radial-gradient(at 100% 0%, hsla(339,49%,9%,1) 0, transparent 50%);
-                background-attachment: fixed;
-            }
-            .heading-font {
-                font-family: 'Outfit', sans-serif;
-            }
-            .glass-card {
-                background: rgba(18, 18, 24, 0.65);
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-                border: 1px solid rgba(255, 255, 255, 0.06);
-                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-                transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-            .glass-card:hover {
-                transform: translateY(-5px);
-                border-color: rgba(255, 255, 255, 0.12);
-                box-shadow: 0 12px 40px 0 rgba(139, 92, 246, 0.15);
-            }
-            .glow-text {
-                background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-            .tech-pill {
-                background: rgba(255, 255, 255, 0.03);
-                border: 1px solid rgba(255, 255, 255, 0.05);
-                transition: all 0.3s ease;
-            }
-            .tech-pill:hover {
-                background: rgba(255, 255, 255, 0.07);
-                border-color: rgba(255, 255, 255, 0.15);
-            }
-            /* Grid Background */
-            .grid-overlay {
-                background-size: 40px 40px;
-                background-image: 
-                    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            }
-            /* Pulsing light */
-            @keyframes pulse-glow {
-                0%, 100% { opacity: 0.2; transform: scale(1); }
-                50% { opacity: 0.35; transform: scale(1.05); }
-            }
-            .glow-bg {
-                animation: pulse-glow 8s infinite ease-in-out;
-            }
-        </style>
     </head>
-    <body class="antialiased text-gray-200 min-h-screen flex flex-col relative overflow-x-hidden">
-        <!-- Background decorative details -->
-        <div class="absolute top-[-10%] left-[20%] w-[600px] h-[600px] rounded-full bg-violet-800/10 blur-[120px] pointer-events-none glow-bg"></div>
-        <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-pink-700/5 blur-[100px] pointer-events-none glow-bg" style="animation-delay: -4s;"></div>
-        <div class="absolute inset-0 grid-overlay pointer-events-none"></div>
+    <body class="overflow-x-auto bg-brand-cream antialiased text-brand-dark">
+        @php
+            $iqon = function (string $name): string {
+                return asset('iqon/'.$name);
+            };
 
-        <!-- Navigation Bar -->
-        <header class="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between z-10">
-            <div class="flex items-center gap-3">
-                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-violet-600 to-pink-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
-                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
+            $socialLinks = [
+                ['label' => 'Facebook', 'icon' => 'Icon-1.svg'],
+                ['label' => 'Twitter', 'icon' => 'Icon-2.svg'],
+                ['label' => 'Instagram', 'icon' => 'Icon-3.svg'],
+            ];
+
+            $mainNav = [
+                ['label' => 'Beranda', 'href' => '#', 'active' => true],
+                ['label' => 'Blog', 'href' => '#kabar'],
+                ['label' => 'Regulasi', 'href' => '#isu'],
+                ['label' => 'Publikasi', 'href' => '#kabar', 'dropdown' => true],
+                ['label' => 'Dukung Kami', 'href' => '#donasi', 'dropdown' => true],
+                ['label' => 'Tentang Kami', 'href' => '#tentang', 'dropdown' => true],
+            ];
+
+            $issues = [
+                ['title' => 'Pertambangan Ilegal', 'image' => 'causes-1-1.jpg', 'icon' => 'Icon-4.svg', 'badge' => '200+ Titik', 'badgeColor' => '#D95C3F', 'copy' => 'Ratusan titik tambang ilegal di Jawa Barat merusak hutan, air, dan ruang hidup masyarakat.'],
+                ['title' => 'Deforestasi', 'image' => 'causes-1-2.jpg', 'icon' => 'Icon-5.svg', 'badge' => '15.000 Ha/Tahun', 'badgeColor' => '#8B6B4A', 'copy' => 'Alih fungsi hutan untuk perkebunan dan properti menggerus tutupan hijau dan memicu bencana ekologis.'],
+                ['title' => 'Pencemaran Sungai', 'image' => 'causes-1-3.jpg', 'icon' => 'Icon-6.svg', 'badge' => '75% Tercemar', 'badgeColor' => '#256D4A', 'copy' => 'Limbah industri dan rumah tangga mencemari sungai-sungai utama serta mengancam kesehatan warga.'],
+                ['title' => 'Konflik Agraria', 'image' => 'causes-1-4.jpg', 'icon' => 'Icon-7.svg', 'badge' => '2.500+ Kasus', 'badgeColor' => '#5C8D59', 'copy' => 'Ribuan keluarga petani kehilangan tanah akibat perampasan lahan dan proyek skala besar.'],
+                ['title' => 'Krisis Iklim', 'image' => 'causes-1-5.jpg', 'icon' => 'Icon-8.svg', 'badge' => '+2.5°C Target', 'badgeColor' => '#D95C3F', 'copy' => 'Banjir bandang, kekeringan ekstrem, dan cuaca tak menentu semakin sering melanda Jawa Barat.'],
+                ['title' => 'Krisis Iklim', 'image' => 'causes-1-6.jpg', 'icon' => 'Icon-9.svg', 'badge' => '+2.5°C Target', 'badgeColor' => '#D95C3F', 'copy' => 'Banjir bandang, kekeringan ekstrem, dan cuaca tak menentu semakin sering melanda Jawa Barat.'],
+            ];
+
+            $stats = [
+                ['value' => '2,847', 'label' => 'Kasus Ditangani', 'icon' => 'Icon-10.svg', 'color' => '#256D4A'],
+                ['value' => '15,000+', 'label' => 'Keluarga Terdampak', 'icon' => 'Icon-11.svg', 'color' => '#D95C3F'],
+                ['value' => '85%', 'label' => 'Tingkat Keberhasilan', 'icon' => 'Icon-12.svg', 'color' => '#5C8D59'],
+                ['value' => '150+', 'label' => 'Laporan Investigasi', 'icon' => 'Icon-13.svg', 'color' => '#8B6B4A'],
+            ];
+
+            $reports = [
+                ['year' => '2025', 'title' => 'Laporan Tahunan: Krisis Lingkungan Jawa Barat', 'copy' => 'Analisis komprehensif kondisi lingkungan, kasus-kasus yang ditangani, dan rekomendasi kebijakan untuk tahun 2025.', 'meta' => ['124 Halaman', '2.4K Downloads'], 'button' => 'Download PDF', 'icon' => 'Icon-16.svg'],
+                ['year' => '2025', 'title' => 'Investigasi: Jejak Tambang Ilegal di Kawasan Konservasi', 'copy' => 'Dokumentasi investigasi mendalam terhadap jaringan pertambangan ilegal yang merusak kawasan hutan lindung.', 'meta' => ['68 Halaman', '1.8K Downloads'], 'button' => 'Download PDF', 'icon' => 'Icon-16.svg'],
+                ['year' => '2024', 'title' => 'Monitoring Kualitas Air Sungai Citarum', 'copy' => 'Data hasil monitoring bulanan kualitas air Sungai Citarum sepanjang 2024 dengan analisis dampak kesehatan.', 'meta' => ['42 Halaman', '3.1K Downloads'], 'button' => 'Download PDF', 'icon' => 'Icon-16.svg'],
+            ];
+
+            $featuredNews = ['image' => 'news-4-1.jpg', 'tag' => 'Investigasi', 'title' => 'Penelusuran Jejak Modal di Balik Tambang Ilegal Gunung Halimun', 'copy' => 'Investigasi mendalam mengungkap jaringan korporasi dan pejabat yang memfasilitasi pertambangan ilegal. Dokumen internal bocor, saksi kunci berbicara.', 'date' => '18 Mei 2026', 'read' => '12 menit'];
+
+            $newsCards = [
+                ['image' => 'news-1-1.jpg', 'tag' => 'Advokasi', 'title' => 'Petani Garut Menang: Tanah Dikembalikan Setelah 3 Tahun Gugatan', 'copy' => 'Putusan pengadilan memenangkan gugatan 300 keluarga petani. Ini kemenangan hukum penting untuk kasus-kasus agraria serupa di seluruh Jawa Barat.', 'date' => '15 Mei 2026', 'read' => '8 menit'],
+                ['image' => 'news-1-2.jpg', 'tag' => 'Laporan', 'title' => 'Data Baru: Tingkat Pencemaran Citarum Naik 23% dalam 6 Bulan', 'copy' => 'Monitoring terbaru menunjukkan peningkatan drastis polusi industri. Pemerintah diminta bertindak cepat sebelum kondisi semakin memburuk.', 'date' => '10 Mei 2026', 'read' => '6 menit'],
+                ['image' => 'news-1-3.jpg', 'tag' => 'Kampanye', 'title' => 'Ratusan Aktivis Turun ke Jalan Tolak Pembangunan Pabrik di DAS', 'copy' => 'Aksi bersama menolak izin pembangunan pabrik semen di kawasan penyangga Daerah Aliran Sungai. Massa menuntut pencabutan izin lingkungan.', 'date' => '5 Mei 2026', 'read' => '5 menit'],
+                ['image' => 'news-4-2.jpg', 'tag' => 'Pendidikan', 'title' => 'Peluncuran Sekolah Lapang: Petani Belajar Pertanian Ekologis', 'copy' => 'Program pendampingan petani untuk transisi dari metode konvensional ke pertanian ramah lingkungan. Hasil panen meningkat tanpa merusak tanah.', 'date' => '1 Mei 2026', 'read' => '7 menit'],
+                ['image' => 'news-4-3.jpg', 'tag' => 'Opini', 'title' => "Mengapa Kita Harus Menolak 'Green Capitalism' dalam Krisis Iklim", 'copy' => 'Analisis kritis terhadap solusi pasar dalam menghadapi krisis ekologis. Apa yang dibutuhkan adalah transformasi sistem, bukan sekadar greenwashing.', 'date' => '28 Apr 2026', 'read' => '10 menit'],
+                ['image' => 'news-2-1.jpg', 'tag' => 'Opini', 'title' => "Mengapa Kita Harus Menolak 'Green Capitalism' dalam Krisis Iklim", 'copy' => 'Analisis kritis terhadap solusi pasar dalam menghadapi krisis ekologis. Apa yang dibutuhkan adalah transformasi sistem, bukan sekadar greenwashing.', 'date' => '28 Apr 2026', 'read' => '10 menit'],
+            ];
+        @endphp
+
+        <div class="page-shell mx-auto flex w-[1470px] flex-col items-start bg-brand-cream">
+            <header class="w-full">
+                <div class="h-[41px] w-full border-b border-brand-green bg-brand-dark pb-px">
+                    <div class="mx-auto flex h-[40px] w-[1280px] items-center justify-between px-8 text-[12px] leading-[18px] text-brand-cream">
+                        <a href="#" class="font-medium tracking-[0.02em]">Kampanye Darurat: Hentikan Tambang Ilegal</a>
+                        <div class="flex items-center gap-4">
+                            @foreach ($socialLinks as $social)
+                                <a href="#" class="flex items-center gap-2 font-normal">
+                                    <img src="{{ $iqon($social['icon']) }}" alt="{{ $social['label'] }}" class="h-4 w-4 object-contain">
+                                    <span>{{ $social['label'] }}</span>
+                                </a>
+                                @if (! $loop->last)
+                                    <span class="text-brand-green">|</span>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
-                <span class="heading-font font-bold text-xl tracking-tight text-white">Laravel<span class="text-violet-400">13</span></span>
-            </div>
-            
-            <nav class="flex items-center gap-4">
-                @if (Route::has('login'))
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="px-5 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-medium text-sm transition-all duration-200 shadow-md shadow-violet-600/10">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Log in</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="px-4 py-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white border border-gray-800 text-sm font-medium transition-colors duration-200">Register</a>
-                        @endif
-                    @endauth
-                @endif
-                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    Running
-                </span>
-            </nav>
-        </header>
 
-        <!-- Main Hero Section -->
-        <main class="flex-1 w-full max-w-7xl mx-auto px-6 flex flex-col justify-center py-12 z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <!-- Left Column: Copy & Badges -->
-                <div class="lg:col-span-7 flex flex-col gap-6 text-left">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 w-fit">
-                        <span class="text-xs font-semibold text-violet-300 uppercase tracking-wider">Antigravity AI template</span>
-                    </div>
-
-                    <h1 class="heading-font font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight tracking-tight">
-                        Kerangka Laravel <br>
-                        <span class="glow-text">Siap untuk Dibuat</span>
-                    </h1>
-
-                    <p class="text-gray-400 text-lg max-w-xl leading-relaxed">
-                        Proyek Laravel 13 Anda telah berhasil diinisialisasi dan dikonfigurasi dengan database SQLite secara instan. Mulai coding sekarang!
-                    </p>
-
-                    <!-- System Status Info Dashboard -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
-                        <div class="tech-pill p-4 rounded-xl flex flex-col gap-1">
-                            <span class="text-xs text-gray-500 font-medium">LARAVEL</span>
-                            <span class="font-bold text-white heading-font text-lg">v13.18.1</span>
-                        </div>
-                        <div class="tech-pill p-4 rounded-xl flex flex-col gap-1">
-                            <span class="text-xs text-gray-500 font-medium">PHP</span>
-                            <span class="font-bold text-white heading-font text-lg">v8.5.5</span>
-                        </div>
-                        <div class="tech-pill p-4 rounded-xl flex flex-col gap-1">
-                            <span class="text-xs text-gray-500 font-medium">DATABASE</span>
-                            <span class="font-bold text-white heading-font text-lg">SQLite</span>
-                        </div>
-                        <div class="tech-pill p-4 rounded-xl flex flex-col gap-1">
-                            <span class="text-xs text-gray-500 font-medium">ENVIRONMENT</span>
-                            <span class="font-bold text-emerald-400 heading-font text-lg">Local</span>
-                        </div>
-                    </div>
-
-                    <!-- CTA Action Buttons -->
-                    <div class="flex flex-wrap gap-4 mt-6">
-                        <a href="https://laravel.com/docs" target="_blank" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-500 hover:to-pink-500 text-white font-semibold text-sm transition-all duration-300 shadow-lg shadow-violet-500/25 flex items-center gap-2 hover:scale-[1.02] transform">
-                            <span>Baca Dokumentasi</span>
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
+                <div class="w-full bg-brand-cream shadow-[0_1px_2px_-1px_rgba(0,0,0,0.10),0_1px_3px_rgba(0,0,0,0.10)]">
+                    <div class="mx-auto flex h-20 w-[1280px] items-center justify-between px-8">
+                        <a href="#" class="flex h-12 w-[80px] items-center">
+                            <img src="{{ asset('assets/images/resources/logo-2.jpg') }}" alt="WALHI Jawa Barat" class="h-12 w-auto object-contain">
                         </a>
-                        <a href="https://laracasts.com" target="_blank" class="px-6 py-3.5 rounded-xl bg-gray-900/60 hover:bg-gray-800/80 text-gray-300 hover:text-white font-semibold text-sm border border-gray-800 transition-colors duration-200 flex items-center gap-2">
-                            <span>Tonton Laracasts</span>
-                        </a>
-                    </div>
-                </div>
 
-                <!-- Right Column: Interactive Project Quickstart Cards -->
-                <div class="lg:col-span-5 flex flex-col gap-6">
-                    <div class="glass-card p-6 rounded-2xl flex gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-violet-500/10 border border-violet-500/25 flex items-center justify-center shrink-0">
-                            <svg class="h-6 w-6 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                            </svg>
-                        </div>
-                        <div class="flex flex-col gap-1">
-                            <h3 class="heading-font font-bold text-white text-base">Struktur Folder</h3>
-                            <p class="text-sm text-gray-400">Routes didefinisikan di <code>routes/web.php</code>. Tampilan HTML/Blade berada di folder <code>resources/views</code>.</p>
-                        </div>
-                    </div>
+                        <nav class="flex items-center gap-[32px]">
+                            @foreach ($mainNav as $item)
+                                <a href="{{ $item['href'] }}" class="relative font-nav text-[14px] font-medium uppercase tracking-[0.07em] text-brand-dark {{ ($item['active'] ?? false) ? 'text-brand-green' : '' }}">
+                                    <span>{{ $item['label'] }}</span>
+                                    @if ($item['label'] === 'Beranda')
+                                        <span class="absolute left-0 top-[35px] h-[2px] w-full bg-brand-green"></span>
+                                    @endif
+                                    @if (! empty($item['dropdown']))
+                                        <span class="absolute -right-[18px] top-[10px] flex h-[14px] w-[14px] items-center justify-center text-[10px] text-brand-dark">▾</span>
+                                    @endif
+                                </a>
+                            @endforeach
+                        </nav>
 
-                    <div class="glass-card p-6 rounded-2xl flex gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-pink-500/10 border border-pink-500/25 flex items-center justify-center shrink-0">
-                            <svg class="h-6 w-6 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-                            </svg>
-                        </div>
-                        <div class="flex flex-col gap-1">
-                            <h3 class="heading-font font-bold text-white text-base">Database Migrasi</h3>
-                            <p class="text-sm text-gray-400">Database SQLite otomatis terisi migrasi default. Tambahkan skema baru Anda di <code>database/migrations</code>.</p>
-                        </div>
-                    </div>
-
-                    <div class="glass-card p-6 rounded-2xl flex gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-blue-500/10 border border-blue-500/25 flex items-center justify-center shrink-0">
-                            <svg class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                            </svg>
-                        </div>
-                        <div class="flex flex-col gap-1">
-                            <h3 class="heading-font font-bold text-white text-base">Vite & Tailwind CSS</h3>
-                            <p class="text-sm text-gray-400">Assets dikompilasi secara real-time dengan Vite. Silakan edit file styles di <code>resources/css/app.css</code>.</p>
+                        <div class="flex items-center gap-4">
+                            <button class="flex h-9 w-9 items-center justify-center">
+                                <img src="{{ $iqon('Icon-14.svg') }}" alt="Menu" class="h-6 w-6 object-contain">
+                            </button>
+                            <button data-mobile-menu-button aria-expanded="false" class="flex h-9 w-9 items-center justify-center">
+                                <img src="{{ $iqon('Icon-15.svg') }}" alt="Search" class="h-6 w-6 object-contain">
+                            </button>
                         </div>
                     </div>
                 </div>
 
-            </div>
-        </main>
+                <div data-mobile-menu-panel class="hidden border-t border-brand-green/20 bg-brand-cream">
+                    <div class="mx-auto grid w-full max-w-[1280px] gap-2 px-4 py-4 sm:px-6">
+                        @foreach ($mainNav as $item)
+                            <a href="{{ $item['href'] }}" class="rounded-xl px-4 py-3 text-sm font-semibold text-brand-dark hover:bg-black/5">{{ $item['label'] }}</a>
+                        @endforeach
+                        <a href="#donasi" class="mt-2 rounded-xl bg-brand-orange px-4 py-3 text-sm font-bold text-white">Donasi Sekarang</a>
+                    </div>
+                </div>
+            </header>
 
-        <!-- Footer -->
-        <footer class="w-full max-w-7xl mx-auto px-6 py-8 border-t border-gray-900/60 flex flex-col sm:flex-row items-center justify-between text-gray-500 text-xs z-10 gap-4">
-            <p>&copy; 2026 Laravel Skeleton. Dibuat otomatis oleh Antigravity AI.</p>
-            <div class="flex gap-6">
-                <a href="https://laravel.com" class="hover:text-gray-300 transition-colors">Laravel</a>
-                <a href="https://vite.dev" class="hover:text-gray-300 transition-colors">Vite</a>
-                <a href="https://tailwindcss.com" class="hover:text-gray-300 transition-colors">Tailwind CSS</a>
-            </div>
-        </footer>
+            <main class="w-full">
+                <section class="relative h-[836px] w-full overflow-hidden bg-brand-dark text-brand-cream">
+                    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('iqon/Container.png') }}');"></div>
+                    <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(29,29,29,0.70)_0%,rgba(29,29,29,0.50)_50%,rgba(29,29,29,0.80)_100%)]"></div>
+                    <div class="relative mx-auto flex h-full w-[1470px] items-center px-[95px]">
+                        <div class="flex h-[450px] w-full flex-col items-start pl-8 pr-[352px]">
+                            <div class="flex flex-col items-start gap-0">
+                                <div class="text-[12px] font-medium leading-[18px] text-brand-cream">Hutan bukan komoditas</div>
+                                <h1 class="mt-3 text-[96px] font-heading font-normal uppercase leading-[86.4px] tracking-[0.02em] text-brand-cream">
+                                    HUTAN BUKAN<br>
+                                    KOMODITAS
+                                </h1>
+                            </div>
+                            <div class="mt-6 h-2 w-[578px] bg-brand-orange"></div>
+                            <div class="mt-9 text-[48px] font-label font-normal uppercase leading-[52.8px] tracking-[0.05em] text-brand-green-light">
+                                Suara masyarakat<br>
+                                harus didengar
+                            </div>
+                            <p class="mt-10 max-w-[628px] text-[18px] leading-[30.6px] text-brand-cream">
+                                Membangun solidaritas rakyat untuk melawan kerusakan lingkungan, menuntut keadilan ekologis, dan mengembalikan hak atas ruang hidup.
+                            </p>
+                            <div class="mt-8 flex items-center gap-4">
+                                <a href="#donasi" class="flex h-[60px] w-[208px] items-center justify-center border-2 border-brand-cream bg-brand-dark text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">Lihat Advokasi</a>
+                                <a href="#kabar" class="flex h-[60px] w-[227px] items-center justify-center border-2 border-brand-orange bg-brand-orange text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">Gabung Gerakan</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute left-1/2 top-[730px] flex -translate-x-1/2 flex-col items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.1em] text-brand-cream">
+                        <span>Scroll</span>
+                        <span class="h-10 w-px bg-brand-cream"></span>
+                    </div>
+                </section>
+
+                <section id="tentang" class="flex h-[718.83px] w-full flex-col items-start border-b-4 border-brand-dark bg-brand-cream px-[95px] pb-1 pt-20">
+                    <div class="mx-auto flex h-[554.83px] w-[1280px] flex-col items-start px-8">
+                        <div class="relative h-full w-full">
+                            <div class="absolute left-0 top-0.5 flex h-[26px] items-center bg-brand-green px-4 text-[12px] font-bold uppercase tracking-[0.06em] text-brand-cream">Tentang Kami</div>
+                            <h2 class="absolute left-0 top-[50px] text-[56px] font-heading font-normal uppercase leading-[53.2px] tracking-[0.02em] text-brand-dark">
+                                Melawan untuk<br>
+                                Keadilan Ekologis
+                            </h2>
+                            <div class="absolute left-0 top-[180.89px] h-1 w-24 bg-brand-orange"></div>
+                            <div class="absolute left-0 top-[216.89px] flex w-[584px] flex-col gap-4 text-[18px] leading-[30.6px] text-brand-dark">
+                                <p><strong>WALHI Jawa Barat</strong> adalah organisasi lingkungan hidup independen yang berjuang untuk keadilan ekologis dan kedaulatan rakyat atas sumber daya alam.</p>
+                                <p>Kami mendampingi masyarakat yang terdampak oleh kerusakan lingkungan, mengadvokasi kebijakan yang berpihak pada keberlanjutan, dan mengkampanyekan penghentian eksploitasi alam yang merusak.</p>
+                                <p>Sejak berdiri, WALHI Jawa Barat telah menangani ratusan kasus konflik agraria dan kerusakan lingkungan seperti pertambangan ilegal, deforestasi, pencemaran sungai, hingga dampak krisis iklim.</p>
+                            </div>
+
+                            <div class="absolute left-[632px] top-[30px] flex w-[584px] flex-col gap-6">
+                                <div class="flex min-h-[254px] flex-col gap-3 border-2 border-brand-dark bg-brand-dark p-[26px] text-brand-cream">
+                                    <div class="text-[24px] font-label uppercase leading-[36px] tracking-[0.06em] text-brand-green-light">Misi Kami</div>
+                                    <ul class="flex flex-col gap-3 text-[16px] leading-[25.6px]">
+                                        <li><span class="mr-3 text-brand-orange">▪</span>Mendampingi masyarakat korban kerusakan lingkungan</li>
+                                        <li><span class="mr-3 text-brand-orange">▪</span>Mengadvokasi kebijakan lingkungan yang adil</li>
+                                        <li><span class="mr-3 text-brand-orange">▪</span>Menghentikan eksploitasi sumber daya alam yang destruktif</li>
+                                        <li><span class="mr-3 text-brand-orange">▪</span>Membangun kesadaran kritis terhadap krisis ekologis</li>
+                                    </ul>
+                                </div>
+                                <div class="flex min-h-[216px] flex-col gap-3 border-2 border-brand-dark bg-brand-cream p-[26px]">
+                                    <div class="text-[24px] font-label uppercase leading-[36px] tracking-[0.06em] text-brand-green">Nilai-Nilai</div>
+                                    <div class="grid grid-cols-2 gap-x-8 gap-y-5 text-[14px] font-semibold uppercase tracking-[0.025em]">
+                                        <div><div class="text-brand-orange">01</div><div class="text-brand-dark">Keberanian</div></div>
+                                        <div><div class="text-brand-orange">02</div><div class="text-brand-dark">Kritis</div></div>
+                                        <div><div class="text-brand-orange">03</div><div class="text-brand-dark">Komunitas</div></div>
+                                        <div><div class="text-brand-orange">04</div><div class="text-brand-dark">Ekologis</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="isu" class="flex h-[1248.09px] w-full flex-col items-start bg-brand-dark px-[95px] pt-20 text-brand-cream">
+                    <div class="mx-auto flex h-[1088.09px] w-[1280px] flex-col items-start gap-16 px-8">
+                        <div class="relative h-[200.09px] w-full text-center">
+                            <div class="absolute left-1/2 top-0.5 -translate-x-1/2 bg-brand-orange px-4 py-[4.5px] text-[12px] font-bold uppercase tracking-[0.06em] text-brand-cream">Isu Kritis</div>
+                            <h2 class="absolute left-1/2 top-[50px] -translate-x-1/2 text-[64px] font-heading font-normal uppercase leading-[60.8px] tracking-[0.02em] text-brand-cream">
+                                Krisis Lingkungan<br>
+                                Jawa Barat
+                            </h2>
+                            <div class="absolute left-1/2 top-[196.09px] h-1 w-24 -translate-x-1/2 bg-brand-green-light"></div>
+                        </div>
+
+                        <div class="grid w-full grid-cols-3 gap-4">
+                            @foreach ($issues as $issue)
+                                <article class="flex h-[400px] flex-col overflow-hidden border-4 border-brand-cream bg-white text-brand-dark">
+                                    <div class="relative h-[192px] overflow-hidden bg-cover bg-center" style="background-image: url('{{ asset('assets/images/resources/'.$issue['image']) }}');">
+                                        <div class="absolute left-4 top-4 flex h-[50px] items-center border-2 border-brand-cream bg-brand-dark px-4 text-[20px] font-label uppercase leading-[30px] tracking-[0.05em]" style="color: {{ $issue['badgeColor'] }};">
+                                            {{ $issue['badge'] }}
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-1 flex-col gap-4 px-6 py-6">
+                                        <div class="flex items-center gap-3">
+                                            <div class="flex h-10 w-10 items-center justify-center bg-brand-dark p-2">
+                                                <img src="{{ $iqon($issue['icon']) }}" alt="{{ $issue['title'] }}" class="h-6 w-6 object-contain">
+                                            </div>
+                                            <h3 class="text-[24px] font-label uppercase leading-[36px] tracking-[0.06em] text-brand-dark">{{ $issue['title'] }}</h3>
+                                        </div>
+                                        <p class="text-[15px] leading-[24px] text-brand-dark">{{ $issue['copy'] }}</p>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
+
+                <section class="flex h-[1294.66px] w-full flex-col items-start bg-brand-dark px-[95px] pt-20 text-brand-cream">
+                    <div class="mx-auto flex h-[1134.66px] w-[1280px] flex-col items-start gap-16 px-8">
+                        <div class="relative h-[200.09px] w-full text-center">
+                            <div class="absolute left-1/2 top-0.5 -translate-x-1/2 bg-brand-green px-4 py-[4.5px] text-[12px] font-bold uppercase tracking-[0.06em] text-brand-cream">Data & Laporan</div>
+                            <h2 class="absolute left-1/2 top-[50px] -translate-x-1/2 text-[64px] font-heading font-normal uppercase leading-[60.8px] tracking-[0.02em] text-brand-cream">
+                                Fakta dan Bukti<br>
+                                Kerusakan Lingkungan
+                            </h2>
+                            <div class="absolute left-1/2 top-[196.09px] h-1 w-24 -translate-x-1/2 bg-brand-orange"></div>
+                        </div>
+
+                        <div class="grid w-full grid-cols-4 gap-0">
+                            @foreach ($stats as $stat)
+                                <div class="relative h-[197px] bg-white outline outline-4 outline-brand-cream">
+                                    <div class="absolute left-[28px] top-[28px] flex h-[56px] w-[230px] items-start justify-center px-[87px]">
+                                        <div class="flex h-[56px] w-[56px] items-start justify-center bg-brand-dark p-3">
+                                            <img src="{{ $iqon($stat['icon']) }}" alt="{{ $stat['label'] }}" class="h-8 w-8 object-contain">
+                                        </div>
+                                    </div>
+                                    <div class="absolute left-[28px] top-[100px] w-[230px] text-center text-[40px] font-heading leading-[40px]" style="color: {{ $stat['color'] }};">{{ $stat['value'] }}</div>
+                                    <div class="absolute left-[28px] top-[148px] w-[230px] text-center text-[14px] font-semibold uppercase leading-[21px] tracking-[0.035em] text-brand-dark">{{ $stat['label'] }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="flex w-full flex-col gap-6">
+                            @foreach ($reports as $report)
+                                <article class="flex h-[187.19px] overflow-hidden border-4 border-brand-cream bg-brand-cream text-brand-dark">
+                                    <div class="flex w-[128px] flex-col items-start justify-start bg-brand-green p-6 text-brand-cream">
+                                        <div class="text-[12px] font-bold uppercase tracking-[0.06em]">Tahun</div>
+                                        <div class="pt-1 text-[32px] font-label leading-[48px] tracking-[0.1em]">{{ $report['year'] }}</div>
+                                    </div>
+                                    <div class="flex flex-1 items-center justify-between gap-6 p-6">
+                                        <div class="flex w-[820px] flex-col gap-3">
+                                            <div class="text-[24px] font-label uppercase leading-[36px] tracking-[0.06em] text-brand-dark">{{ $report['title'] }}</div>
+                                            <p class="text-[16px] leading-[25.6px] text-brand-dark">{{ $report['copy'] }}</p>
+                                            <div class="flex items-center gap-4 text-[14px] font-semibold leading-[20px] text-brand-green-light">
+                                                <span>▪ {{ $report['meta'][0] }}</span>
+                                                <span>▪ {{ $report['meta'][1] }}</span>
+                                            </div>
+                                        </div>
+                                        <a href="#" class="flex h-[49px] items-center gap-2 border-2 border-brand-dark bg-brand-dark px-6 text-[14px] font-bold uppercase tracking-[0.035em] text-brand-cream">
+                                            <img src="{{ $iqon($report['icon']) }}" alt="Download" class="h-[18px] w-[18px] object-contain">
+                                            <span>{{ $report['button'] }}</span>
+                                        </a>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
+
+                <section id="kabar" class="flex h-[1756.12px] w-full flex-col items-start border-b-4 border-brand-dark bg-brand-cream px-[95px] pb-1 pt-20 text-brand-dark">
+                    <div class="relative mx-auto h-[1592.12px] w-[1280px] px-8">
+                        <div class="absolute left-8 top-0 h-[200.09px] w-[1216px] text-center">
+                            <div class="absolute left-0 top-0.5 bg-brand-orange px-4 py-[4.5px] text-[12px] font-bold uppercase tracking-[0.06em] text-brand-cream">Berita & Artikel</div>
+                            <div class="absolute left-0 top-[50.5px] flex w-full items-end justify-between">
+                                <div class="relative h-[149.59px] w-[311.49px] text-left">
+                                    <h2 class="text-[64px] font-heading font-normal uppercase leading-[60.8px] tracking-[0.02em] text-brand-dark">Liputan dan<br>Investigasi</h2>
+                                    <div class="absolute left-0 top-[145.59px] h-1 w-24 bg-brand-green"></div>
+                                </div>
+                                <a href="#" class="flex h-[49px] items-center gap-2 border-2 border-brand-dark bg-brand-dark px-6 text-[14px] font-bold uppercase tracking-[0.035em] text-brand-cream">
+                                    <span>Lihat Semua Artikel</span>
+                                    <img src="{{ $iqon('Icon-17.svg') }}" alt="Arrow" class="h-[18px] w-[18px] object-contain">
+                                </a>
+                            </div>
+                        </div>
+
+                        <article class="absolute left-8 top-[264.09px] flex h-[348.02px] w-[1216px] overflow-hidden border-4 border-brand-dark bg-white">
+                            <div class="relative h-full w-[604px] overflow-hidden bg-cover bg-center" style="background-image: url('{{ asset('assets/images/blog/'.$featuredNews['image']) }}');">
+                                <div class="absolute left-4 top-4 bg-brand-orange px-4 py-2 text-[12px] font-bold uppercase tracking-[0.06em] text-brand-cream">{{ $featuredNews['tag'] }}</div>
+                            </div>
+                            <div class="flex w-[604px] flex-col justify-between p-8">
+                                <div class="flex flex-col gap-4">
+                                    <h3 class="text-[32px] font-label uppercase leading-[35.2px] tracking-[0.05em] text-brand-dark">{{ $featuredNews['title'] }}</h3>
+                                    <p class="text-[18px] leading-[28.8px] text-brand-dark">{{ $featuredNews['copy'] }}</p>
+                                </div>
+                                <div class="flex items-center justify-between border-t-2 border-brand-dark pt-6 text-[14px] font-semibold leading-[20px] text-brand-green-light">
+                                    <div class="flex items-center gap-4">
+                                        <span>18 Mei 2026</span>
+                                        <span>▪ {{ $featuredNews['read'] }}</span>
+                                    </div>
+                                    <a href="#" class="flex items-center gap-2 text-brand-dark">
+                                        <span>Baca Selengkapnya</span>
+                                        <img src="{{ $iqon('Icon-18.svg') }}" alt="Detail" class="h-[18px] w-[18px] object-contain">
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <div class="absolute left-8 top-[660.12px] grid h-[932px] w-[1216px] grid-cols-3 gap-x-6 gap-y-6">
+                            @foreach ($newsCards as $news)
+                                <article class="flex h-[454px] flex-col overflow-hidden border-4 border-brand-dark bg-white">
+                                    <div class="relative h-[192px] overflow-hidden bg-cover bg-center" style="background-image: url('{{ asset('assets/images/blog/'.$news['image']) }}');">
+                                        <div class="absolute left-4 top-4 px-3 py-1 text-[12px] font-bold uppercase tracking-[0.06em] text-brand-cream" style="background-color: {{ $loop->index % 3 === 2 ? '#8B6B4A' : ($loop->index % 3 === 1 ? '#5C8D59' : '#256D4A') }};">{{ $news['tag'] }}</div>
+                                    </div>
+                                    <div class="flex flex-1 flex-col justify-between px-6 py-6">
+                                        <div class="flex flex-col gap-4">
+                                            <h4 class="text-[20px] font-label uppercase leading-[24px] tracking-[0.05em] text-brand-dark">{{ $news['title'] }}</h4>
+                                            <p class="text-[15px] leading-[24px] text-brand-dark">{{ $news['copy'] }}</p>
+                                        </div>
+                                        <div class="flex items-center gap-3 border-t-2 border-brand-dark pt-4 text-[12px] font-semibold leading-[16px] text-brand-green-light">
+                                            <span>{{ $news['date'] }}</span>
+                                            <span>▪</span>
+                                            <span>{{ $news['read'] }}</span>
+                                        </div>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
+
+                <section id="donasi" class="relative flex h-[1415.38px] w-full overflow-hidden bg-brand-green">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-10" style="background-image: url('{{ asset('assets/images/backgrounds/call-to-action-bg.jpg') }}');"></div>
+                    <div class="relative mx-auto flex h-full w-[1280px] flex-col gap-12 px-8 pb-1 pt-20">
+                        <div class="relative h-[349px] w-full text-center">
+                            <h2 class="text-[80px] font-heading font-normal uppercase leading-[76px] tracking-[0.02em] text-brand-cream">
+                                Gerakan Ini<br>
+                                Butuh Kamu
+                            </h2>
+                            <div class="mx-auto mt-6 h-2 w-32 bg-brand-orange"></div>
+                            <p class="mx-auto mt-8 max-w-[768px] text-[20px] leading-[32px] text-brand-cream">Perubahan tidak terjadi dengan sendirinya. Setiap gerakan dimulai dari keberanian untuk bertindak. Bergabunglah dengan ribuan aktivis lain yang memperjuangkan keadilan ekologis.</p>
+                            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-[14px] font-bold uppercase tracking-[0.07em] text-brand-green-light">Keadilan untuk bumi, keadilan untuk rakyat</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-0">
+                            <section class="flex h-[518.78px] flex-col border-4 border-brand-cream bg-brand-dark p-9 text-brand-cream">
+                                <div class="flex items-center gap-4">
+                                    <div class="flex h-14 w-14 items-center justify-center bg-brand-green p-3">
+                                        <img src="{{ $iqon('Icon-19.svg') }}" alt="Relawan" class="h-8 w-8 object-contain">
+                                    </div>
+                                    <h3 class="text-[32px] font-label uppercase leading-[48px] tracking-[0.05em]">Jadi Relawan</h3>
+                                </div>
+                                <p class="mt-6 text-[16px] leading-[25.6px]">Terlibat langsung dalam pendampingan masyarakat, investigasi lapangan, kampanye, dan aksi-aksi lingkungan. Tidak perlu pengalaman, yang penting ada komitmen.</p>
+                                <ul class="mt-8 flex flex-col gap-3 text-[15px] leading-[24px]">
+                                    <li>▪ Pelatihan advokasi lingkungan</li>
+                                    <li>▪ Jaringan aktivis se-Jawa Barat</li>
+                                    <li>▪ Pengalaman kerja lapangan</li>
+                                </ul>
+                                <a href="#" class="mt-8 flex h-[60px] items-center justify-center gap-2 bg-brand-green px-6 text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">
+                                    <img src="{{ $iqon('Icon-20.svg') }}" alt="Relawan" class="h-5 w-5 object-contain">
+                                    <span>Daftar Jadi Relawan</span>
+                                </a>
+                            </section>
+
+                            <section class="flex h-[518.78px] flex-col gap-6 border-4 border-brand-cream bg-brand-cream p-9 text-brand-dark">
+                                <div class="flex items-center gap-4">
+                                    <div class="flex h-14 w-14 items-center justify-center bg-brand-orange p-3">
+                                        <img src="{{ $iqon('Icon-21.svg') }}" alt="Dukungan" class="h-8 w-8 object-contain">
+                                    </div>
+                                    <h3 class="text-[32px] font-label uppercase leading-[48px] tracking-[0.05em] text-brand-dark">Dukung Gerakan</h3>
+                                </div>
+                                <p class="text-[16px] leading-[25.6px]">Setiap kontribusi membantu mendanai investigasi, pendampingan hukum, kampanye, dan operasional organisasi. Kami 100% independen dari korporasi dan pemerintah.</p>
+                                <div class="flex flex-1 flex-col gap-3 border-2 border-brand-dark bg-brand-cream p-[26px]">
+                                    <div class="text-[12px] font-bold uppercase tracking-[0.06em] text-brand-green-light">Donasi digunakan untuk:</div>
+                                    <ul class="flex flex-col gap-2 text-[15px] leading-[24px] text-brand-dark">
+                                        <li>▪ Pendampingan hukum masyarakat</li>
+                                        <li>▪ Investigasi dan riset</li>
+                                        <li>▪ Kampanye dan edukasi publik</li>
+                                    </ul>
+                                </div>
+                                <a href="#" class="flex h-[60px] items-center justify-center gap-2 bg-brand-orange px-6 text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">
+                                    <img src="{{ $iqon('Icon-22.svg') }}" alt="Donasi" class="h-5 w-5 object-contain">
+                                    <span>Donasi Sekarang</span>
+                                </a>
+                            </section>
+                        </div>
+
+                        <div class="flex h-[291.59px] flex-col gap-8 border-4 border-brand-cream bg-brand-dark p-9 text-brand-cream">
+                            <div class="flex flex-col gap-4 text-center">
+                                <h3 class="text-[32px] font-label uppercase leading-[48px] tracking-[0.05em]">Hubungi Kami</h3>
+                                <p class="text-[16px] leading-[25.6px]">Punya pertanyaan? Ingin melaporkan kasus? Atau sekadar ingin berdiskusi tentang isu lingkungan? Kontak kami.</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="flex h-[98px] items-center gap-4 border-2 border-brand-green bg-brand-green p-6">
+                                    <div class="flex h-10 w-10 items-center justify-center bg-brand-dark p-2">
+                                        <img src="{{ $iqon('Icon-23.svg') }}" alt="Email" class="h-6 w-6 object-contain">
+                                    </div>
+                                    <div>
+                                        <div class="text-[12px] font-bold uppercase tracking-[0.06em] text-brand-green-light">Email</div>
+                                        <div class="text-[16px] font-semibold leading-[24px] text-brand-cream">kontak@walhi-jabar.org</div>
+                                    </div>
+                                </div>
+                                <div class="flex h-[98px] items-center gap-4 border-2 border-brand-green bg-brand-green p-6">
+                                    <div class="flex h-10 w-10 items-center justify-center bg-brand-dark p-2">
+                                        <img src="{{ $iqon('Icon-24.svg') }}" alt="WhatsApp" class="h-6 w-6 object-contain">
+                                    </div>
+                                    <div>
+                                        <div class="text-[12px] font-bold uppercase tracking-[0.06em] text-brand-green-light">WhatsApp</div>
+                                        <div class="text-[16px] font-semibold leading-[24px] text-brand-cream">+62 812-3456-7890</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="flex h-[689px] w-full flex-col items-start border-t-4 border-brand-cream bg-brand-dark px-[95px] pt-1 text-brand-cream">
+                    <div class="mx-auto flex h-[685px] w-[1280px] flex-col gap-12 px-8 pt-16">
+                        <div class="relative h-[260px] w-full">
+                            <div class="absolute left-0 top-0 w-[584px]">
+                                <h3 class="text-[32px] font-label uppercase leading-[48px] tracking-[0.05em]">WALHI Jawa Barat</h3>
+                                <p class="mt-4 max-w-[584px] text-[16px] leading-[27.2px]">Wahana Lingkungan Hidup Indonesia (WALHI) Jawa Barat adalah organisasi lingkungan hidup independen yang memperjuangkan keadilan ekologis dan kedaulatan rakyat atas sumber daya alam.</p>
+                                <div class="mt-6 flex items-center gap-4">
+                                    <img src="{{ $iqon('Icon-25.svg') }}" alt="Facebook" class="h-12 w-12 object-contain">
+                                    <img src="{{ $iqon('Icon-26.svg') }}" alt="Twitter" class="h-12 w-12 object-contain">
+                                    <img src="{{ $iqon('Icon-27.svg') }}" alt="Instagram" class="h-12 w-12 object-contain">
+                                    <img src="{{ $iqon('Icon-14.svg') }}" alt="YouTube" class="h-12 w-12 object-contain">
+                                </div>
+                            </div>
+
+                            <div class="absolute left-[632px] top-0 flex h-[260px] w-[268px] flex-col gap-4">
+                                <div class="border-b-2 border-brand-green pb-2 text-[20px] font-label uppercase leading-[30px] tracking-[0.05em] text-brand-green-light">Navigasi</div>
+                                <div class="flex flex-col gap-3 text-[15px] leading-[22.5px]">
+                                    <span>Tentang Kami</span>
+                                    <span>Isu Lingkungan</span>
+                                    <span>Kampanye</span>
+                                    <span>Berita & Artikel</span>
+                                    <span>Laporan</span>
+                                    <span>Kontak</span>
+                                </div>
+                            </div>
+
+                            <div class="absolute left-[948px] top-0 flex h-[260px] w-[268px] flex-col gap-4">
+                                <div class="border-b-2 border-brand-green pb-2 text-[20px] font-label uppercase leading-[30px] tracking-[0.05em] text-brand-green-light">Jaringan</div>
+                                <div class="flex flex-col gap-3 text-[15px] leading-[22.5px]">
+                                    <span>WALHI Nasional</span>
+                                    <span>Friends of the Earth</span>
+                                    <span>Greenpeace Indonesia</span>
+                                    <span>KPA (Konsorsium Pembaruan Agraria)</span>
+                                    <span>JATAM (Jaringan Advokasi Tambang)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex h-[146px] flex-col gap-4 border border-brand-green bg-brand-green p-9">
+                            <div class="flex items-center justify-between gap-8">
+                                <div class="flex flex-col gap-2">
+                                    <h4 class="text-[28px] font-label uppercase leading-[42px] tracking-[0.05em] text-brand-cream">Berlangganan Newsletter</h4>
+                                    <p class="text-[16px] leading-[24px] text-brand-cream">Dapatkan update terbaru tentang isu lingkungan, kampanye, dan aksi-aksi WALHI Jawa Barat.</p>
+                                </div>
+                                <div class="flex h-[52px] w-[384px] items-stretch">
+                                    <div class="relative flex h-[52px] w-[241.75px] items-center border-2 border-brand-cream bg-white pl-12 pr-4 text-[16px] text-brand-dark/50">
+                                        <img src="{{ $iqon('Icon-23.svg') }}" alt="Email" class="absolute left-4 top-[17px] h-[18px] w-[18px] object-contain">
+                                        Email kamu
+                                    </div>
+                                    <button class="h-[52px] w-[134.25px] border-2 border-brand-orange bg-brand-orange text-[14px] font-bold uppercase tracking-[0.035em] text-brand-cream">Subscribe</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between border-t-2 border-brand-green pt-8 text-[14px] leading-[21px] text-brand-cream">
+                            <p>© 2026 WALHI Jawa Barat. Organisasi Independen. Tidak Berafiliasi dengan Korporasi atau Pemerintah.</p>
+                            <div class="flex items-center gap-6 text-[12px] font-semibold uppercase tracking-[0.03em]">
+                                <span>Kebijakan Privasi</span>
+                                <span>Transparansi Dana</span>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </main>
+        </div>
     </body>
 </html>
