@@ -110,11 +110,11 @@
                                 </div>
                                 <!-- Buttons -->
                                 <div class="absolute left-0 top-[390.20px] flex w-[455px] h-[60px] gap-4">
-                                    <a href="#donasi" class="relative flex w-[208.76px] h-[60px] items-center justify-center border-2 border-brand-cream bg-brand-dark text-[16px] font-bold uppercase tracking-[0.40px] text-brand-cream">
-                                        Lihat Advokasi
+                                    <a href="{{ route('blog') }}" class="relative flex w-[208.76px] h-[60px] items-center justify-center border-2 border-brand-cream bg-brand-dark text-[16px] font-bold uppercase tracking-[0.40px] text-brand-cream">
+                                        lihat blog
                                     </a>
-                                    <a href="#kabar" class="relative flex w-[227.18px] h-[60px] items-center justify-center border-2 border-brand-orange bg-brand-orange text-[16px] font-bold uppercase tracking-[0.40px] text-brand-cream">
-                                        Gabung Gerakan
+                                    <a href="{{ route('siaran-pers') }}" class="relative flex w-[227.18px] h-[60px] items-center justify-center border-2 border-brand-orange bg-brand-orange text-[16px] font-bold uppercase tracking-[0.40px] text-brand-cream">
+                                        lihat publikasi
                                     </a>
                                 </div>
                             </div>
