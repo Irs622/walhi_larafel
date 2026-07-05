@@ -3,12 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>WALHI Jawa Barat - Advokasi Lingkungan & Keadilan Ekologis</title>
-
+        @include('partials.seo-meta')
+ 
+        <script>
+            function updateScale() {
+                const viewportWidth = window.innerWidth;
+                const targetWidth = 1470;
+                if (viewportWidth < targetWidth) {
+                    const scale = viewportWidth / targetWidth;
+                    document.documentElement.style.setProperty('--canvas-scale', scale);
+                } else {
+                    document.documentElement.style.setProperty('--canvas-scale', 1);
+                }
+            }
+            window.addEventListener('resize', updateScale);
+            updateScale();
+        </script>
+ 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+ 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="overflow-x-clip bg-brand-cream antialiased text-brand-dark">
@@ -203,23 +218,41 @@
 
                         <div class="flex w-full flex-col gap-6">
                             @foreach ($reports as $report)
+                                @php
+                                    if ($report instanceof \App\Models\Content) {
+                                        $bodyData = json_decode($report->body, true);
+                                        $reportYear = $report->publish_date ? \Carbon\Carbon::parse($report->publish_date)->format('Y') : '2025';
+                                        $reportTitle = $report->title;
+                                        $reportCopy = $bodyData['subtitle'] ?? $report->body;
+                                        $reportPages = $bodyData['pages'] ?? '156 Halaman';
+                                        $reportDownloads = $bodyData['downloads'] ?? '3.2K Downloads';
+                                        $reportUrl = route('content.show', $report->slug);
+                                    } else {
+                                        $reportYear = $report['year'];
+                                        $reportTitle = $report['title'];
+                                        $reportCopy = $report['copy'];
+                                        $reportPages = $report['meta'][0];
+                                        $reportDownloads = $report['meta'][1];
+                                        $reportUrl = '#';
+                                    }
+                                @endphp
                                 <article class="flex h-[187.19px] overflow-hidden border-4 border-brand-cream bg-brand-cream text-brand-dark">
                                     <div class="flex w-[128px] flex-col items-start justify-start bg-brand-green p-6 text-brand-cream">
                                         <div class="text-[12px] font-bold uppercase tracking-[0.06em]">Tahun</div>
-                                        <div class="pt-1 text-[32px] font-label leading-[48px] tracking-[0.1em]">{{ $report['year'] }}</div>
+                                        <div class="pt-1 text-[32px] font-label leading-[48px] tracking-[0.1em]">{{ $reportYear }}</div>
                                     </div>
                                     <div class="flex flex-1 items-center justify-between gap-6 p-6">
                                         <div class="flex w-[820px] flex-col gap-3">
-                                            <div class="text-[24px] font-label uppercase leading-[36px] tracking-[0.06em] text-brand-dark">{{ $report['title'] }}</div>
-                                            <p class="text-[16px] leading-[25.6px] text-brand-dark">{{ $report['copy'] }}</p>
+                                            <div class="text-[24px] font-label uppercase leading-[36px] tracking-[0.06em] text-brand-dark">{{ $reportTitle }}</div>
+                                            <p class="text-[16px] leading-[25.6px] text-brand-dark">{{ $reportCopy }}</p>
                                             <div class="flex items-center gap-4 text-[14px] font-semibold leading-[20px] text-brand-green-light">
-                                                <span>▪ {{ $report['meta'][0] }}</span>
-                                                <span>▪ {{ $report['meta'][1] }}</span>
+                                                <span>▪ {{ $reportPages }}</span>
+                                                <span>▪ {{ $reportDownloads }}</span>
                                             </div>
                                         </div>
-                                        <a href="#" class="flex h-[49px] items-center gap-2 border-2 border-brand-dark bg-brand-dark px-6 text-[14px] font-bold uppercase tracking-[0.035em] text-brand-cream">
-                                            <img src="{{ $iqon($report['icon']) }}" alt="Download" class="h-[18px] w-[18px] object-contain">
-                                            <span>{{ $report['button'] }}</span>
+                                        <a href="{{ $reportUrl }}" class="flex h-[49px] items-center gap-2 border-2 border-brand-dark bg-brand-dark px-6 text-[14px] font-bold uppercase tracking-[0.035em] text-brand-cream">
+                                            <img src="{{ $iqon('Icon-16.svg') }}" alt="Download" class="h-[18px] w-[18px] object-contain">
+                                            <span>Lihat Laporan</span>
                                         </a>
                                     </div>
                                 </article>
@@ -237,50 +270,92 @@
                                     <h2 class="text-[64px] font-heading font-normal uppercase leading-[60.8px] tracking-[0.02em] text-brand-dark">Liputan dan<br>Investigasi</h2>
                                     <div class="absolute left-0 top-[145.59px] h-1 w-24 bg-brand-green"></div>
                                 </div>
-                                <a href="#" class="flex h-[49px] items-center gap-2 border-2 border-brand-dark bg-brand-dark px-6 text-[14px] font-bold uppercase tracking-[0.035em] text-brand-cream">
+                                <a href="{{ route('blog') }}" class="flex h-[49px] items-center gap-2 border-2 border-brand-dark bg-brand-dark px-6 text-[14px] font-bold uppercase tracking-[0.035em] text-brand-cream">
                                     <span>Lihat Semua Artikel</span>
                                     <img src="{{ $iqon('Icon-17.svg') }}" alt="Arrow" class="h-[18px] w-[18px] object-contain">
                                 </a>
                             </div>
                         </div>
 
+                        @if($featuredNews)
+                        @php
+                            if ($featuredNews instanceof \App\Models\Content) {
+                                $featImage = $featuredNews->image_url ?: asset('assets/images/blog/news-4-1.jpg');
+                                $featTag = array_map('trim', explode(',', $featuredNews->tags ?? ''))[0] ?? 'Liputan';
+                                $featTitle = $featuredNews->title;
+                                $featCopy = Str::limit(strip_tags($featuredNews->body), 200);
+                                $featDate = $featuredNews->publish_date ? \Carbon\Carbon::parse($featuredNews->publish_date)->translatedFormat('d M Y') : $featuredNews->created_at->translatedFormat('d M Y');
+                                $wordCount = str_word_count(strip_tags($featuredNews->body));
+                                $featRead = ceil($wordCount / 200) . ' menit';
+                                $featUrl = route('content.show', $featuredNews->slug);
+                            } else {
+                                $featImage = asset('assets/images/blog/' . $featuredNews['image']);
+                                $featTag = $featuredNews['tag'];
+                                $featTitle = $featuredNews['title'];
+                                $featCopy = $featuredNews['copy'];
+                                $featDate = $featuredNews['date'];
+                                $featRead = $featuredNews['read'];
+                                $featUrl = '#';
+                            }
+                        @endphp
                         <article class="absolute left-8 top-[264.09px] flex h-[348.02px] w-[1216px] overflow-hidden border-4 border-brand-dark bg-white">
-                            <div class="relative h-full w-[604px] overflow-hidden bg-cover bg-center" style="background-image: url('{{ asset('assets/images/blog/'.$featuredNews['image']) }}');">
-                                <div class="absolute left-4 top-4 bg-brand-orange px-4 py-2 text-[12px] font-bold uppercase tracking-[0.06em] text-brand-cream">{{ $featuredNews['tag'] }}</div>
+                            <div class="relative h-full w-[604px] overflow-hidden bg-cover bg-center" style="background-image: url('{{ $featImage }}');">
+                                <div class="absolute left-4 top-4 bg-brand-orange px-4 py-2 text-[12px] font-bold uppercase tracking-[0.06em] text-brand-cream">{{ $featTag }}</div>
                             </div>
-                            <div class="flex w-[604px] flex-col justify-between p-8">
+                            <div class="flex w-[604px] flex-col justify-between p-8 text-brand-dark">
                                 <div class="flex flex-col gap-4">
-                                    <h3 class="text-[32px] font-label uppercase leading-[35.2px] tracking-[0.05em] text-brand-dark">{{ $featuredNews['title'] }}</h3>
-                                    <p class="text-[18px] leading-[28.8px] text-brand-dark">{{ $featuredNews['copy'] }}</p>
+                                    <h3 class="text-[32px] font-label uppercase leading-[35.2px] tracking-[0.05em] text-brand-dark">{{ $featTitle }}</h3>
+                                    <p class="text-[18px] leading-[28.8px] text-brand-dark">{{ $featCopy }}</p>
                                 </div>
                                 <div class="flex items-center justify-between border-t-2 border-brand-dark pt-6 text-[14px] font-semibold leading-[20px] text-brand-green-light">
                                     <div class="flex items-center gap-4">
-                                        <span>18 Mei 2026</span>
-                                        <span>▪ {{ $featuredNews['read'] }}</span>
+                                        <span>{{ $featDate }}</span>
+                                        <span>▪ {{ $featRead }}</span>
                                     </div>
-                                    <a href="#" class="flex items-center gap-2 text-brand-dark">
+                                    <a href="{{ $featUrl }}" class="flex items-center gap-2 text-brand-dark">
                                         <span>Baca Selengkapnya</span>
                                         <img src="{{ $iqon('Icon-18.svg') }}" alt="Detail" class="h-[18px] w-[18px] object-contain">
                                     </a>
                                 </div>
                             </div>
                         </article>
+                        @endif
 
                         <div class="absolute left-8 top-[660.12px] grid h-[932px] w-[1216px] grid-cols-3 gap-x-6 gap-y-6">
                             @foreach ($newsCards as $news)
+                                @php
+                                    if ($news instanceof \App\Models\Content) {
+                                        $newsImage = $news->image_url ?: asset('assets/images/blog/news-1-1.jpg');
+                                        $newsTag = array_map('trim', explode(',', $news->tags ?? ''))[0] ?? 'Advokasi';
+                                        $newsTitle = $news->title;
+                                        $newsCopy = Str::limit(strip_tags($news->body), 120);
+                                        $newsDate = $news->publish_date ? \Carbon\Carbon::parse($news->publish_date)->translatedFormat('d M Y') : $news->created_at->translatedFormat('d M Y');
+                                        $wordCount = str_word_count(strip_tags($news->body));
+                                        $newsRead = ceil($wordCount / 200) . ' menit';
+                                        $newsUrl = route('content.show', $news->slug);
+                                    } else {
+                                        $newsImage = asset('assets/images/blog/' . $news['image']);
+                                        $newsTag = $news['tag'];
+                                        $newsTitle = $news['title'];
+                                        $newsCopy = $news['copy'];
+                                        $newsDate = $news['date'];
+                                        $newsRead = $news['read'];
+                                        $newsUrl = '#';
+                                    }
+                                @endphp
                                 <article class="flex h-[454px] flex-col overflow-hidden border-4 border-brand-dark bg-white">
-                                    <div class="relative h-[192px] overflow-hidden bg-cover bg-center" style="background-image: url('{{ asset('assets/images/blog/'.$news['image']) }}');">
-                                        <div class="absolute left-4 top-4 px-3 py-1 text-[12px] font-bold uppercase tracking-[0.06em] text-brand-cream" style="background-color: {{ $loop->index % 3 === 2 ? '#8B6B4A' : ($loop->index % 3 === 1 ? '#5C8D59' : '#256D4A') }};">{{ $news['tag'] }}</div>
+                                    <div class="relative h-[192px] overflow-hidden bg-cover bg-center" style="background-image: url('{{ $newsImage }}');">
+                                        <div class="absolute left-4 top-4 px-3 py-1 text-[12px] font-bold uppercase tracking-[0.06em] text-brand-cream" style="background-color: {{ $loop->index % 3 === 2 ? '#8B6B4A' : ($loop->index % 3 === 1 ? '#5C8D59' : '#256D4A') }};">{{ $newsTag }}</div>
                                     </div>
-                                    <div class="flex flex-1 flex-col justify-between px-6 py-6">
+                                    <div class="flex flex-1 flex-col justify-between px-6 py-6 text-brand-dark">
                                         <div class="flex flex-col gap-4">
-                                            <h4 class="text-[20px] font-label uppercase leading-[24px] tracking-[0.05em] text-brand-dark">{{ $news['title'] }}</h4>
-                                            <p class="text-[15px] leading-[24px] text-brand-dark">{{ $news['copy'] }}</p>
+                                            <a href="{{ $newsUrl }}" class="hover:text-brand-green transition-colors"><h4 class="text-[20px] font-label uppercase leading-[24px] tracking-[0.05em] text-brand-dark">{{ $newsTitle }}</h4></a>
+                                            <p class="text-[15px] leading-[24px] text-brand-dark">{{ $newsCopy }}</p>
                                         </div>
                                         <div class="flex items-center gap-3 border-t-2 border-brand-dark pt-4 text-[12px] font-semibold leading-[16px] text-brand-green-light">
-                                            <span>{{ $news['date'] }}</span>
+                                            <span>{{ $newsDate }}</span>
                                             <span>▪</span>
-                                            <span>{{ $news['read'] }}</span>
+                                            <span>{{ $newsRead }}</span>
                                         </div>
                                     </div>
                                 </article>
@@ -316,7 +391,7 @@
                                     <li>▪ Jaringan aktivis se-Jawa Barat</li>
                                     <li>▪ Pengalaman kerja lapangan</li>
                                 </ul>
-                                <a href="#" class="mt-8 flex h-[60px] items-center justify-center gap-2 bg-brand-green px-6 text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">
+                                <a href="https://wa.me/6281234567890" target="_blank" class="mt-8 flex h-[60px] items-center justify-center gap-2 bg-brand-green px-6 text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">
                                     <img src="{{ $iqon('Icon-20.svg') }}" alt="Relawan" class="h-5 w-5 object-contain">
                                     <span>Daftar Jadi Relawan</span>
                                 </a>
@@ -338,7 +413,7 @@
                                         <li>▪ Kampanye dan edukasi publik</li>
                                     </ul>
                                 </div>
-                                <a href="#" class="flex h-[60px] items-center justify-center gap-2 bg-brand-orange px-6 text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">
+                                <a href="{{ route('donasi') }}" class="flex h-[60px] items-center justify-center gap-2 bg-brand-orange px-6 text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">
                                     <img src="{{ $iqon('Icon-22.svg') }}" alt="Donasi" class="h-5 w-5 object-contain">
                                     <span>Donasi Sekarang</span>
                                 </a>

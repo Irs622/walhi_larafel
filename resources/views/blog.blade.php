@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Blog - WALHI Jawa Barat</title>
+        @include('partials.seo-meta', ['title' => 'Blog - WALHI Jawa Barat'])
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,30 +14,13 @@
     <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Inter, sans-serif;">
         @php
             $blogCategories = ['Semua', 'Investigasi', 'Advokasi', 'Laporan', 'Kampanye', 'Pendidikan', 'Opini'];
-
-            $newsCards = [
-                ['category' => 'Advokasi', 'image' => 'news-1-1.jpg', 'tag' => 'Advokasi', 'title' => 'Petani Garut Menang: Tanah Dikembalikan Setelah 3 Tahun Gugatan', 'copy' => 'Putusan pengadilan memenangkan gugatan 300 keluarga petani. Ini kemenangan hukum penting untuk kasus-kasus agraria serupa di seluruh Jawa Barat.', 'date' => '15 Mei 2026', 'read' => '8 menit'],
-                ['category' => 'Laporan', 'image' => 'news-1-2.jpg', 'tag' => 'Laporan', 'title' => 'Data Baru: Tingkat Pencemaran Citarum Naik 23% dalam 6 Bulan', 'copy' => 'Monitoring terbaru menunjukkan peningkatan drastis polusi industri. Pemerintah diminta bertindak cepat sebelum kondisi semakin memburuk.', 'date' => '10 Mei 2026', 'read' => '6 menit'],
-                ['category' => 'Kampanye', 'image' => 'news-1-3.jpg', 'tag' => 'Kampanye', 'title' => 'Ratusan Aktivis Turun ke Jalan Tolak Pembangunan Pabrik di DAS', 'copy' => 'Aksi bersama menolak izin pembangunan pabrik semen di kawasan penyangga Daerah Aliran Sungai. Massa menuntut pencabutan izin lingkungan.', 'date' => '5 Mei 2026', 'read' => '5 menit'],
-                ['category' => 'Pendidikan', 'image' => 'news-4-2.jpg', 'tag' => 'Pendidikan', 'title' => 'Peluncuran Sekolah Lapang: Petani Belajar Pertanian Ekologis', 'copy' => 'Program pendampingan petani untuk transisi dari metode konvensional ke pertanian ramah lingkungan. Hasil panen meningkat tanpa merusak tanah.', 'date' => '1 Mei 2026', 'read' => '7 menit'],
-                ['category' => 'Opini', 'image' => 'news-4-3.jpg', 'tag' => 'Opini', 'title' => "Mengapa Kita Harus Menolak 'Green Capitalism' dalam Krisis Iklim", 'copy' => 'Analisis kritis terhadap solusi pasar dalam menghadapi krisis ekologis. Apa yang dibutuhkan adalah transformasi sistem, bukan sekadar greenwashing.', 'date' => '28 Apr 2026', 'read' => '10 menit'],
-                ['category' => 'Opini', 'image' => 'news-2-1.jpg', 'tag' => 'Opini', 'title' => "Mengapa Kita Harus Menolak 'Green Capitalism' dalam Krisis Iklim", 'copy' => 'Analisis kritis terhadap solusi pasar dalam menghadapi krisis ekologis. Apa yang dibutuhkan adalah transformasi sistem, bukan sekadar greenwashing.', 'date' => '28 Apr 2026', 'read' => '10 menit'],
-            ];
-
-            $featuredNews = [
-                'category' => 'Investigasi',
-                'image' => 'news-4-1.jpg',
-                'tag' => 'Investigasi',
-                'title' => 'Penelusuran Jejak Modal di Balik Tambang Ilegal Gunung Halimun',
-                'copy' => 'Investigasi mendalam mengungkap jaringan korporasi dan pejabat yang memfasilitasi pertambangan ilegal. Dokumen internal bocor, saksi kunci berbicara.',
-                'date' => '18 Mei 2026',
-                'read' => '12 menit',
-            ];
+            $featuredNews = ($items->currentPage() === 1) ? $items->first() : null;
+            $newsCards = ($items->currentPage() === 1) ? $items->skip(1) : $items;
         @endphp
-
+ 
         <div style="position: relative; width: 100%; overflow-x: clip; background: #F4F1EA;">
             @include('partials.site-header')
-
+ 
             <main style="display: flex; flex-direction: column; align-items: stretch;">
                 <section style="background: #1D1D1D; border-bottom: 4px #256D4A solid; padding: 64px 95px 80px; color: #F4F1EA;">
                     <div style="width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 32px; box-sizing: border-box;">
@@ -56,71 +39,117 @@
                         </div>
                     </div>
                 </section>
-
+ 
                 <section style="padding: 80px 95px 96px; background: #F4F1EA; color: #1D1D1D; border-bottom: 4px #1D1D1D solid;">
                     <div style="width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 48px;">
                         <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: flex-start;">
                             @foreach ($blogCategories as $category)
-                                <button type="button" data-blog-filter="{{ $category }}" style="padding: 12px 18px; border: 2px solid {{ $loop->first ? '#256D4A' : '#1D1D1D' }}; background: {{ $loop->first ? '#256D4A' : '#F4F1EA' }}; color: {{ $loop->first ? '#F4F1EA' : '#1D1D1D' }}; font-size: 12px; font-weight: 700; line-height: 18px; letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer;">
+                                @php
+                                    $isActive = ($categoryFilter ?? 'Semua') === $category;
+                                @endphp
+                                <a href="{{ route('blog', ['kategori' => $category]) }}" style="padding: 12px 18px; border: 2px solid {{ $isActive ? '#256D4A' : '#1D1D1D' }}; background: {{ $isActive ? '#256D4A' : '#F4F1EA' }}; color: {{ $isActive ? '#F4F1EA' : '#1D1D1D' }}; font-size: 12px; font-weight: 700; line-height: 18px; letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer; text-decoration: none; display: inline-block;">
                                     {{ $category }}
-                                </button>
+                                </a>
                             @endforeach
                         </div>
-
-                        <article data-blog-card data-blog-category="{{ $featuredNews['category'] }}" style="display: flex; flex-wrap: wrap; overflow: hidden; border: 4px solid #1D1D1D; background: #FFFFFF; min-height: 348px;">
-                            <div style="position: relative; flex: 1 1 420px; min-height: 320px; background-image: url('{{ asset('assets/images/blog/'.$featuredNews['image']) }}'); background-size: cover; background-position: center;">
+ 
+                        @if($featuredNews)
+                        @php
+                            $featImage = $featuredNews->image_url ?: asset('assets/images/blog/news-4-1.jpg');
+                            $featTag = array_map('trim', explode(',', $featuredNews->tags ?? ''))[0] ?? 'Liputan';
+                            $wordCount = str_word_count(strip_tags($featuredNews->body));
+                            $featRead = ceil($wordCount / 200) . ' menit';
+                        @endphp
+                        <article style="display: flex; flex-wrap: wrap; overflow: hidden; border: 4px solid #1D1D1D; background: #FFFFFF; min-height: 348px;">
+                            <div style="position: relative; flex: 1 1 420px; min-height: 320px; background-image: url('{{ $featImage }}'); background-size: cover; background-position: center;">
                                 <div style="position: absolute; left: 16px; top: 16px; padding: 8px 16px; background: #E56A43; color: #F4F1EA; font-size: 12px; font-weight: 700; line-height: 18px; letter-spacing: 0.6px; text-transform: uppercase;">
-                                    {{ $featuredNews['tag'] }}
+                                    {{ $featTag }}
                                 </div>
                             </div>
                             <div style="flex: 1 1 420px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px;">
                                 <div style="display: flex; flex-direction: column; gap: 16px;">
                                     <h2 style="margin: 0; color: #1D1D1D; font-size: 32px; font-family: Bebas Neue, sans-serif; font-weight: 400; line-height: 35.2px; letter-spacing: 1.6px; text-transform: uppercase;">
-                                        {{ $featuredNews['title'] }}
+                                        {{ $featuredNews->title }}
                                     </h2>
                                     <p style="margin: 0; color: #1D1D1D; font-size: 18px; line-height: 28.8px;">
-                                        {{ $featuredNews['copy'] }}
+                                        {{ Str::limit(strip_tags($featuredNews->body), 220) }}
                                     </p>
                                 </div>
                                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 24px; border-top: 2px solid #1D1D1D; color: #5C8D59; font-size: 14px; font-weight: 600; line-height: 20px;">
                                     <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-                                        <span>{{ $featuredNews['date'] }}</span>
-                                        <span>▪ {{ $featuredNews['read'] }}</span>
+                                        <span>{{ $featuredNews->publish_date ? \Carbon\Carbon::parse($featuredNews->publish_date)->translatedFormat('d M Y') : $featuredNews->created_at->translatedFormat('d M Y') }}</span>
+                                        <span>▪ {{ $featRead }} baca</span>
                                     </div>
-                                    <a href="#" style="display: inline-flex; align-items: center; gap: 8px; color: #1D1D1D; text-decoration: none;">
+                                    <a href="{{ route('content.show', $featuredNews->slug) }}" style="display: inline-flex; align-items: center; gap: 8px; color: #1D1D1D; text-decoration: none; font-weight: 700;">
                                         <span>Baca Selengkapnya</span>
                                         <span style="font-size: 18px; line-height: 1;">›</span>
                                     </a>
                                 </div>
                             </div>
                         </article>
-
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+                        @endif
+ 
+                        @if($newsCards->count() > 0)
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
                             @foreach ($newsCards as $news)
-                                <article data-blog-card data-blog-category="{{ $news['category'] }}" style="display: flex; flex-direction: column; overflow: hidden; border: 4px solid #1D1D1D; background: #FFFFFF; min-height: 454px;">
-                                    <div style="position: relative; height: 192px; background-image: url('{{ asset('assets/images/blog/'.$news['image']) }}'); background-size: cover; background-position: center;">
+                                @php
+                                    $newsImage = $news->image_url ?: asset('assets/images/blog/news-1-1.jpg');
+                                    $newsTag = array_map('trim', explode(',', $news->tags ?? ''))[0] ?? 'Advokasi';
+                                    $wordCount = str_word_count(strip_tags($news->body));
+                                    $newsRead = ceil($wordCount / 200) . ' menit';
+                                @endphp
+                                <article style="display: flex; flex-direction: column; overflow: hidden; border: 4px solid #1D1D1D; background: #FFFFFF; min-height: 454px;">
+                                    <div style="position: relative; height: 192px; background-image: url('{{ $newsImage }}'); background-size: cover; background-position: center;">
                                         <div style="position: absolute; left: 16px; top: 16px; padding: 4px 12px; background: {{ $loop->index % 3 === 2 ? '#8B6B4A' : ($loop->index % 3 === 1 ? '#5C8D59' : '#256D4A') }}; color: #F4F1EA; font-size: 12px; font-weight: 700; line-height: 18px; letter-spacing: 0.6px; text-transform: uppercase;">
-                                            {{ $news['tag'] }}
+                                            {{ $newsTag }}
                                         </div>
                                     </div>
                                     <div style="display: flex; flex: 1 1 0%; flex-direction: column; justify-content: space-between; padding: 24px; gap: 24px;">
                                         <div style="display: flex; flex-direction: column; gap: 16px;">
                                             <h3 style="margin: 0; color: #1D1D1D; font-size: 20px; font-family: Bebas Neue, sans-serif; font-weight: 400; line-height: 24px; letter-spacing: 1px; text-transform: uppercase;">
-                                                {{ $news['title'] }}
+                                                <a href="{{ route('content.show', $news->slug) }}" style="color: #1D1D1D; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
+                                                    {{ $news->title }}
+                                                </a>
                                             </h3>
                                             <p style="margin: 0; color: #1D1D1D; font-size: 15px; line-height: 24px;">
-                                                {{ $news['copy'] }}
+                                                {{ Str::limit(strip_tags($news->body), 140) }}
                                             </p>
                                         </div>
-                                        <div style="display: flex; align-items: center; gap: 12px; padding-top: 16px; border-top: 2px solid #1D1D1D; color: #5C8D59; font-size: 12px; font-weight: 600; line-height: 16px; flex-wrap: wrap;">
-                                            <span>{{ $news['date'] }}</span>
-                                            <span>▪</span>
-                                            <span>{{ $news['read'] }}</span>
+                                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 16px; border-top: 2px solid #1D1D1D; color: #5C8D59; font-size: 12px; font-weight: 600; line-height: 16px; flex-wrap: wrap;">
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span>{{ $news->publish_date ? \Carbon\Carbon::parse($news->publish_date)->translatedFormat('d M Y') : $news->created_at->translatedFormat('d M Y') }}</span>
+                                                <span>▪</span>
+                                                <span>{{ $newsRead }}</span>
+                                            </div>
+                                            <a href="{{ route('content.show', $news->slug) }}" style="color: #1D1D1D; text-decoration: none; font-weight: 700;">Detail →</a>
                                         </div>
                                     </div>
                                 </article>
                             @endforeach
                         </div>
+                        @else
+                            @if(!$featuredNews)
+                            <div style="background: white; border: 4px solid #1D1D1D; padding: 48px; text-align: center; font-size: 18px; color: #888;">
+                                Belum ada artikel blog yang diterbitkan dalam kategori ini.
+                            </div>
+                            @endif
+                        @endif
+ 
+                        <!-- Neobrutalist Pagination -->
+                        @if($items->hasPages())
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 48px;">
+                                <a href="{{ $items->previousPageUrl() }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ $items->onFirstPage() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
+                                    ‹
+                                </a>
+                                <span style="font-weight: 700; font-size: 16px; color: #1D1D1D;">
+                                    Halaman {{ $items->currentPage() }} dari {{ $items->lastPage() }}
+                                </span>
+                                <a href="{{ $items->nextPageUrl() }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ !$items->hasMorePages() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
+                                    ›
+                                </a>
+                            </div>
+                        @endif
+ 
                     </div>
                 </section>
             </main>

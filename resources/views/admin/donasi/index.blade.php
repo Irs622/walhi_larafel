@@ -17,8 +17,14 @@
             </div>
             <div class="min-w-0">
                 <div class="text-xs text-[#888] uppercase tracking-wide mb-1">Total Donasi</div>
-                <div class="text-2xl font-bold text-[#1D1D1D] leading-tight">Rp 287jt</div>
-                <div class="text-xs text-[#888] mt-0.5">Tahun 2025</div>
+                <div class="text-2xl font-bold text-[#1D1D1D] leading-tight">
+                    @if($totalAmount >= 1000000)
+                        Rp {{ number_format($totalAmount / 1000000, 1, ',', '.') }}jt
+                    @else
+                        Rp {{ number_format($totalAmount, 0, ',', '.') }}
+                    @endif
+                </div>
+                <div class="text-xs text-[#888] mt-0.5">Semua waktu</div>
             </div>
         </div>
 
@@ -29,7 +35,7 @@
             </div>
             <div class="min-w-0">
                 <div class="text-xs text-[#888] uppercase tracking-wide mb-1">Donatur Unik</div>
-                <div class="text-2xl font-bold text-[#1D1D1D] leading-tight">1.243</div>
+                <div class="text-2xl font-bold text-[#1D1D1D] leading-tight">{{ number_format($uniqueDonors, 0, ',', '.') }}</div>
                 <div class="text-xs text-[#888] mt-0.5">Sepanjang kampanye</div>
             </div>
         </div>
@@ -53,7 +59,13 @@
             </div>
             <div class="min-w-0">
                 <div class="text-xs text-[#888] uppercase tracking-wide mb-1">Rata-rata Donasi</div>
-                <div class="text-2xl font-bold text-[#1D1D1D] leading-tight">Rp 231rb</div>
+                <div class="text-2xl font-bold text-[#1D1D1D] leading-tight">
+                    @if($avgDonation >= 1000000)
+                        Rp {{ number_format($avgDonation / 1000000, 1, ',', '.') }}jt
+                    @else
+                        Rp {{ number_format($avgDonation / 1000, 0, ',', '.') }}rb
+                    @endif
+                </div>
                 <div class="text-xs text-[#888] mt-0.5">Per transaksi</div>
             </div>
         </div>
@@ -73,41 +85,24 @@
         <div class="bg-white border border-[#ddd] rounded-lg p-5">
             <h2 class="font-bold text-[#1D1D1D] text-sm mb-4">Donasi Terbaru</h2>
             <div class="space-y-3">
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <p class="text-xs font-semibold text-[#1D1D1D]">Budi Santoso</p>
-                        <p class="text-[10px] text-[#888]">Selamatkan Citarum · 2025-07-03</p>
+                @forelse($recentDonations as $donation)
+                    <div class="flex items-start justify-between gap-2 border-b border-[#eee] pb-2 last:border-0 last:pb-0">
+                        <div class="min-w-0">
+                            <p class="text-xs font-semibold text-[#1D1D1D] truncate">{{ $donation->donor_name }}</p>
+                            <p class="text-[10px] text-[#888] truncate">
+                                {{ $donation->campaign ? $donation->campaign->title : 'Donasi Umum' }} · {{ $donation->created_at->format('Y-m-d') }}
+                            </p>
+                        </div>
+                        <div class="flex flex-col items-end shrink-0">
+                            <span class="text-xs font-bold text-[#256D4A]">Rp {{ number_format($donation->amount, 0, ',', '.') }}</span>
+                            <span class="text-[9px] uppercase font-semibold text-{{ $donation->status === 'success' ? 'green-600' : ($donation->status === 'pending' ? 'amber-600' : 'red-600') }}">
+                                {{ $donation->status }}
+                            </span>
+                        </div>
                     </div>
-                    <span class="text-xs font-bold text-[#256D4A] shrink-0">Rp 250.000</span>
-                </div>
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <p class="text-xs font-semibold text-[#1D1D1D]">Anonim</p>
-                        <p class="text-[10px] text-[#888]">Hutan untuk Masa Depan · 2025-07-03</p>
-                    </div>
-                    <span class="text-xs font-bold text-[#256D4A] shrink-0">Rp 500.000</span>
-                </div>
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <p class="text-xs font-semibold text-[#1D1D1D]">Siti Rahayu</p>
-                        <p class="text-[10px] text-[#888]">Selamatkan Citarum · 2025-07-02</p>
-                    </div>
-                    <span class="text-xs font-bold text-[#256D4A] shrink-0">Rp 100.000</span>
-                </div>
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <p class="text-xs font-semibold text-[#1D1D1D]">Ahmad Fauzi</p>
-                        <p class="text-[10px] text-[#888]">Anti Reklamasi Pantai · 2025-07-02</p>
-                    </div>
-                    <span class="text-xs font-bold text-[#256D4A] shrink-0">Rp 1.000.000</span>
-                </div>
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <p class="text-xs font-semibold text-[#1D1D1D]">Dewi Lestari</p>
-                        <p class="text-[10px] text-[#888]">Selamatkan Citarum · 2025-07-01</p>
-                    </div>
-                    <span class="text-xs font-bold text-[#256D4A] shrink-0">Rp 75.000</span>
-                </div>
+                @empty
+                    <p class="text-xs text-[#888] text-center py-4">Belum ada donasi masuk.</p>
+                @endforelse
             </div>
         </div>
     </div>
@@ -286,8 +281,8 @@
         gradient.addColorStop(0, 'rgba(37, 109, 74, 0.3)');
         gradient.addColorStop(1, 'rgba(37, 109, 74, 0)');
 
-        const data = [12500000, 18200000, 14800000, 22000000, 31500000, 19300000, 16700000, 24100000, 27800000, 33200000, 29400000, 38900000];
-        const labels = ["Agt '24", "Sep '24", "Okt '24", "Nov '24", "Des '24", "Jan '25", "Feb '25", "Mar '25", "Apr '25", "Mei '25", "Jun '25", "Jul '25"];
+        const data = {!! json_encode($chartData) !!};
+        const labels = {!! json_encode($chartLabels) !!};
 
         new Chart(ctx, {
             type: 'line',

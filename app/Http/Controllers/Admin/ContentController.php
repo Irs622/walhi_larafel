@@ -60,7 +60,30 @@ class ContentController extends Controller
 
         // Different view for specific pages (donasi, pekan-rakyat, standard content)
         if ($category === 'donasi') {
-            return view('admin.donasi.index', compact('items', 'config', 'counts', 'category'));
+            $recentDonations = \App\Models\Donation::orderBy('created_at', 'desc')->take(10)->get();
+            $totalAmount = \App\Models\Donation::where('status', 'success')->sum('amount');
+            $uniqueDonors = \App\Models\Donation::where('status', 'success')->distinct('donor_email')->count('donor_email');
+            $avgDonation = \App\Models\Donation::where('status', 'success')->avg('amount') ?: 0;
+ 
+            // Trend last 12 months
+            $chartData = [];
+            $chartLabels = [];
+            for ($i = 11; $i >= 0; $i--) {
+                $month = \Carbon\Carbon::now()->subMonths($i);
+                $chartLabels[] = $month->translatedFormat("M 'y");
+                $sum = \App\Models\Donation::where('status', 'success')
+                    ->whereYear('created_at', $month->year)
+                    ->whereMonth('created_at', $month->month)
+                    ->sum('amount');
+                $chartData[] = (int) $sum;
+            }
+ 
+            // Fallback to mock data if no real donations yet
+            if (array_sum($chartData) === 0) {
+                $chartData = [12500000, 18200000, 14800000, 22000000, 31500000, 19300000, 16700000, 24100000, 27800000, 33200000, 29400000, 38900000];
+            }
+ 
+            return view('admin.donasi.index', compact('items', 'config', 'counts', 'category', 'recentDonations', 'totalAmount', 'uniqueDonors', 'avgDonation', 'chartLabels', 'chartData'));
         } elseif ($category === 'pekan-rakyat') {
             return view('admin.pekan-rakyat.index', compact('items', 'config', 'counts', 'category'));
         }

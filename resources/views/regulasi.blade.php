@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Regulasi - WALHI Jawa Barat</title>
+        @include('partials.seo-meta', ['title' => 'Regulasi Hukum & Kebijakan - WALHI Jawa Barat'])
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -277,7 +277,7 @@
                                         
                                         <!-- Actions Buttons -->
                                         <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
-                                            <a href="#" 
+                                            <a href="{{ route('content.show', $item->slug) }}" 
                                                style="height: 48px; padding: 0 24px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s;"
                                                class="hover-action-dark-btn">
                                                 <i data-lucide="book-open" style="width: 14px; height: 14px;"></i>

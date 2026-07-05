@@ -3,16 +3,29 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Donasi Publik - WALHI Jawa Barat</title>
+        @include('partials.seo-meta', ['title' => 'Dukung Gerakan - WALHI Jawa Barat'])
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
         <!-- Lucide Script for Icons -->
         <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+
+        <!-- Midtrans Snap -->
+        @if(config('midtrans.client_key'))
+            @if(config('midtrans.is_production'))
+                <script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+            @else
+                <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+            @endif
+        @else
+            <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="dummy-client-key"></script>
+        @endif
         
         <style>
             .hover-pillar-card {
@@ -234,7 +247,6 @@
                     </div>
                 </section>
             </main>
-
             @include('partials.site-footer')
         </div>
 
@@ -251,7 +263,7 @@
                         Konfirmasi Pembayaran
                     </h3>
                     <p style="margin: 8px 0 0; font-family: Inter, sans-serif; font-size: 15px; color: #555; line-height: 1.6;">
-                        Terima kasih, <strong id="summary-name">Donatur</strong>! Anda akan diarahkan ke gerbang pembayaran aman kami.
+                        Terima kasih, <strong id="summary-name">Donatur</strong>! Klik Lanjutkan untuk membuka gerbang pembayaran aman kami.
                     </p>
                 </div>
                 
@@ -271,14 +283,60 @@
                     <button onclick="closePaymentModal()" style="flex: 1; height: 48px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
                         Batal
                     </button>
-                    <button onclick="confirmRedirection()" style="flex: 1; height: 48px; background: #D95C3F; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
+                    <button id="confirm-btn" onclick="confirmRedirection()" style="flex: 1; height: 48px; background: #D95C3F; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
                         Lanjutkan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mock Payment Simulator Modal -->
+        <div id="mock-payment-modal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 1001; backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;">
+            <div style="background: white; border: 4px solid #1D1D1D; width: 100%; max-width: 500px; padding: 40px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); box-sizing: border-box;">
+                <div style="width: 80px; height: 80px; background: #8B6B4A; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                    <i data-lucide="cpu" style="width: 40px; height: 40px;"></i>
+                </div>
+                <div>
+                    <h3 style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1px; color: #1D1D1D; text-transform: uppercase;">
+                        Simulasi Pembayaran (Mock)
+                    </h3>
+                    <p style="margin: 8px 0 0; font-family: Inter, sans-serif; font-size: 15px; color: #555; line-height: 1.6;">
+                        Sistem mendeteksi server berjalan tanpa API key Midtrans. Pilih status pembayaran untuk disimulasikan:
+                    </p>
+                </div>
+                <div style="background: #F4F1EA; border: 2px solid #1D1D1D; width: 100%; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; text-align: left; font-family: Inter, sans-serif; font-size: 14px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666;">ID Order:</span>
+                        <strong id="mock-summary-id" style="color: #1D1D1D;">WALHI-DON-XXX</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666;">Donatur:</span>
+                        <span id="mock-summary-name" style="color: #1D1D1D; font-weight: 600;">Nama</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666;">Nominal:</span>
+                        <strong id="mock-summary-amount" style="color: #256D4A;">Rp 0</strong>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                    <button onclick="submitMockPayment('success')" style="width: 100%; height: 48px; background: #256D4A; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
+                        Simulasikan Sukses
+                    </button>
+                    <button onclick="submitMockPayment('failed')" style="width: 100%; height: 48px; background: #D95C3F; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
+                        Simulasikan Gagal
+                    </button>
+                    <button onclick="closeMockPaymentModal()" style="width: 100%; height: 48px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
+                        Batal
                     </button>
                 </div>
             </div>
         </div>
         
         <script>
+            var activeOrderId = '';
+            var activeSnapToken = '';
+            var activeIsMock = false;
+
             // Select Preset Amount
             function selectPresetAmount(amount, buttonElement) {
                 // Clear active states on all buttons
@@ -301,14 +359,12 @@
                 var buttons = document.getElementsByClassName('amount-btn');
                 var val = parseInt(inputElement.value);
                 
-                var matched = false;
                 for (var i = 0; i < buttons.length; i++) {
                     buttons[i].classList.remove('active');
                     // Check if value matches preset to keep button highlighted
                     var btnText = buttons[i].textContent.replace('Rp ', '').replace(/\./g, '');
                     if (val === parseInt(btnText)) {
                         buttons[i].classList.add('active');
-                        matched = true;
                     }
                 }
             }
@@ -341,16 +397,122 @@
                 document.getElementById('payment-modal').style.display = 'none';
                 document.body.style.overflow = 'auto';
             }
+
+            // Close mock payment modal
+            function closeMockPaymentModal() {
+                document.getElementById('mock-payment-modal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
             
-            // Mock confirm redirect
+            // Confirm redirection and fetch Snap Token
             function confirmRedirection() {
-                alert('Mengarahkan ke Gerbang Pembayaran Mandiri/VA/Qris...');
-                closePaymentModal();
-                document.getElementById('donation-form').reset();
-                var buttons = document.getElementsByClassName('amount-btn');
-                for (var i = 0; i < buttons.length; i++) {
-                    buttons[i].classList.remove('active');
-                }
+                var name = document.getElementById('donor-name').value;
+                var email = document.getElementById('donor-email').value;
+                var phone = document.getElementById('donor-phone').value;
+                var amount = document.getElementById('custom-amount').value;
+                var confirmBtn = document.getElementById('confirm-btn');
+
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = 'Memproses...';
+
+                // Fetch CSRF Token from meta
+                var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                fetch('{{ route('donasi.pay') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        donor_name: name,
+                        donor_email: email,
+                        donor_phone: phone,
+                        amount: parseInt(amount)
+                    })
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = 'Lanjutkan';
+                    closePaymentModal();
+
+                    if (data.success) {
+                        activeOrderId = data.order_id;
+                        activeSnapToken = data.snap_token;
+                        activeIsMock = data.is_mock;
+
+                        if (activeIsMock) {
+                            // Open Simulator modal
+                            document.getElementById('mock-summary-id').textContent = activeOrderId;
+                            document.getElementById('mock-summary-name').textContent = name;
+                            document.getElementById('mock-summary-amount').textContent = formatRupiah(amount);
+                            document.getElementById('mock-payment-modal').style.display = 'flex';
+                            document.body.style.overflow = 'hidden';
+                        } else {
+                            // Trigger Midtrans Snap
+                            window.snap.pay(activeSnapToken, {
+                                onSuccess: function(result) {
+                                    alert('Donasi berhasil diproses! Terima kasih banyak atas dukungan Anda.');
+                                    location.reload();
+                                },
+                                onPending: function(result) {
+                                    alert('Transaksi pending. Selesaikan pembayaran Anda sesuai instruksi Midtrans.');
+                                    location.reload();
+                                },
+                                onError: function(result) {
+                                    alert('Pembayaran gagal atau dibatalkan.');
+                                },
+                                onClose: function() {
+                                    alert('Popup pembayaran ditutup.');
+                                }
+                            });
+                        }
+                    } else {
+                        alert('Gagal memproses transaksi donasi. Silakan coba lagi.');
+                    }
+                })
+                .catch(function(err) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = 'Lanjutkan';
+                    console.error(err);
+                    alert('Terjadi kesalahan jaringan.');
+                });
+            }
+
+            // Submit mock payment status
+            function submitMockPayment(status) {
+                var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                fetch('{{ route('donasi.mock-payment-status') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order_id: activeOrderId,
+                        status: status
+                    })
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    closeMockPaymentModal();
+                    if (data.success) {
+                        if (status === 'success') {
+                            alert('Simulasi donasi sukses berhasil dilakukan! Terima kasih.');
+                        } else {
+                            alert('Simulasi donasi gagal berhasil dilakukan.');
+                        }
+                        location.reload();
+                    }
+                })
+                .catch(function(err) {
+                    console.error(err);
+                    alert('Gagal mengirimkan status simulasi.');
+                });
             }
             
             // Initialize Lucide icons on page load

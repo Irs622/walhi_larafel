@@ -28,7 +28,13 @@
             </div>
             <div class="min-w-0">
                 <div class="text-xs text-[#888] uppercase tracking-wide mb-1">Total Donasi</div>
-                <div class="text-2xl font-bold text-[#1D1D1D] leading-tight">Rp 287jt</div>
+                <div class="text-2xl font-bold text-[#1D1D1D] leading-tight">
+                    @if($stats['total_donations_amount'] >= 1000000)
+                        Rp {{ number_format($stats['total_donations_amount'] / 1000000, 1, ',', '.') }}jt
+                    @else
+                        Rp {{ number_format($stats['total_donations_amount'], 0, ',', '.') }}
+                    @endif
+                </div>
                 <div class="text-xs text-[#888] mt-0.5">Sejak Jan 2025</div>
             </div>
         </div>
@@ -193,8 +199,8 @@
         gradient.addColorStop(0, 'rgba(37, 109, 74, 0.3)');
         gradient.addColorStop(1, 'rgba(37, 109, 74, 0)');
 
-        const data = [12500000, 18200000, 14800000, 22000000, 31500000, 19300000, 16700000, 24100000, 27800000, 33200000, 29400000, 38900000];
-        const labels = ["Agt '24", "Sep '24", "Okt '24", "Nov '24", "Des '24", "Jan '25", "Feb '25", "Mar '25", "Apr '25", "Mei '25", "Jun '25", "Jul '25"];
+        const data = {!! json_encode($stats['chart_data']) !!};
+        const labels = {!! json_encode($stats['chart_labels']) !!};
 
         new Chart(ctx, {
             type: 'line',

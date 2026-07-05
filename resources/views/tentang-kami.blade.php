@@ -3,7 +3,23 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Tentang Kami - WALHI Jawa Barat</title>
+        @include('partials.seo-meta', ['title' => 'Tentang Kami - WALHI Jawa Barat'])
+ 
+        <script>
+            function updateScale() {
+                const viewportWidth = window.innerWidth;
+                const targetWidth = 1470;
+                if (viewportWidth < targetWidth) {
+                    const scale = viewportWidth / targetWidth;
+                    document.documentElement.style.setProperty('--canvas-scale', scale);
+                } else {
+                    document.documentElement.style.setProperty('--canvas-scale', 1);
+                }
+            }
+            window.addEventListener('resize', updateScale);
+            updateScale();
+        </script>
+ 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">

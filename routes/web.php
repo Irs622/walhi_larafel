@@ -4,21 +4,37 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ContentController;
+use App\Http\Controllers\PublicContentController;
+use App\Http\Controllers\DonationController;
 
 // ============================================================
 // PUBLIC ROUTES (No Authentication Required)
 // ============================================================
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [PublicContentController::class, 'home'])->name('home');
 
 // Redirect /dashboard to admin (Breeze compatibility)
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::view('/blog', 'blog')->name('blog');
+Route::get('/blog', [PublicContentController::class, 'blog'])->name('blog');
+Route::get('/konten/{slug}', [PublicContentController::class, 'show'])->name('content.show');
+ 
+Route::get('/sitemap.xml', function() {
+    $contents = \App\Models\Content::where('status', 'published')->orderBy('updated_at', 'desc')->get();
+    return response()->view('sitemap', compact('contents'))
+        ->header('Content-Type', 'text/xml');
+})->name('sitemap');
+ 
+Route::get('/robots.txt', function() {
+    return response(file_get_contents(public_path('robots.txt')), 200)
+        ->header('Content-Type', 'text/plain');
+});
+
+Route::post('/donasi/pay', [DonationController::class, 'pay'])->name('donasi.pay');
+Route::post('/donasi/webhook', [DonationController::class, 'webhook'])->name('donasi.webhook');
+Route::post('/donasi/mock-payment-status', [DonationController::class, 'mockPaymentStatus'])->name('donasi.mock-payment-status');
 
 Route::view('/tentang-kami', 'tentang-kami')->name('about');
 
