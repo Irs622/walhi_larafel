@@ -12,10 +12,24 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                heading: ['Anton', 'sans-serif'],
+                label: ['"Bebas Neue"', 'sans-serif'],
+                oswald: ['Oswald', 'sans-serif'],
             },
+            colors: {
+                brand: {
+                    cream: '#F4F1EA',
+                    dark: '#1D1D1D',
+                    orange: '#D95C3F',
+                    green: '#256D4A',
+                    'green-light': '#5C8D59',
+                    brown: '#8B6B4A',
+                }
+            }
         },
     },
 
     plugins: [forms],
 };
+

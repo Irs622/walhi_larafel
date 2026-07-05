@@ -90,25 +90,33 @@
                     <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('iqon/Container.png') }}');"></div>
                     <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(29,29,29,0.70)_0%,rgba(29,29,29,0.50)_50%,rgba(29,29,29,0.80)_100%)]"></div>
                     <div class="relative mx-auto flex h-full w-[1470px] items-center px-[95px]">
-                        <div class="flex h-[450px] w-full flex-col items-start pl-8 pr-[352px]">
-                            <div class="flex flex-col items-start gap-0">
-                                <div class="text-[12px] font-medium leading-[18px] text-brand-cream">Hutan bukan komoditas</div>
-                                <h1 class="mt-3 text-[96px] font-heading font-normal uppercase leading-[86.4px] tracking-[0.02em] text-brand-cream">
-                                    HUTAN BUKAN<br>
-                                    KOMODITAS
-                                </h1>
-                            </div>
-                            <div class="mt-6 h-2 w-[578px] bg-brand-orange"></div>
-                            <div class="mt-9 text-[48px] font-label font-normal uppercase leading-[52.8px] tracking-[0.05em] text-brand-green-light">
-                                Suara masyarakat<br>
-                                harus didengar
-                            </div>
-                            <p class="mt-10 max-w-[628px] text-[18px] leading-[30.6px] text-brand-cream">
-                                Membangun solidaritas rakyat untuk melawan kerusakan lingkungan, menuntut keadilan ekologis, dan mengembalikan hak atas ruang hidup.
-                            </p>
-                            <div class="mt-8 flex items-center gap-4">
-                                <a href="#donasi" class="flex h-[60px] w-[208px] items-center justify-center border-2 border-brand-cream bg-brand-dark text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">Lihat Advokasi</a>
-                                <a href="#kabar" class="flex h-[60px] w-[227px] items-center justify-center border-2 border-brand-orange bg-brand-orange text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">Gabung Gerakan</a>
+                        <div class="flex h-[450.39px] w-full flex-col items-start pl-8 pr-[352px]">
+                            <div class="relative w-full h-[450.39px]">
+                                <!-- Main Heading -->
+                                <div class="absolute left-0 top-[0.20px] w-[1100px] h-[173px]">
+                                    <h1 class="absolute left-0 top-[-0.50px] text-[96px] font-heading font-normal uppercase leading-[86.40px] tracking-[0.02em] text-brand-cream">
+                                        PULIHKAN JAWA BARAT<br>
+                                        BERSAMA WALHI JABAR
+                                    </h1>
+                                </div>
+                                <!-- Divider Orange -->
+                                <div class="absolute left-0 top-[197.20px] w-[578px] h-2 bg-brand-orange"></div>
+                                <!-- Subheading -->
+                                <div class="absolute left-0 top-[236.80px] w-[896px] h-[105.59px]">
+                                    <h2 class="absolute left-0 top-[-0.50px] text-[48px] font-label font-normal uppercase leading-[52.80px] tracking-[0.05em] text-brand-green-light">
+                                        SUARA MASYARAKAT<br>
+                                        HARUS DIDENGAR
+                                    </h2>
+                                </div>
+                                <!-- Buttons -->
+                                <div class="absolute left-0 top-[390.20px] flex w-[455px] h-[60px] gap-4">
+                                    <a href="#donasi" class="relative flex w-[208.76px] h-[60px] items-center justify-center border-2 border-brand-cream bg-brand-dark text-[16px] font-bold uppercase tracking-[0.40px] text-brand-cream">
+                                        Lihat Advokasi
+                                    </a>
+                                    <a href="#kabar" class="relative flex w-[227.18px] h-[60px] items-center justify-center border-2 border-brand-orange bg-brand-orange text-[16px] font-bold uppercase tracking-[0.40px] text-brand-cream">
+                                        Gabung Gerakan
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
