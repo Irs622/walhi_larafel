@@ -22,21 +22,32 @@ Route::get('/blog', [PublicContentController::class, 'blog'])->name('blog');
 Route::get('/konten/{slug}', [PublicContentController::class, 'show'])->name('content.show');
  
 Route::get('/sitemap.xml', function() {
-    $contents = \App\Models\Content::where('status', 'published')->orderBy('updated_at', 'desc')->get();
+    $contents = \App\Models\Content::select('slug', 'updated_at')
+        ->where('status', 'published')
+        ->orderBy('updated_at', 'desc')
+        ->get();
     return response()->view('sitemap', compact('contents'))
         ->header('Content-Type', 'text/xml');
 })->name('sitemap');
  
 Route::get('/robots.txt', function() {
-    return response(file_get_contents(public_path('robots.txt')), 200)
-        ->header('Content-Type', 'text/plain');
+    $path = public_path('robots.txt');
+    if (file_exists($path)) {
+        return response(file_get_contents($path), 200)->header('Content-Type', 'text/plain');
+    }
+    return response("User-agent: *\nDisallow:", 200)->header('Content-Type', 'text/plain');
 });
 
 Route::post('/donasi/pay', [DonationController::class, 'pay'])->name('donasi.pay');
 Route::post('/donasi/webhook', [DonationController::class, 'webhook'])->name('donasi.webhook');
 Route::post('/donasi/mock-payment-status', [DonationController::class, 'mockPaymentStatus'])->name('donasi.mock-payment-status');
 
-Route::view('/tentang-kami', 'tentang-kami')->name('about');
+Route::get('/tentang-kami', function () {
+    $visiMisi = \App\Models\Content::where('category', 'visi-misi')
+        ->where('status', 'published')
+        ->first();
+    return view('tentang-kami', compact('visiMisi'));
+})->name('about');
 
 Route::get('/regulasi', function () {
     $search = request('search');
@@ -66,15 +77,31 @@ Route::get('/regulasi', function () {
         $query->where('tags', 'like', "%{$mappedTag}%");
     }
 
-    $items = $query->orderBy('publish_date', 'desc')->get();
+    $items = $query->orderBy('publish_date', 'desc')->paginate(10)->withQueryString();
 
-    // Stats counts based on tags
-    $allRegulasi = \App\Models\Content::where('category', 'regulasi')->where('status', 'published')->get();
-    
-    $countUU = $allRegulasi->filter(fn($item) => str_contains(strtolower($item->tags), 'undang-undang'))->count();
-    $countPP = $allRegulasi->filter(fn($item) => str_contains(strtolower($item->tags), 'peraturan pemerintah'))->count();
-    $countPD = $allRegulasi->filter(fn($item) => str_contains(strtolower($item->tags), 'peraturan daerah'))->count();
-    $countKM = $allRegulasi->filter(fn($item) => str_contains(strtolower($item->tags), 'keputusan menteri') || str_contains(strtolower($item->tags), 'peraturan menteri'))->count();
+    // Stats counts directly from database query
+    $countUU = \App\Models\Content::where('category', 'regulasi')
+        ->where('status', 'published')
+        ->where('tags', 'like', '%undang-undang%')
+        ->count();
+
+    $countPP = \App\Models\Content::where('category', 'regulasi')
+        ->where('status', 'published')
+        ->where('tags', 'like', '%peraturan pemerintah%')
+        ->count();
+
+    $countPD = \App\Models\Content::where('category', 'regulasi')
+        ->where('status', 'published')
+        ->where('tags', 'like', '%peraturan daerah%')
+        ->count();
+
+    $countKM = \App\Models\Content::where('category', 'regulasi')
+        ->where('status', 'published')
+        ->where(function($q) {
+            $q->where('tags', 'like', '%keputusan menteri%')
+              ->orWhere('tags', 'like', '%peraturan menteri%');
+        })
+        ->count();
 
     return view('regulasi', compact('items', 'countUU', 'countPP', 'countPD', 'countKM', 'search', 'categoryFilter'));
 })->middleware('throttle:search')->name('regulasi');
@@ -83,7 +110,8 @@ Route::get('/publikasi/siaran-pers', function () {
     $items = \App\Models\Content::where('category', 'siaran-pers')
         ->where('status', 'published')
         ->orderBy('publish_date', 'desc')
-        ->get();
+        ->paginate(9)
+        ->withQueryString();
 
     return view('siaran-pers', compact('items'));
 })->name('siaran-pers');
@@ -92,7 +120,8 @@ Route::get('/publikasi/infografis', function () {
     $items = \App\Models\Content::where('category', 'infografis')
         ->where('status', 'published')
         ->orderBy('publish_date', 'desc')
-        ->get();
+        ->paginate(9)
+        ->withQueryString();
 
     return view('infografis', compact('items'));
 })->name('infografis');
@@ -101,7 +130,8 @@ Route::get('/publikasi/laporan-tahunan', function () {
     $items = \App\Models\Content::where('category', 'laporan-tahunan')
         ->where('status', 'published')
         ->orderBy('publish_date', 'desc')
-        ->get();
+        ->paginate(5)
+        ->withQueryString();
 
     return view('laporan-tahunan', compact('items'));
 })->name('laporan-tahunan');

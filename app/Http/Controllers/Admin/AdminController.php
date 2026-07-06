@@ -33,7 +33,7 @@ class AdminController extends Controller
         $monthsData = [];
         $labels = [];
         for ($i = 11; $i >= 0; $i--) {
-            $month = Carbon::now()->subMonths($i);
+            $month = Carbon::now()->startOfMonth()->subMonths($i);
             $labels[] = $month->translatedFormat("M 'y");
             $sum = Donation::where('status', 'success')
                 ->whereYear('created_at', $month->year)

@@ -146,6 +146,21 @@
                             </div>
                         @endforelse
 
+                        <!-- Neobrutalist Pagination -->
+                        @if($items->hasPages())
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 48px;">
+                                <a href="{{ $items->previousPageUrl() }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ $items->onFirstPage() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
+                                    ‹
+                                </a>
+                                <span style="font-weight: 700; font-size: 16px; color: #1D1D1D; font-family: Inter, sans-serif;">
+                                    Halaman {{ $items->currentPage() }} dari {{ $items->lastPage() }}
+                                </span>
+                                <a href="{{ $items->nextPageUrl() }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ !$items->hasMorePages() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
+                                    ›
+                                </a>
+                            </div>
+                        @endif
+
                     </div>
                 </section>
             </main>

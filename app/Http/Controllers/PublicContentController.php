@@ -23,8 +23,12 @@ class PublicContentController extends Controller
             ->orderBy('publish_date', 'desc')
             ->take(3)
             ->get();
+
+        $sejarah = Content::where('category', 'sejarah')
+            ->where('status', 'published')
+            ->first();
  
-        return view('welcome', compact('featuredNews', 'newsCards', 'reports'));
+        return view('welcome', compact('featuredNews', 'newsCards', 'reports', 'sejarah'));
     }
  
     public function blog(Request $request)

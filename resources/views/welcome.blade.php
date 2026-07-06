@@ -136,9 +136,13 @@
                             </h2>
                             <div class="absolute left-0 top-[180.89px] h-1 w-24 bg-brand-orange"></div>
                             <div class="absolute left-0 top-[216.89px] flex w-[584px] flex-col gap-4 text-[18px] leading-[30.6px] text-brand-dark">
-                                <p><strong>WALHI Jawa Barat</strong> adalah organisasi lingkungan hidup independen yang berjuang untuk keadilan ekologis dan kedaulatan rakyat atas sumber daya alam.</p>
-                                <p>Kami mendampingi masyarakat yang terdampak oleh kerusakan lingkungan, mengadvokasi kebijakan yang berpihak pada keberlanjutan, dan mengkampanyekan penghentian eksploitasi alam yang merusak.</p>
-                                <p>Sejak berdiri, WALHI Jawa Barat telah menangani ratusan kasus konflik agraria dan kerusakan lingkungan seperti pertambangan ilegal, deforestasi, pencemaran sungai, hingga dampak krisis iklim.</p>
+                                 @if(!empty($sejarah))
+                                     <div style="white-space: pre-line;">{!! $sejarah->body !!}</div>
+                                 @else
+                                     <p><strong>WALHI Jawa Barat</strong> adalah organisasi lingkungan hidup independen yang berjuang untuk keadilan ekologis dan kedaulatan rakyat atas sumber daya alam.</p>
+                                     <p>Kami mendampingi masyarakat yang terdampak oleh kerusakan lingkungan, mengadvokasi kebijakan yang berpihak pada keberlanjutan, dan mengkampanyekan penghentian eksploitasi alam yang merusak.</p>
+                                     <p>Sejak berdiri, WALHI Jawa Barat telah menangani ratusan kasus konflik agraria dan kerusakan lingkungan seperti pertambangan ilegal, deforestasi, pencemaran sungai, hingga dampak krisis iklim.</p>
+                                 @endif
                             </div>
 
                             <div class="absolute left-[632px] top-[30px] flex w-[584px] flex-col gap-6">

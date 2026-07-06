@@ -69,7 +69,7 @@ class ContentController extends Controller
             $chartData = [];
             $chartLabels = [];
             for ($i = 11; $i >= 0; $i--) {
-                $month = \Carbon\Carbon::now()->subMonths($i);
+                $month = \Carbon\Carbon::now()->startOfMonth()->subMonths($i);
                 $chartLabels[] = $month->translatedFormat("M 'y");
                 $sum = \App\Models\Donation::where('status', 'success')
                     ->whereYear('created_at', $month->year)
@@ -100,8 +100,14 @@ class ContentController extends Controller
             'tags' => 'nullable|string',
             'status' => 'required|in:published,draft,archived',
             'image_url' => 'nullable|string',
-            'publish_date' => 'nullable|date',
         ]);
+
+        if ($category === 'laporan-tahunan' && !empty($validated['body'])) {
+            json_decode($validated['body']);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return redirect()->back()->withErrors(['body' => 'Format deskripsi untuk Laporan Tahunan harus berupa JSON valid (contoh: {"subtitle":"...", "stats":[]})'])->withInput();
+            }
+        }
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title']);
@@ -111,9 +117,16 @@ class ContentController extends Controller
 
         // Handle unique slug
         $originalSlug = $validated['slug'];
-        $count = 1;
-        while (Content::where('slug', $validated['slug'])->exists()) {
-            $validated['slug'] = $originalSlug . '-' . $count++;
+        $matchingSlugs = Content::where('slug', 'like', $originalSlug . '%')
+            ->pluck('slug')
+            ->toArray();
+
+        if (in_array($originalSlug, $matchingSlugs)) {
+            $count = 1;
+            while (in_array($originalSlug . '-' . $count, $matchingSlugs)) {
+                $count++;
+            }
+            $validated['slug'] = $originalSlug . '-' . $count;
         }
 
         $validated['category'] = $category;
@@ -135,13 +148,28 @@ class ContentController extends Controller
             'publish_date' => 'nullable|date',
         ]);
 
+        if ($category === 'laporan-tahunan' && !empty($validated['body'])) {
+            json_decode($validated['body']);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return redirect()->back()->withErrors(['body' => 'Format deskripsi untuk Laporan Tahunan harus berupa JSON valid (contoh: {"subtitle":"...", "stats":[]})'])->withInput();
+            }
+        }
+
         $validated['slug'] = Str::slug($validated['slug']);
 
         // Handle unique slug excluding current
         $originalSlug = $validated['slug'];
-        $count = 1;
-        while (Content::where('slug', $validated['slug'])->where('id', '!=', $content->id)->exists()) {
-            $validated['slug'] = $originalSlug . '-' . $count++;
+        $matchingSlugs = Content::where('slug', 'like', $originalSlug . '%')
+            ->where('id', '!=', $content->id)
+            ->pluck('slug')
+            ->toArray();
+
+        if (in_array($originalSlug, $matchingSlugs)) {
+            $count = 1;
+            while (in_array($originalSlug . '-' . $count, $matchingSlugs)) {
+                $count++;
+            }
+            $validated['slug'] = $originalSlug . '-' . $count;
         }
 
         $content->update($validated);
