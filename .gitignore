@@ -20,6 +20,7 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/node-compile-cache/
 /vendor
 _ide_helper.php
 Homestead.json

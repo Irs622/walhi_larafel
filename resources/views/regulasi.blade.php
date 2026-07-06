@@ -96,7 +96,7 @@
                     <div class="w-full max-w-5xl mx-auto px-4 sm:px-8 flex flex-col gap-10">
                         
                         <!-- Stats Grid -->
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                             <!-- Undang-Undang -->
                             @php
                                 $isActiveUU = $categoryFilter === 'undang-undang';
