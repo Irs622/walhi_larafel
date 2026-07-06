@@ -270,7 +270,7 @@ class ContentSeeder extends Seeder
             [
                 'title' => 'Informasi Kontak WALHI Jabar',
                 'slug' => 'kontak',
-                'body' => 'Alamat: Jl. Tubagus Ismail No. 16, Bandung. Telepon: (022) 1234567. Email: jabar@walhi.or.id',
+                'body' => 'Alamat: Jl. Simponi No.29, Turangga, Kec. Lengkong, Kota Bandung, Jawa Barat 40264. Nomor WA: +62 821-1982-1159 (Admin WALHI Jawa Barat). Email: walhijabar@gmail.com',
                 'tags' => 'kontak',
                 'status' => 'published',
                 'image_url' => '',
