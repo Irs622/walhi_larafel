@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(30)->by($request->user()?->id ?: $request->ip());
         });
 
-        // Share global contact data loaded dynamically from the database
+        // Share global contact and campaign data loaded dynamically from the database
         view()->composer('*', function ($view) {
             $contactData = [
                 'email' => 'walhijabar@gmail.com',
@@ -51,6 +51,11 @@ class AppServiceProvider extends ServiceProvider
                 'facebook' => 'https://facebook.com/walhi.jabar',
                 'instagram' => 'https://instagram.com/walhi.jabar',
                 'youtube' => 'https://www.youtube.com/@walhijabar',
+            ];
+
+            $campaignData = [
+                'title' => 'Kampanye Darurat: Hentikan Tambang Ilegal',
+                'url' => '#',
             ];
 
             try {
@@ -72,12 +77,22 @@ class AppServiceProvider extends ServiceProvider
                             }
                         }
                     }
+
+                    $campaign = \App\Models\Content::where('category', 'kampanye-darurat')
+                        ->where('status', 'published')
+                        ->first();
+
+                    if ($campaign) {
+                        $campaignData['title'] = $campaign->title;
+                        $campaignData['url'] = $campaign->tags ?: '#';
+                    }
                 }
             } catch (\Exception $e) {
                 // Fail silently to prevent breaking during migrations/CLI
             }
 
             $view->with('globalContact', (object) $contactData);
+            $view->with('globalCampaign', (object) $campaignData);
         });
     }
 }

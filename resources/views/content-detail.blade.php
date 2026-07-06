@@ -98,20 +98,35 @@
                             @php
                                 $tags = array_map('trim', explode(',', $item->tags ?? ''));
                                 $cardCategory = 'Undang-Undang';
-                                if (in_array('undang-undang', $tags)) $cardCategory = 'Undang-Undang';
-                                elseif (in_array('peraturan pemerintah', $tags)) $cardCategory = 'Peraturan Pemerintah';
-                                elseif (in_array('peraturan daerah', $tags)) $cardCategory = 'Peraturan Daerah';
-                                elseif (in_array('keputusan menteri', $tags) || in_array('peraturan menteri', $tags)) $cardCategory = 'Peraturan Menteri';
-                                
-                                $statusText = in_array('tidak berlaku', $tags) ? 'Tidak Berlaku' : 'Berlaku';
-                                $year = $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->format('Y') : '2025';
+                                $statusText = 'Berlaku';
                                 $issuer = 'Pemerintah RI';
-                                foreach ($tags as $t) {
-                                    if (stripos($t, 'kementerian') !== false || stripos($t, 'kemen') !== false || stripos($t, 'pemprov') !== false || stripos($t, 'pemkab') !== false || stripos($t, 'pemerintah') !== false) {
-                                        $issuer = $t;
-                                        break;
+                                
+                                if (count($tags) >= 3) {
+                                    $catVal = strtolower($tags[0]);
+                                    $issuer = $tags[1];
+                                    $statusVal = strtolower($tags[2]);
+                                    
+                                    if ($catVal === 'undang-undang') $cardCategory = 'Undang-Undang';
+                                    elseif ($catVal === 'peraturan pemerintah') $cardCategory = 'Peraturan Pemerintah';
+                                    elseif ($catVal === 'peraturan daerah') $cardCategory = 'Peraturan Daerah';
+                                    elseif ($catVal === 'peraturan menteri' || $catVal === 'keputusan menteri') $cardCategory = 'Peraturan Menteri';
+                                    
+                                    if ($statusVal === 'tidak berlaku') $statusText = 'Tidak Berlaku';
+                                } else {
+                                    if (in_array('undang-undang', $tags)) $cardCategory = 'Undang-Undang';
+                                    elseif (in_array('peraturan pemerintah', $tags)) $cardCategory = 'Peraturan Pemerintah';
+                                    elseif (in_array('peraturan daerah', $tags)) $cardCategory = 'Peraturan Daerah';
+                                    elseif (in_array('keputusan menteri', $tags) || in_array('peraturan menteri', $tags)) $cardCategory = 'Peraturan Menteri';
+                                    
+                                    $statusText = in_array('tidak berlaku', $tags) ? 'Tidak Berlaku' : 'Berlaku';
+                                    foreach ($tags as $t) {
+                                        if (stripos($t, 'kementerian') !== false || stripos($t, 'kemen') !== false || stripos($t, 'pemprov') !== false || stripos($t, 'pemkab') !== false || stripos($t, 'pemerintah') !== false) {
+                                            $issuer = $t;
+                                            break;
+                                        }
                                     }
                                 }
+                                $year = $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->format('Y') : '2025';
                             @endphp
  
                             <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 40px; display: flex; flex-direction: column; gap: 32px;">
@@ -153,18 +168,34 @@
                                     @endif
                                 </div>
                             </div>
- 
                         @elseif($item->category === 'laporan-tahunan')
                             <!-- LAPORAN TAHUNAN LAYOUT -->
                             @php
                                 $bodyData = json_decode($item->body, true);
-                                $subtitle = $bodyData['subtitle'] ?? $item->body;
-                                $stats = $bodyData['stats'] ?? [];
-                                $pages = $bodyData['pages'] ?? '100 Halaman';
-                                $downloads = $bodyData['downloads'] ?? '0 Downloads';
+                                $isJson = (json_last_error() === JSON_ERROR_NONE && is_array($bodyData));
+                                if ($isJson) {
+                                    $subtitle = $bodyData['subtitle'] ?? '';
+                                    $stats = $bodyData['stats'] ?? [];
+                                    $pages = $bodyData['pages'] ?? 'Dokumen Laporan';
+                                    $reportDesc = $bodyData['description'] ?? '';
+                                } else {
+                                    $subtitle = '';
+                                    $stats = [];
+                                    $pages = 'Dokumen Laporan';
+                                    $reportDesc = $item->body;
+                                }
                                 $year = $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->format('Y') : '2025';
+                                
+                                $ext = pathinfo($item->image_url, PATHINFO_EXTENSION);
+                                if (in_array(strtolower($ext), ['xls', 'xlsx'])) {
+                                    $btnText = 'Unduh Berkas Excel';
+                                } elseif (in_array(strtolower($ext), ['pdf'])) {
+                                    $btnText = 'Unduh Berkas PDF';
+                                } else {
+                                    $btnText = 'Unduh Berkas';
+                                }
                             @endphp
- 
+
                             <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 40px; display: flex; flex-direction: column; gap: 32px;">
                                 <div style="display: flex; gap: 24px; align-items: center; border-bottom: 2px solid #1D1D1D; padding-bottom: 20px;">
                                     <div style="width: 80px; height: 80px; background: #256D4A; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; font-family: Anton, sans-serif; font-size: 24px;">
@@ -172,10 +203,17 @@
                                     </div>
                                     <div>
                                         <h2 style="font-family: Bebas Neue, sans-serif; font-size: 32px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">{{ $item->title }}</h2>
-                                        <p style="margin: 4px 0 0; color: #5C8D59; font-weight: 600; font-size: 16px;">{{ $subtitle }}</p>
+                                        @if($subtitle)
+                                            <p style="margin: 4px 0 0; color: #5C8D59; font-weight: 600; font-size: 16px;">{{ $subtitle }}</p>
+                                        @endif
                                     </div>
                                 </div>
- 
+
+                                <div>
+                                    <h3 style="font-family: Bebas Neue, sans-serif; font-size: 24px; margin: 0 0 12px; text-transform: uppercase;">Deskripsi Laporan</h3>
+                                    <div style="font-size: 16px; line-height: 1.8; color: #333; white-space: pre-line;">{{ $reportDesc }}</div>
+                                </div>
+
                                 @if(count($stats) > 0)
                                     <div>
                                         <h3 style="font-family: Bebas Neue, sans-serif; font-size: 24px; margin: 0 0 16px; text-transform: uppercase;">Poin Utama Laporan</h3>
@@ -189,28 +227,28 @@
                                         </div>
                                     </div>
                                 @endif
- 
+
                                 <div style="display: flex; gap: 24px; color: #5C8D59; font-weight: 600; font-size: 14px;">
                                     <div style="display: flex; align-items: center; gap: 6px;">
                                         <i data-lucide="file-text" style="width: 18px; height: 18px;"></i>
                                         <span>{{ $pages }}</span>
                                     </div>
                                     <div style="display: flex; align-items: center; gap: 6px;">
-                                        <i data-lucide="download-cloud" style="width: 18px; height: 18px;"></i>
-                                        <span>{{ $downloads }}</span>
+                                        <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
+                                        <span>{{ $item->views }} Kali Dibaca</span>
                                     </div>
                                 </div>
- 
+
                                 <div style="border-top: 2px solid #1D1D1D; padding-top: 24px; display: flex; gap: 12px;">
                                     @if($item->image_url)
                                         <a href="{{ $item->image_url }}" target="_blank" style="height: 52px; padding: 0 32px; background: #1D1D1D; color: #F4F1EA; border: none; font-weight: 700; font-size: 14px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;" class="btn-action">
                                             <i data-lucide="download" style="width: 18px; height: 18px;"></i>
-                                            Download Laporan PDF
+                                            {{ $btnText }}
                                         </a>
                                     @else
                                         <button disabled style="height: 52px; padding: 0 32px; background: #ddd; color: #aaa; border: none; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: not-allowed; display: inline-flex; align-items: center; gap: 8px;">
                                             <i data-lucide="download" style="width: 18px; height: 18px; color: #aaa;"></i>
-                                            Laporan PDF Belum Tersedia
+                                            Berkas Laporan Belum Tersedia
                                         </button>
                                     @endif
                                 </div>
@@ -245,7 +283,7 @@
                             </article>
 
                             <!-- Comments Section -->
-                            @if($item->category === 'blog' || $item->category === 'siaran-pers')
+                            @if($item->category === 'blog' || $item->category === 'siaran-pers' || $item->category === 'infografis')
                                 <div style="border-top: 4px solid #1D1D1D; margin-top: 48px; padding-top: 48px; display: flex; flex-direction: column; gap: 32px;">
                                     <h3 style="font-family: Bebas Neue, sans-serif; font-size: 36px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
                                         Komentar ({{ $item->comments()->where('status', 'approved')->count() }})

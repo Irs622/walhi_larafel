@@ -173,13 +173,18 @@
                                 if ($issue instanceof \App\Models\Content) {
                                     $issueTitle = $issue->title;
                                     $issueCopy = $issue->body;
-                                    $issueBadge = $issue->tags;
                                     
-                                    $icons = ['Icon-4.svg', 'Icon-5.svg', 'Icon-6.svg', 'Icon-7.svg', 'Icon-8.svg', 'Icon-9.svg'];
                                     $colors = ['#D95C3F', '#8B6B4A', '#256D4A', '#5C8D59', '#D95C3F', '#8B6B4A'];
                                     $idx = $loop->index % 6;
-                                    $issueIcon = $icons[$idx];
                                     $issueBadgeColor = $colors[$idx];
+                                    
+                                    if (strpos($issue->tags, '|') !== false) {
+                                        list($issueIcon, $issueBadge) = explode('|', $issue->tags, 2);
+                                    } else {
+                                        $issueBadge = $issue->tags;
+                                        $icons = ['Icon-4.svg', 'Icon-5.svg', 'Icon-6.svg', 'Icon-7.svg', 'Icon-8.svg', 'Icon-9.svg'];
+                                        $issueIcon = $icons[$idx];
+                                    }
                                     
                                     if ($issue->image_url) {
                                         if (str_starts_with($issue->image_url, 'http') || str_starts_with($issue->image_url, '/')) {
@@ -290,7 +295,7 @@
                                     $reportTitle = $report->title;
                                     $reportCopy = $bodyData['subtitle'] ?? $report->body;
                                     $reportPages = $bodyData['pages'] ?? '156 Halaman';
-                                    $reportDownloads = $bodyData['downloads'] ?? '3.2K Downloads';
+                                    $reportDownloads = $report->views . ' Kali Dibaca';
                                     $reportUrl = route('content.show', $report->slug);
                                 } else {
                                     $reportYear = $report['year'];

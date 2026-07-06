@@ -61,6 +61,9 @@ class PublicContentController extends Controller
     {
         $item = Content::where('slug', $slug)->firstOrFail();
  
+        // Increment views count safely
+        $item->increment('views');
+ 
         // Estimate read time
         $wordCount = str_word_count(strip_tags($item->body));
         $readTime = ceil($wordCount / 200);

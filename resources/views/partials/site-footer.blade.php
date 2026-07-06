@@ -8,6 +8,11 @@
                 <p class="text-sm md:text-base leading-relaxed text-[#F4F1EA]/80 max-w-xl">
                     Wahana Lingkungan Hidup Indonesia (WALHI) Jawa Barat adalah organisasi lingkungan hidup independen yang memperjuangkan keadilan ekologis dan kedaulatan rakyat atas sumber daya alam.
                 </p>
+                <div class="text-xs text-[#F4F1EA]/70 flex flex-col gap-1.5 font-sans">
+                    <span class="font-bold uppercase tracking-wider text-[#5C8D59]">Alamat Kantor:</span>
+                    <span>{{ $globalContact->address }}</span>
+                    <span>Email: {{ $globalContact->email }} | WA: {{ $globalContact->whatsapp }}</span>
+                </div>
                 <!-- Icons Media Sosial -->
                 <div class="flex gap-4">
                     <!-- Facebook -->

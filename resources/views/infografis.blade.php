@@ -87,24 +87,18 @@
                                     <!-- Card details -->
                                     <div style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 16px;">
                                         <h2 style="margin: 0; color: #1D1D1D; font-size: 24px; font-family: 'Bebas Neue', sans-serif; font-weight: 400; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.5px;">
-                                            {{ $item->title }}
+                                            <a href="{{ route('content.show', $item->slug) }}" style="color: #1D1D1D; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
+                                                {{ $item->title }}
+                                            </a>
                                         </h2>
                                         
                                         <div>
-                                            @if($item->image_url)
-                                                <a href="{{ $item->image_url }}" target="_blank"
-                                                   style="width: 100%; height: 48px; background: #256D4A; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
-                                                   class="hover-download-btn">
-                                                    <i data-lucide="download" style="width: 18px; height: 18px;"></i>
-                                                    Download
-                                                </a>
-                                            @else
-                                                <button disabled
-                                                        style="width: 100%; height: 48px; background: #ddd; color: #aaa; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 8px; opacity: 0.6;">
-                                                    <i data-lucide="download" style="width: 18px; height: 18px; color: #aaa;"></i>
-                                                    Download (PDF Belum Tersedia)
-                                                </button>
-                                            @endif
+                                            <a href="{{ route('content.show', $item->slug) }}"
+                                               style="width: 100%; height: 48px; background: #256D4A; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
+                                               class="hover-download-btn">
+                                                <i data-lucide="book-open" style="width: 18px; height: 18px;"></i>
+                                                Baca Infografis
+                                            </a>
                                         </div>
                                     </div>
                                 </article>

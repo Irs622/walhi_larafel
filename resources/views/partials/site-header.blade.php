@@ -39,7 +39,9 @@
         <div style="width: 100%; max-width: 1280px; height: 100%; padding: 0 32px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;">
             <!-- Left Side -->
             <div style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; font-weight: 500;">
-                Kampanye Darurat: Hentikan Tambang Ilegal
+                <a href="{{ $globalCampaign->url }}" style="color: #F4F1EA; text-decoration: none;" class="hover:text-[#5C8D59] transition-colors">
+                    {{ $globalCampaign->title }}
+                </a>
             </div>
             <!-- Right Side -->
             <div style="display: flex; align-items: center; gap: 16px;">
@@ -115,16 +117,20 @@
                     @endif
                 </div>
  
-                <!-- TENTANG KAMI -->
-                <div style="position: relative; height: 100%; display: inline-flex; align-items: center;">
-                    <a href="{{ route('about') }}" style="{{ $navLinkStyle($isAbout) }}">
+                <!-- TENTANG KAMI (with details/summary dropdown) -->
+                <details class="site-nav-dropdown" style="position: relative; height: 100%; display: inline-flex; align-items: center; cursor: pointer;">
+                    <summary style="display: inline-flex; align-items: center; gap: 6px; position: relative !important; color: {{ $isAbout ? '#256D4A' : '#1D1D1D' }}; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.70px; list-style: none; outline: none;">
                         <span>TENTANG KAMI</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 1px;"><path d="m6 9 6 6 6-6"/></svg>
-                    </a>
+                    </summary>
+                    <div class="site-nav-dropdown-panel" style="width: 492px; left: -340px; top: 37px; position: absolute; background: #F4F1EA; border-top: 4px solid #256D4A; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14); z-index: 30;">
+                        <a href="{{ route('about') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('about') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('about') ? '#FFFFFF' : '#F4F1EA' }}'">Profil & Sejarah</a>
+                        <a href="{{ route('about') }}#kontak" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; background: #F4F1EA; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='#F4F1EA'">Kontak Kami</a>
+                    </div>
                     @if ($isAbout)
                         <div style="width: 100%; height: 2px; left: 0; bottom: 0; position: absolute; background: #256D4A;"></div>
                     @endif
-                </div>
+                </details>
             </nav>
  
             <!-- Icons (Globe, Search) (Desktop) -->
@@ -167,7 +173,11 @@
             </div>
  
             <a href="{{ route('donasi') }}" style="color: {{ $isDonasi ? '#256D4A' : '#D95C3F' }}; text-decoration: none; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; font-weight: 700;">DUKUNG KAMI</a>
-            <a href="{{ route('about') }}" style="color: {{ $isAbout ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px;">TENTANG KAMI</a>
+            <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px;">
+                <span style="font-size: 13px; color: #666; font-family: Inter, sans-serif; font-weight: 700; letter-spacing: 0.5px;">TENTANG KAMI</span>
+                <a href="{{ route('about') }}" style="color: {{ $isAbout ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Profil & Sejarah</a>
+                <a href="{{ route('about') }}#kontak" style="color: #1D1D1D; text-decoration: none; padding-left: 12px; font-size: 18px;">Kontak Kami</a>
+            </div>
         </nav>
     </div>
  

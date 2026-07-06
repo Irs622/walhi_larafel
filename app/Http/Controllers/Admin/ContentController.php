@@ -30,6 +30,7 @@ class ContentController extends Controller
         'pekan-rakyat' => ['title' => 'Pekan Rakyat', 'desc' => 'Manajemen event Pekan Rakyat.'],
         'statistik' => ['title' => 'Statistik Utama', 'desc' => 'Kelola angka-angka statistik utama di halaman Beranda.'],
         'isu-kritis' => ['title' => 'Isu Kritis', 'desc' => 'Kelola 5 isu kritis lingkungan di halaman Beranda.'],
+        'kampanye-darurat' => ['title' => 'Kampanye Darurat', 'desc' => 'Kelola teks & link Kampanye Darurat di bar navigasi atas.'],
     ];
 
     private function getCategoryConfig($category)
@@ -103,15 +104,8 @@ class ContentController extends Controller
             'tags' => 'nullable|string',
             'status' => 'required|in:published,draft,archived',
             'image_url' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,pdf,xls,xlsx,doc,docx|max:10240',
         ]);
-
-        if ($category === 'laporan-tahunan' && !empty($validated['body'])) {
-            json_decode($validated['body']);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                return redirect()->back()->withErrors(['body' => 'Format deskripsi untuk Laporan Tahunan harus berupa JSON valid (contoh: {"subtitle":"...", "stats":[]})'])->withInput();
-            }
-        }
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title']);
@@ -138,6 +132,17 @@ class ContentController extends Controller
             $validated['image_url'] = '/storage/' . $path;
         }
 
+        if ($category === 'isu-kritis') {
+            $icon = $request->input('isu_icon', 'Icon-4.svg');
+            $badge = $request->input('isu_badge', 'Isu');
+            $validated['tags'] = $icon . '|' . $badge;
+        } elseif ($category === 'regulasi') {
+            $regCategory = $request->input('reg_category', 'undang-undang');
+            $regIssuer = $request->input('reg_issuer', 'Pemerintah RI');
+            $regStatus = $request->input('reg_status', 'berlaku');
+            $validated['tags'] = implode(', ', [$regCategory, $regIssuer, $regStatus]);
+        }
+
         $validated['category'] = $category;
 
         Content::create($validated);
@@ -154,16 +159,9 @@ class ContentController extends Controller
             'tags' => 'nullable|string',
             'status' => 'required|in:published,draft,archived',
             'image_url' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,pdf,xls,xlsx,doc,docx|max:10240',
             'publish_date' => 'nullable|date',
         ]);
-
-        if ($category === 'laporan-tahunan' && !empty($validated['body'])) {
-            json_decode($validated['body']);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                return redirect()->back()->withErrors(['body' => 'Format deskripsi untuk Laporan Tahunan harus berupa JSON valid (contoh: {"subtitle":"...", "stats":[]})'])->withInput();
-            }
-        }
 
         $validated['slug'] = Str::slug($validated['slug']);
 
@@ -196,6 +194,17 @@ class ContentController extends Controller
                 $oldPath = str_replace('/storage/', '', $content->image_url);
                 Storage::disk('public')->delete($oldPath);
             }
+        }
+
+        if ($category === 'isu-kritis') {
+            $icon = $request->input('isu_icon', 'Icon-4.svg');
+            $badge = $request->input('isu_badge', 'Isu');
+            $validated['tags'] = $icon . '|' . $badge;
+        } elseif ($category === 'regulasi') {
+            $regCategory = $request->input('reg_category', 'undang-undang');
+            $regIssuer = $request->input('reg_issuer', 'Pemerintah RI');
+            $regStatus = $request->input('reg_status', 'berlaku');
+            $validated['tags'] = implode(', ', [$regCategory, $regIssuer, $regStatus]);
         }
 
         $content->update($validated);
