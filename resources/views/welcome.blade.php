@@ -181,7 +181,16 @@
                                     $issueIcon = $icons[$idx];
                                     $issueBadgeColor = $colors[$idx];
                                     
-                                    $issueImage = $issue->image_url ? (str_starts_with($issue->image_url, 'http') ? $issue->image_url : asset('assets/images/resources/' . $issue->image_url)) : asset('assets/images/resources/causes-1-' . ($idx + 1) . '.jpg');
+                                    if ($issue->image_url) {
+                                        if (str_starts_with($issue->image_url, 'http') || str_starts_with($issue->image_url, '/')) {
+                                            $issueImage = asset($issue->image_url);
+                                        } else {
+                                            $issueImage = asset('assets/images/resources/' . $issue->image_url);
+                                        }
+                                    } else {
+                                        $issueImage = asset('assets/images/resources/causes-1-' . ($idx + 1) . '.jpg');
+                                    }
+                                    $issueUrl = route('content.show', $issue->slug);
                                 } else {
                                     $issueTitle = $issue['title'];
                                     $issueCopy = $issue['copy'];
@@ -189,6 +198,16 @@
                                     $issueBadgeColor = $issue['badgeColor'];
                                     $issueIcon = $issue['icon'];
                                     $issueImage = asset('assets/images/resources/' . $issue['image']);
+                                    $issueUrl = '#';
+                                }
+
+                                $cleanBody = strip_tags($issueCopy);
+                                $wordsArray = preg_split('/\s+/', trim($cleanBody));
+                                $hasMore = count($wordsArray) > 13;
+                                if ($hasMore) {
+                                    $issueCopyLimited = implode(' ', array_slice($wordsArray, 0, 13)) . '...';
+                                } else {
+                                    $issueCopyLimited = $cleanBody;
                                 }
                             @endphp
                             <article class="flex flex-col overflow-hidden border-4 border-brand-cream bg-white text-brand-dark shadow-[4px_4px_0px_0px_#D95C3F]">
@@ -205,7 +224,12 @@
                                             </div>
                                             <h3 class="text-[24px] font-label uppercase leading-none tracking-[0.06em] text-brand-dark">{{ $issueTitle }}</h3>
                                         </div>
-                                        <p class="text-sm md:text-base leading-relaxed text-brand-dark/95 font-sans">{{ $issueCopy }}</p>
+                                        <p class="text-sm md:text-base leading-relaxed text-brand-dark/95 font-sans">
+                                            {{ $issueCopyLimited }}
+                                            @if($hasMore)
+                                                <a href="{{ $issueUrl }}" class="text-brand-green font-semibold hover:underline text-xs ml-1 whitespace-nowrap">Baca Selengkapnya</a>
+                                            @endif
+                                        </p>
                                     </div>
                                 </div>
                             </article>
@@ -326,11 +350,15 @@
                                 $featImage = $featuredNews->image_url ?: asset('assets/images/blog/news-4-1.jpg');
                                 $featTag = array_map('trim', explode(',', $featuredNews->tags ?? ''))[0] ?? 'Liputan';
                                 $featTitle = $featuredNews->title;
-                                $featCopy = Str::limit(strip_tags($featuredNews->body), 200);
-                                $featDate = $featuredNews->publish_date ? \Carbon\Carbon::parse($featuredNews->publish_date)->translatedFormat('d M Y') : $featuredNews->created_at->translatedFormat('d M Y');
+                                $featCopy = $featuredNews->body;
                                 $wordCount = str_word_count(strip_tags($featuredNews->body));
                                 $featRead = ceil($wordCount / 200) . ' menit';
                                 $featUrl = route('content.show', $featuredNews->slug);
+                                if ($featuredNews->publish_date) {
+                                    $featDate = \Carbon\Carbon::parse($featuredNews->publish_date)->translatedFormat('d M Y');
+                                } else {
+                                    $featDate = $featuredNews->created_at->translatedFormat('d M Y');
+                                }
                             } else {
                                 $featImage = asset('assets/images/blog/' . $featuredNews['image']);
                                 $featTag = $featuredNews['tag'];
@@ -339,6 +367,15 @@
                                 $featDate = $featuredNews['date'];
                                 $featRead = $featuredNews['read'];
                                 $featUrl = '#';
+                            }
+
+                            $cleanFeat = strip_tags($featCopy);
+                            $wordsArray = preg_split('/\s+/', trim($cleanFeat));
+                            $hasMoreFeat = count($wordsArray) > 13;
+                            if ($hasMoreFeat) {
+                                $featCopyLimited = implode(' ', array_slice($wordsArray, 0, 13)) . '...';
+                            } else {
+                                $featCopyLimited = $cleanFeat;
                             }
                         @endphp
                         <article class="flex flex-col lg:flex-row w-full overflow-hidden border-4 border-brand-dark bg-white shadow-[8px_8px_0px_0px_#256D4A]">
@@ -350,7 +387,12 @@
                             <div class="flex lg:w-1/2 flex-col justify-between p-6 md:p-8 text-brand-dark gap-6">
                                 <div class="flex flex-col gap-4">
                                     <h3 class="text-2xl md:text-3xl lg:text-4xl font-label uppercase leading-tight tracking-[0.05em] text-brand-dark">{{ $featTitle }}</h3>
-                                    <p class="text-sm md:text-base leading-relaxed text-brand-dark/80 font-sans">{{ $featCopy }}</p>
+                                    <p class="text-sm md:text-base leading-relaxed text-brand-dark/80 font-sans">
+                                        {{ $featCopyLimited }}
+                                        @if($hasMoreFeat)
+                                            <a href="{{ $featUrl }}" class="text-brand-green font-semibold hover:underline text-xs ml-1 whitespace-nowrap">Baca Selengkapnya</a>
+                                        @endif
+                                    </p>
                                 </div>
                                 <div class="flex flex-wrap items-center justify-between border-t-2 border-brand-dark pt-6 text-[14px] font-semibold leading-[20px] text-brand-green-light gap-4">
                                     <div class="flex items-center gap-4">
@@ -374,7 +416,7 @@
                                     $newsImage = $news->image_url ?: asset('assets/images/blog/news-1-1.jpg');
                                     $newsTag = array_map('trim', explode(',', $news->tags ?? ''))[0] ?? 'Advokasi';
                                     $newsTitle = $news->title;
-                                    $newsCopy = Str::limit(strip_tags($news->body), 120);
+                                    $newsCopy = $news->body;
                                     $newsDate = $news->publish_date ? \Carbon\Carbon::parse($news->publish_date)->translatedFormat('d M Y') : $news->created_at->translatedFormat('d M Y');
                                     $wordCount = str_word_count(strip_tags($news->body));
                                     $newsRead = ceil($wordCount / 200) . ' menit';
@@ -388,6 +430,15 @@
                                     $newsRead = $news['read'];
                                     $newsUrl = '#';
                                 }
+
+                                $cleanNews = strip_tags($newsCopy);
+                                $wordsArray = preg_split('/\s+/', trim($cleanNews));
+                                $hasMoreNews = count($wordsArray) > 13;
+                                if ($hasMoreNews) {
+                                    $newsCopyLimited = implode(' ', array_slice($wordsArray, 0, 13)) . '...';
+                                } else {
+                                    $newsCopyLimited = $cleanNews;
+                                }
                             @endphp
                             <article class="flex flex-col overflow-hidden border-4 border-brand-dark bg-white shadow-[4px_4px_0px_0px_#1D1D1D]">
                                 <div class="relative h-[192px] overflow-hidden bg-cover bg-center" style="background-image: url('{{ $newsImage }}');">
@@ -398,7 +449,12 @@
                                         <a href="{{ $newsUrl }}" class="hover:text-brand-green transition-colors">
                                             <h4 class="text-[20px] font-label uppercase leading-tight tracking-[0.05em] text-brand-dark hover:underline">{{ $newsTitle }}</h4>
                                         </a>
-                                        <p class="text-sm leading-relaxed text-brand-dark/90 font-sans">{{ $newsCopy }}</p>
+                                        <p class="text-sm leading-relaxed text-brand-dark/90 font-sans">
+                                            {{ $newsCopyLimited }}
+                                            @if($hasMoreNews)
+                                                <a href="{{ $newsUrl }}" class="text-brand-green font-semibold hover:underline text-xs ml-1 whitespace-nowrap">Baca Selengkapnya</a>
+                                            @endif
+                                        </p>
                                     </div>
                                     <div class="flex items-center gap-3 border-t border-brand-dark/20 pt-4 text-[12px] font-semibold leading-[16px] text-brand-green-light font-sans">
                                         <span>{{ $newsDate }}</span>

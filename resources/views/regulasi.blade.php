@@ -270,8 +270,21 @@
                                             </div>
                                             
                                             <!-- Description / Body -->
+                                            @php
+                                                $cleanBody = strip_tags($item->body);
+                                                $wordsArray = preg_split('/\s+/', trim($cleanBody));
+                                                $hasMore = count($wordsArray) > 13;
+                                                if ($hasMore) {
+                                                    $limitedBody = implode(' ', array_slice($wordsArray, 0, 13)) . '...';
+                                                } else {
+                                                    $limitedBody = $cleanBody;
+                                                }
+                                            @endphp
                                             <p style="margin: 16px 0 0; color: #1D1D1D; font-size: 15px; line-height: 1.6; font-family: Inter, sans-serif;">
-                                                {{ $item->body }}
+                                                {{ $limitedBody }}
+                                                @if($hasMore)
+                                                    <a href="{{ route('content.show', $item->slug) }}" style="color: #256D4A; font-weight: 600; text-decoration: underline; margin-left: 4px;">Baca Selengkapnya</a>
+                                                @endif
                                             </p>
                                         </div>
                                         
