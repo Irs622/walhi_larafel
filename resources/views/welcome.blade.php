@@ -442,7 +442,7 @@
                                 </div>
                                 <div class="text-center sm:text-left">
                                     <div class="text-[12px] font-bold uppercase tracking-[0.06em] text-brand-green-light">Email</div>
-                                    <div class="text-sm md:text-base font-semibold text-brand-cream font-sans break-all">walhijabar@gmail.com</div>
+                                    <div class="text-sm md:text-base font-semibold text-brand-cream font-sans break-all">{{ $globalContact->email }}</div>
                                 </div>
                             </div>
                             <div class="flex flex-col sm:flex-row items-center gap-4 border-2 border-brand-green bg-brand-green p-6 shadow-[4px_4px_0px_0px_#1D1D1D]">
@@ -451,7 +451,7 @@
                                 </div>
                                 <div class="text-center sm:text-left">
                                     <div class="text-[12px] font-bold uppercase tracking-[0.06em] text-brand-green-light">WhatsApp</div>
-                                    <div class="text-sm md:text-base font-semibold text-brand-cream font-sans">+62 821-1982-1159</div>
+                                    <div class="text-sm md:text-base font-semibold text-brand-cream font-sans">{{ $globalContact->whatsapp }}</div>
                                 </div>
                             </div>
                         </div>
