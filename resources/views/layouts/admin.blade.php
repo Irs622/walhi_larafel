@@ -22,6 +22,7 @@ $breadcrumbMap = [
     'admin/tentang/kontak' => 'Tentang Kami › Kontak',
     'admin/statistik' => 'Beranda › Statistik Utama',
     'admin/isu-kritis' => 'Beranda › Isu Kritis',
+    'admin/kampanye-darurat' => 'Header › Kampanye Darurat',
 ];
 $currentPath = request()->path();
 $breadcrumb = $breadcrumbMap[$currentPath] ?? 'Admin';
@@ -106,7 +107,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
 
                 <!-- Halaman Beranda Dropdown Group -->
                 @php
-                    $berandaActive = request()->is('admin/statistik*') || request()->is('admin/isu-kritis*');
+                    $berandaActive = request()->is('admin/statistik*') || request()->is('admin/isu-kritis*') || request()->is('admin/kampanye-darurat*');
                 @endphp
                 <div class="group-container" id="group-beranda">
                     <button onclick="toggleGroup('beranda')" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ $berandaActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
@@ -117,6 +118,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                     <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav" id="sub-beranda">
                         <a href="{{ route('admin.content.index', 'statistik') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/statistik*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Statistik Utama</a>
                         <a href="{{ route('admin.content.index', 'isu-kritis') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/isu-kritis*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Isu Kritis</a>
+                        <a href="{{ route('admin.content.index', 'kampanye-darurat') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/kampanye-darurat*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Kampanye Darurat</a>
                     </div>
                 </div>
 

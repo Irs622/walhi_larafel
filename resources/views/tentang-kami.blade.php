@@ -171,6 +171,77 @@
                 </div>
             </section>
 
+            <!-- Kontak Section -->
+            <section id="kontak" class="bg-white border-4 border-[#1D1D1D] shadow-[8px_8px_0px_0px_#256D4A] p-8 md:p-12 scroll-mt-24">
+                <div class="text-center mb-10">
+                    <span class="inline-block bg-[#D95C3F] text-[#F4F1EA] font-bold text-xs uppercase tracking-widest px-4 py-2 mb-4">
+                        Hubungi Kami
+                    </span>
+                    <h3 class="text-3xl md:text-4xl font-heading text-[#1D1D1D] uppercase tracking-wide">
+                        Kantor Eksekutif Daerah WALHI Jabar
+                    </h3>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Info Kontak -->
+                    <div class="flex flex-col gap-6">
+                        <div class="flex gap-4 items-start">
+                            <div class="w-10 h-10 bg-[#1D1D1D] text-[#5C8D59] flex items-center justify-center shrink-0">
+                                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-[#1D1D1D] text-sm uppercase tracking-wider mb-1">Alamat Kantor</h4>
+                                <p class="text-base text-[#1D1D1D]/80 leading-relaxed">{{ $globalContact->address }}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 items-start">
+                            <div class="w-10 h-10 bg-[#1D1D1D] text-[#5C8D59] flex items-center justify-center shrink-0">
+                                <i data-lucide="mail" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-[#1D1D1D] text-sm uppercase tracking-wider mb-1">E-mail Resmi</h4>
+                                <p class="text-base text-[#1D1D1D]/80"><a href="mailto:{{ $globalContact->email }}" class="hover:text-[#256D4A] underline">{{ $globalContact->email }}</a></p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 items-start">
+                            <div class="w-10 h-10 bg-[#1D1D1D] text-[#5C8D59] flex items-center justify-center shrink-0">
+                                <i data-lucide="phone" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-[#1D1D1D] text-sm uppercase tracking-wider mb-1">WhatsApp Admin</h4>
+                                <p class="text-base text-[#1D1D1D]/80"><a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $globalContact->whatsapp) }}" class="hover:text-[#256D4A] underline">{{ $globalContact->whatsapp }}</a></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Peta / Social Media -->
+                    <div class="bg-[#F4F1EA] border-4 border-[#1D1D1D] p-6 flex flex-col justify-between gap-6">
+                        <div>
+                            <h4 class="font-heading text-2xl text-[#1D1D1D] uppercase tracking-wide mb-4">Media Sosial Resmi</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm font-semibold">
+                                <a href="{{ $globalContact->instagram }}" target="_blank" class="flex items-center gap-2 text-[#1D1D1D] hover:text-[#256D4A] transition-colors">
+                                    <i data-lucide="instagram" class="w-4 h-4"></i> Instagram
+                                </a>
+                                <a href="{{ $globalContact->youtube }}" target="_blank" class="flex items-center gap-2 text-[#1D1D1D] hover:text-[#256D4A] transition-colors">
+                                    <i data-lucide="youtube" class="w-4 h-4"></i> YouTube
+                                </a>
+                                <a href="{{ $globalContact->facebook }}" target="_blank" class="flex items-center gap-2 text-[#1D1D1D] hover:text-[#256D4A] transition-colors">
+                                    <i data-lucide="facebook" class="w-4 h-4"></i> Facebook
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-[#1D1D1D]/20 pt-4">
+                            <p class="text-xs text-[#666] leading-relaxed">
+                                Silakan hubungi kami untuk informasi kerja sama advokasi, laporan pelanggaran lingkungan, atau dukungan gerakan lingkungan hidup di Jawa Barat.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </main>
 
         @include('partials.site-footer')

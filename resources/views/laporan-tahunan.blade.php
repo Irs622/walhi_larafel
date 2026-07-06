@@ -105,11 +105,29 @@
                         @forelse($items as $item)
                             @php
                                 $bodyData = json_decode($item->body, true);
-                                $subtitle = $bodyData['subtitle'] ?? $item->body;
-                                $stats = $bodyData['stats'] ?? [];
-                                $pages = $bodyData['pages'] ?? '100 Halaman';
-                                $downloads = $bodyData['downloads'] ?? '0 Downloads';
+                                $isJson = (json_last_error() === JSON_ERROR_NONE && is_array($bodyData));
+                                if ($isJson) {
+                                    $subtitle = $bodyData['subtitle'] ?? '';
+                                    $stats = $bodyData['stats'] ?? [];
+                                    $pages = $bodyData['pages'] ?? 'Dokumen Laporan';
+                                    $reportDesc = $bodyData['description'] ?? '';
+                                } else {
+                                    $subtitle = '';
+                                    $stats = [];
+                                    $pages = 'Dokumen Laporan';
+                                    $reportDesc = $item->body;
+                                }
+                                $downloadsText = $item->views . ' Kali Dibaca';
                                 $year = $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->format('Y') : '2025';
+                                
+                                $ext = pathinfo($item->image_url, PATHINFO_EXTENSION);
+                                if (in_array(strtolower($ext), ['xls', 'xlsx'])) {
+                                    $btnText = 'Unduh Berkas Excel';
+                                } elseif (in_array(strtolower($ext), ['pdf'])) {
+                                    $btnText = 'Unduh Berkas PDF';
+                                } else {
+                                    $btnText = 'Unduh Berkas';
+                                }
                             @endphp
 
                             <!-- Card container -->
@@ -132,7 +150,7 @@
                                             {{ $item->title }}
                                         </h2>
                                         <p style="margin: 6px 0 0; color: #5C8D59; font-family: Inter, sans-serif; font-size: 18px; font-weight: 600; line-height: 1.4;">
-                                            {{ $subtitle }}
+                                            {{ $subtitle ?: Str::limit(strip_tags($reportDesc), 100) }}
                                         </p>
                                     </div>
                                     
@@ -157,8 +175,8 @@
                                             <span>{{ $pages }}</span>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 8px;">
-                                            <i data-lucide="download-cloud" style="width: 16px; height: 16px;"></i>
-                                            <span>{{ $downloads }}</span>
+                                            <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+                                            <span>{{ $downloadsText }}</span>
                                         </div>
                                     </div>
                                     
@@ -169,25 +187,26 @@
                                                style="height: 52px; padding: 0 32px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 0.4px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s;"
                                                class="hover-action-dark-btn">
                                                 <i data-lucide="download" style="width: 18px; height: 18px;"></i>
-                                                Download Laporan PDF
+                                                {{ $btnText }}
                                             </a>
-                                            <a href="{{ $item->image_url }}" target="_blank"
+                                            <a href="{{ route('content.show', $item->slug) }}"
                                                style="height: 52px; padding: 0 32px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Inter, sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 0.4px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
                                                class="hover-action-light-btn">
-                                                <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
-                                                Baca Online
+                                                <i data-lucide="book-open" style="width: 18px; height: 18px;"></i>
+                                                Detail Laporan
                                             </a>
                                         @else
                                             <button disabled
                                                     style="height: 52px; padding: 0 32px; background: #ddd; color: #aaa; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 0.4px; text-transform: uppercase; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 8px; opacity: 0.6;">
                                                 <i data-lucide="download" style="width: 18px; height: 18px; color: #aaa;"></i>
-                                                Download Laporan PDF (Belum Tersedia)
+                                                Berkas Belum Tersedia
                                             </button>
-                                            <button disabled
-                                                    style="height: 52px; padding: 0 32px; background: white; color: #aaa; border: 2px solid #ddd; font-family: Inter, sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 0.4px; text-transform: uppercase; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box; opacity: 0.6;">
-                                                <i data-lucide="eye" style="width: 18px; height: 18px; color: #aaa;"></i>
-                                                Baca Online
-                                            </button>
+                                            <a href="{{ route('content.show', $item->slug) }}"
+                                               style="height: 52px; padding: 0 32px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Inter, sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 0.4px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
+                                               class="hover-action-light-btn">
+                                                <i data-lucide="book-open" style="width: 18px; height: 18px;"></i>
+                                                Detail Laporan
+                                            </a>
                                         @endif
                                     </div>
                                 </div>

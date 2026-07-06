@@ -124,17 +124,17 @@
                                 <p style="margin: 0; color: #1D1D1D; font-size: 18px; font-family: Inter, sans-serif; line-height: 1.7;">
                                     {{ $limitedBody }}
                                     @if($hasMore)
-                                        <a href="javascript:void(0)" onclick="openReleaseModal({{ json_encode($item) }}, '{{ $formattedDate }}')" style="color: #256D4A; font-weight: 600; text-decoration: underline; margin-left: 4px;">Baca Selengkapnya</a>
+                                        <a href="{{ route('content.show', $item->slug) }}" style="color: #256D4A; font-weight: 600; text-decoration: underline; margin-left: 4px;">Baca Selengkapnya</a>
                                     @endif
                                 </p>
                                 
                                 <div style="border-top: 2px solid #1D1D1D; padding-top: 24px; display: flex; gap: 12px; align-items: center;" class="card-actions-bar">
-                                    <button onclick="openReleaseModal({{ json_encode($item) }}, '{{ $formattedDate }}')"
-                                            style="height: 48px; padding: 0 24px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s;"
-                                            class="hover-action-dark-btn">
+                                    <a href="{{ route('content.show', $item->slug) }}"
+                                       style="height: 48px; padding: 0 24px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s;"
+                                       class="hover-action-dark-btn">
                                         <i data-lucide="book-open" style="width: 16px; height: 16px;"></i>
-                                        Baca Selengkapnya
-                                    </button>
+                                        Baca Lengkap
+                                    </a>
                                     
                                     @if($item->image_url)
                                         <a href="{{ $item->image_url }}" target="_blank"
@@ -181,84 +181,11 @@
             @include('partials.site-footer')
         </div>
 
-        <!-- Premium Details Modal -->
-        <div id="release-modal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 1000; backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;">
-            <div style="background: white; border: 4px solid #1D1D1D; width: 100%; max-width: 768px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.3); overflow: hidden; box-sizing: border-box;">
-                <!-- Modal Header -->
-                <div style="padding: 24px; border-bottom: 2px solid #1D1D1D; display: flex; justify-content: space-between; align-items: center; background: #F4F1EA;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <span style="background: #D95C3F; color: #F4F1EA; padding: 2px 12px; font-family: Inter, sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Siaran Pers</span>
-                        <span id="modal-date" style="color: #5C8D59; font-family: Inter, sans-serif; font-size: 13px; font-weight: 600;">22 Mei 2026</span>
-                    </div>
-                    <button onclick="closeReleaseModal()" style="background: transparent; border: none; font-size: 24px; font-family: Inter, sans-serif; cursor: pointer; display: flex; align-items: center; color: #1D1D1D;">
-                        <i data-lucide="x" style="width: 24px; height: 24px;"></i>
-                    </button>
-                </div>
-                
-                <!-- Modal Body -->
-                <div style="padding: 32px; overflow-y: auto; flex: 1;">
-                    <h2 id="modal-title" style="margin: 0 0 16px; color: #1D1D1D; font-size: 32px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; line-height: 1.2; text-transform: uppercase;">
-                        Title Placeholder
-                    </h2>
-                    <p id="modal-body" style="margin: 0; color: #1D1D1D; font-size: 16px; font-family: Inter, sans-serif; line-height: 1.8; white-space: pre-wrap;">
-                        Content Placeholder
-                    </p>
-                </div>
-                
-                <!-- Modal Footer -->
-                <div style="padding: 20px 24px; border-top: 2px solid #1D1D1D; background: #F4F1EA; display: flex; justify-content: flex-end; gap: 12px;">
-                    <a id="modal-pdf" href="#" target="_blank"
-                       style="height: 44px; padding: 0 20px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Inter, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
-                       class="hover-action-light-btn">
-                        <i data-lucide="download" style="width: 14px; height: 14px;"></i>
-                        Download PDF
-                    </a>
-                    <button onclick="closeReleaseModal()" 
-                            style="height: 44px; padding: 0 20px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; transition: background 0.2s;"
-                            class="hover-action-dark-btn">
-                        Tutup
-                    </button>
-                </div>
-            </div>
-        </div>
-        
+        <!-- Premium Details Modal Removed -->
         <script>
-            // Modal controller functions
-            function openReleaseModal(item, formattedDate) {
-                document.getElementById('modal-title').textContent = item.title;
-                document.getElementById('modal-date').textContent = formattedDate;
-                document.getElementById('modal-body').textContent = item.body;
-                
-                var pdfBtn = document.getElementById('modal-pdf');
-                if (item.image_url) {
-                    pdfBtn.href = item.image_url;
-                    pdfBtn.style.display = 'inline-flex';
-                } else {
-                    pdfBtn.style.display = 'none';
-                }
-                
-                var modal = document.getElementById('release-modal');
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            }
-            
-            function closeReleaseModal() {
-                var modal = document.getElementById('release-modal');
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-            
             // Initialize Lucide icons on page load
             document.addEventListener('DOMContentLoaded', function() {
                 lucide.createIcons();
-            });
-            
-            // Close modal when clicking outside content area
-            window.addEventListener('click', function(event) {
-                var modal = document.getElementById('release-modal');
-                if (event.target === modal) {
-                    closeReleaseModal();
-                }
             });
         </script>
     </body>

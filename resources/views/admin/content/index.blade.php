@@ -181,8 +181,15 @@
                 </div>
             </div>
 
+            @if($category !== 'kampanye-darurat')
             <div>
-                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Gambar Utama</label>
+                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">
+                    @if($category === 'laporan-tahunan' || $category === 'regulasi')
+                        Berkas / Dokumen Lampiran (PDF / Excel / Image)
+                    @else
+                        Gambar Utama
+                    @endif
+                </label>
                 <div class="flex items-center gap-3 mb-2 text-xs">
                     <button type="button" onclick="setImageInputMode('upload')" id="btn-mode-upload" class="px-2.5 py-1 rounded bg-[#256D4A] text-white font-medium transition-colors">Unggah File</button>
                     <button type="button" onclick="setImageInputMode('url')" id="btn-mode-url" class="px-2.5 py-1 rounded bg-[#f0ede8] text-[#666] font-medium transition-colors">Teks URL</button>
@@ -190,7 +197,7 @@
                 
                 <!-- Upload File Container -->
                 <div id="container-mode-upload" class="space-y-2">
-                    <input type="file" id="form-upload" name="image" accept="image/*" onchange="previewSelectedImage(this)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#256D4A]/10 file:text-[#256D4A] hover:file:bg-[#256D4A]/20" />
+                    <input type="file" id="form-upload" name="image" @if($category === 'laporan-tahunan' || $category === 'regulasi') accept=".pdf,.xls,.xlsx,.doc,.docx,image/*" @else accept="image/*" @endif onchange="previewSelectedImage(this)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#256D4A]/10 file:text-[#256D4A] hover:file:bg-[#256D4A]/20" />
                 </div>
 
                 <!-- URL Container -->
@@ -202,21 +209,78 @@
                 <div id="image-preview-wrapper" class="hidden mt-3 p-2 border border-[#eee] rounded bg-gray-50 flex items-center gap-3">
                     <img id="image-preview-el" src="" class="h-16 w-24 object-cover border border-[#ddd] rounded" />
                     <div class="text-xs">
-                        <span class="text-[#888] block">Preview Gambar</span>
-                        <button type="button" onclick="clearImagePreview()" class="text-[#D95C3F] font-semibold hover:underline">Hapus Gambar</button>
+                        <span class="text-[#888] block">Preview File / Gambar</span>
+                        <button type="button" onclick="clearImagePreview()" class="text-[#D95C3F] font-semibold hover:underline">Hapus Berkas</button>
                     </div>
                 </div>
             </div>
+            @endif
 
+            @if($category === 'kampanye-darurat')
+            <div>
+                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Tautan Aksi Kampanye (Action URL) *</label>
+                <input type="text" id="form-tags" name="tags" required class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="Contoh: https://example.com/petisi" />
+            </div>
+            @elseif($category === 'isu-kritis')
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Pilih Ikon Isu</label>
+                    <select id="form-isu-icon" name="isu_icon" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white">
+                        @for($i = 1; $i <= 27; $i++)
+                            <option value="Icon-{{ $i }}.svg">Ikon {{ $i }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Teks Badge / Statistik *</label>
+                    <input type="text" id="form-isu-badge" name="isu_badge" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="Contoh: 200+ Titik" />
+                </div>
+            </div>
+            @elseif($category === 'statistik')
+            <div>
+                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Pilih Ikon Statistik</label>
+                <select id="form-isu-icon" name="isu_icon" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white">
+                    @for($i = 1; $i <= 27; $i++)
+                        <option value="Icon-{{ $i }}.svg">Ikon {{ $i }}</option>
+                    @endfor
+                </select>
+            </div>
+            @elseif($category === 'regulasi')
+            <div class="grid grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Kategori</label>
+                    <select id="form-reg-category" name="reg_category" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white">
+                        <option value="undang-undang">Undang-Undang</option>
+                        <option value="peraturan pemerintah">Peraturan Pemerintah</option>
+                        <option value="peraturan daerah">Peraturan Daerah</option>
+                        <option value="peraturan menteri">Peraturan / Keputusan Menteri</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Lembaga Penerbit *</label>
+                    <input type="text" id="form-reg-issuer" name="reg_issuer" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="Contoh: Pemerintah RI" />
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Status</label>
+                    <select id="form-reg-status" name="reg_status" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white">
+                        <option value="berlaku">Berlaku</option>
+                        <option value="tidak berlaku">Tidak Berlaku</option>
+                    </select>
+                </div>
+            </div>
+            @else
             <div>
                 <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Tag (pisah dengan koma)</label>
                 <input type="text" id="form-tags" name="tags" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="lingkungan, air, hutan" />
             </div>
+            @endif
 
+            @if($category !== 'kampanye-darurat')
             <div>
                 <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Konten / Deskripsi</label>
                 <textarea id="form-body" name="body" rows="8" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] resize-y" placeholder="Tulis konten di sini..."></textarea>
             </div>
+            @endif
 
             <div class="flex justify-end gap-3 pt-2">
                 <button type="button" onclick="closeModal()" class="px-4 py-2 text-sm border border-[#ddd] rounded hover:bg-[#f0ede8] transition-colors">
@@ -342,10 +406,16 @@
         document.getElementById('form-slug').value = '';
         document.getElementById('form-status').value = 'draft';
         document.getElementById('form-date').value = new Date().toISOString().slice(0, 10);
-        document.getElementById('form-upload').value = '';
-        document.getElementById('form-image').value = '';
-        document.getElementById('form-tags').value = '';
-        document.getElementById('form-body').value = '';
+        if(document.getElementById('form-upload')) document.getElementById('form-upload').value = '';
+        if(document.getElementById('form-image')) document.getElementById('form-image').value = '';
+        if(document.getElementById('form-tags')) document.getElementById('form-tags').value = '';
+        if(document.getElementById('form-body')) document.getElementById('form-body').value = '';
+
+        if(document.getElementById('form-isu-icon')) document.getElementById('form-isu-icon').value = 'Icon-4.svg';
+        if(document.getElementById('form-isu-badge')) document.getElementById('form-isu-badge').value = '';
+        if(document.getElementById('form-reg-category')) document.getElementById('form-reg-category').value = 'undang-undang';
+        if(document.getElementById('form-reg-issuer')) document.getElementById('form-reg-issuer').value = '';
+        if(document.getElementById('form-reg-status')) document.getElementById('form-reg-status').value = 'berlaku';
 
         hidePreview();
         setImageInputMode('upload');
@@ -376,10 +446,37 @@
             document.getElementById('form-date').value = '';
         }
         
-        document.getElementById('form-upload').value = '';
-        document.getElementById('form-image').value = item.image_url || '';
-        document.getElementById('form-tags').value = item.tags || '';
-        document.getElementById('form-body').value = item.body || '';
+        if(document.getElementById('form-upload')) document.getElementById('form-upload').value = '';
+        if(document.getElementById('form-image')) document.getElementById('form-image').value = item.image_url || '';
+        if(document.getElementById('form-tags')) document.getElementById('form-tags').value = item.tags || '';
+        if(document.getElementById('form-body')) document.getElementById('form-body').value = item.body || '';
+
+        // Handle tags parsing for specific categories
+        if (item.tags) {
+            if ('{{ $category }}' === 'isu-kritis') {
+                if (item.tags.includes('|')) {
+                    const parts = item.tags.split('|');
+                    if (document.getElementById('form-isu-icon')) document.getElementById('form-isu-icon').value = parts[0];
+                    if (document.getElementById('form-isu-badge')) document.getElementById('form-isu-badge').value = parts[1];
+                } else {
+                    if (document.getElementById('form-isu-icon')) document.getElementById('form-isu-icon').value = 'Icon-4.svg';
+                    if (document.getElementById('form-isu-badge')) document.getElementById('form-isu-badge').value = item.tags;
+                }
+            } else if ('{{ $category }}' === 'statistik') {
+                if (document.getElementById('form-isu-icon')) document.getElementById('form-isu-icon').value = item.tags;
+            } else if ('{{ $category }}' === 'regulasi') {
+                const parts = item.tags.split(',').map(s => s.trim());
+                if (parts.length >= 3) {
+                    if (document.getElementById('form-reg-category')) document.getElementById('form-reg-category').value = parts[0];
+                    if (document.getElementById('form-reg-issuer')) document.getElementById('form-reg-issuer').value = parts[1];
+                    if (document.getElementById('form-reg-status')) document.getElementById('form-reg-status').value = parts[2];
+                } else {
+                    if (document.getElementById('form-reg-category')) document.getElementById('form-reg-category').value = 'undang-undang';
+                    if (document.getElementById('form-reg-issuer')) document.getElementById('form-reg-issuer').value = 'Pemerintah RI';
+                    if (document.getElementById('form-reg-status')) document.getElementById('form-reg-status').value = 'berlaku';
+                }
+            }
+        }
 
         if (item.image_url) {
             showPreview(item.image_url);

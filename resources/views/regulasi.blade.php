@@ -192,42 +192,65 @@
                                 @php
                                     $tags = array_map('trim', explode(',', $item->tags ?? ''));
                                     
-                                    // Category mapping
+                                    // Default values
                                     $cardCategory = 'Undang-Undang';
-                                    $categoryColor = '#256D4A'; // Default green
-                                    if (in_array('undang-undang', $tags)) {
-                                        $cardCategory = 'Undang-Undang';
-                                        $categoryColor = '#256D4A';
-                                    } elseif (in_array('peraturan pemerintah', $tags)) {
-                                        $cardCategory = 'Peraturan Pemerintah';
-                                        $categoryColor = '#5C8D59';
-                                    } elseif (in_array('peraturan daerah', $tags)) {
-                                        $cardCategory = 'Peraturan Daerah';
-                                        $categoryColor = '#8B6B4A';
-                                    } elseif (in_array('keputusan menteri', $tags) || in_array('peraturan menteri', $tags)) {
-                                        $cardCategory = 'Peraturan Menteri';
-                                        $categoryColor = '#D95C3F';
+                                    $categoryColor = '#256D4A';
+                                    $issuer = 'Pemerintah RI';
+                                    $statusText = 'Berlaku';
+                                    
+                                    if (count($tags) >= 3) {
+                                        $catVal = strtolower($tags[0]);
+                                        $issuer = $tags[1];
+                                        $statusVal = strtolower($tags[2]);
+                                        
+                                        if ($catVal === 'undang-undang') {
+                                            $cardCategory = 'Undang-Undang';
+                                            $categoryColor = '#256D4A';
+                                        } elseif ($catVal === 'peraturan pemerintah') {
+                                            $cardCategory = 'Peraturan Pemerintah';
+                                            $categoryColor = '#5C8D59';
+                                        } elseif ($catVal === 'peraturan daerah') {
+                                            $cardCategory = 'Peraturan Daerah';
+                                            $categoryColor = '#8B6B4A';
+                                        } elseif ($catVal === 'peraturan menteri' || $catVal === 'keputusan menteri') {
+                                            $cardCategory = 'Peraturan Menteri';
+                                            $categoryColor = '#D95C3F';
+                                        }
+                                        
+                                        if ($statusVal === 'tidak berlaku') {
+                                            $statusText = 'Tidak Berlaku';
+                                        }
+                                    } else {
+                                        if (in_array('undang-undang', $tags)) {
+                                            $cardCategory = 'Undang-Undang';
+                                            $categoryColor = '#256D4A';
+                                        } elseif (in_array('peraturan pemerintah', $tags)) {
+                                            $cardCategory = 'Peraturan Pemerintah';
+                                            $categoryColor = '#5C8D59';
+                                        } elseif (in_array('peraturan daerah', $tags)) {
+                                            $cardCategory = 'Peraturan Daerah';
+                                            $categoryColor = '#8B6B4A';
+                                        } elseif (in_array('keputusan menteri', $tags) || in_array('peraturan menteri', $tags)) {
+                                            $cardCategory = 'Peraturan Menteri';
+                                            $categoryColor = '#D95C3F';
+                                        }
+                                        
+                                        foreach ($tags as $t) {
+                                            if (stripos($t, 'kementerian') !== false || stripos($t, 'kemen') !== false || stripos($t, 'pemprov') !== false || stripos($t, 'pemkab') !== false || stripos($t, 'pemerintah') !== false) {
+                                                $issuer = $t;
+                                                break;
+                                            }
+                                        }
+                                        
+                                        if (in_array('tidak berlaku', $tags)) {
+                                            $statusText = 'Tidak Berlaku';
+                                        }
                                     }
                                     
                                     // Year
                                     $year = $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->format('Y') : '2025';
                                     if ($year === '2025' && preg_match('/\b(19|20)\d{2}\b/', $item->title, $matches)) {
                                         $year = $matches[0];
-                                    }
-                                    
-                                    // Issuer
-                                    $issuer = 'Pemerintah RI';
-                                    foreach ($tags as $t) {
-                                        if (stripos($t, 'kementerian') !== false || stripos($t, 'kemen') !== false || stripos($t, 'pemprov') !== false || stripos($t, 'pemkab') !== false || stripos($t, 'pemerintah') !== false) {
-                                            $issuer = $t;
-                                            break;
-                                        }
-                                    }
-                                    
-                                    // Status
-                                    $statusText = 'Berlaku';
-                                    if (in_array('tidak berlaku', $tags)) {
-                                        $statusText = 'Tidak Berlaku';
                                     }
                                 @endphp
                                 
