@@ -1,39 +1,28 @@
-📖 Tutorial Manual Menjalankan Projek
+Berikut adalah tutorial langkah demi langkah untuk menjalankan project Laravel ini di komputer Anda:
+
 Langkah 1: Buka Terminal
 Buka aplikasi Terminal di Mac Anda.
 
-Langkah 2: Masuk ke Direktori Projek
-Salin dan jalankan perintah berikut untuk masuk ke folder projek Laravel Anda:
+Langkah 2: Masuk ke Folder Project
+Salin dan jalankan perintah berikut di Terminal untuk masuk ke direktori project Anda:
 
 bash
 cd "/Users/mac/clone walhi/walhi_larafel"
-Langkah 3: Pastikan Database SQLite Siap
-Projek Anda dikonfigurasi menggunakan SQLite (database/database.sqlite). Untuk memastikan database siap dan berisi data awal, jalankan perintah ini:
-
-bash
-# Membuat file database jika belum ada
-touch database/database.sqlite
-# Menjalankan migrasi database serta mengisi data awal (seeding)
-php artisan migrate --seed
-Langkah 4: Jalankan Projek
-Anda dapat menjalankan projek menggunakan salah satu opsi di bawah ini:
-
-Opsi A: Menggunakan Composer Script Bawaan (Paling Mudah)
-Projek ini sudah dikonfigurasi untuk menjalankan server PHP, Vite, Queue, dan Logger sekaligus dalam satu perintah:
+Langkah 3: Jalankan Project (Cara Paling Mudah)
+Project ini sudah dikonfigurasi untuk menjalankan Web Server Laravel (php artisan serve), Queue Listener, Log Viewer, dan Asset Compiler (vite) secara bersamaan menggunakan satu perintah:
 
 bash
 composer run dev
-Opsi B: Menjalankan Secara Terpisah
-Jika ingin memantau log web server dan asset builder secara terpisah, buka dua tab terminal dan jalankan:
+Langkah 4: Akses Aplikasi di Browser
+Setelah perintah di atas berjalan, buka browser Anda (Chrome, Safari, dll.) dan buka alamat berikut: 👉 http://127.0.0.1:8000
 
-Terminal Tab 1 (Web Server Laravel):
+Opsi Alternatif: Menjalankan Secara Terpisah
+Jika Anda lebih suka menjalankan server PHP dan Vite (Tailwind CSS/JS) di jendela/tab terminal yang berbeda agar log-nya terpisah:
 
+Tab Terminal 1 (Web Server PHP):
 bash
 php artisan serve
-(Server akan berjalan di http://127.0.0.1:8000)
-
-Terminal Tab 2 (Vite Asset Server untuk Tailwind CSS & JS):
-
+Tab Terminal 2 (Asset Compiler / Vite):
 bash
 npm run dev
-Setelah menjalankan perintah di atas, Anda bisa langsung membuka browser Anda dan mengakses alamat http://127.0.0.1:8000.
+(Jika database belum ada atau ingin di-migrasi ulang sewaktu-waktu, Anda juga bisa menjalankan php artisan migrate --seed terlebih dahulu)
