@@ -34,8 +34,8 @@
             <main style="display: flex; flex-direction: column; align-items: stretch;">
                 
                 <!-- Hero Section -->
-                <section style="background: #1D1D1D; border-bottom: 4px #256D4A solid; padding: 64px 95px 64px; color: #F4F1EA;">
-                    <div style="width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 32px; box-sizing: border-box;">
+                <section style="background: #1D1D1D; border-bottom: 4px #256D4A solid; color: #F4F1EA;" class="py-12 md:py-16">
+                    <div class="w-full max-w-5xl mx-auto px-4 sm:px-8">
                         <div style="display: flex; flex-direction: column; gap: 24px; max-width: 860px; width: 100%;">
                             <!-- Breadcrumbs -->
                             <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">
@@ -58,11 +58,11 @@
                 </section>
 
                 <!-- Grid Content Section -->
-                <section style="padding: 80px 95px 96px; background: #F4F1EA; color: #1D1D1D; border-bottom: 4px #1D1D1D solid;">
-                    <div style="width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 32px; box-sizing: border-box;">
+                <section style="background: #F4F1EA; color: #1D1D1D; border-bottom: 4px #1D1D1D solid;" class="py-16 md:py-20">
+                    <div class="w-full max-w-6xl mx-auto px-4 sm:px-8">
                         
                         <!-- Grid layout -->
-                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; width: 100%;">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
                             @forelse($items as $item)
                                 @php
                                     // Fallback cover image based on slug
