@@ -73,8 +73,21 @@
                                     <h2 style="margin: 0; color: #1D1D1D; font-size: 32px; font-family: Bebas Neue, sans-serif; font-weight: 400; line-height: 35.2px; letter-spacing: 1.6px; text-transform: uppercase;">
                                         {{ $featuredNews->title }}
                                     </h2>
+                                    @php
+                                        $cleanFeat = strip_tags($featuredNews->body);
+                                        $wordsArray = preg_split('/\s+/', trim($cleanFeat));
+                                        $hasMoreFeat = count($wordsArray) > 13;
+                                        if ($hasMoreFeat) {
+                                            $featCopyLimited = implode(' ', array_slice($wordsArray, 0, 13)) . '...';
+                                        } else {
+                                            $featCopyLimited = $cleanFeat;
+                                        }
+                                    @endphp
                                     <p style="margin: 0; color: #1D1D1D; font-size: 18px; line-height: 28.8px;">
-                                        {{ Str::limit(strip_tags($featuredNews->body), 220) }}
+                                        {{ $featCopyLimited }}
+                                        @if($hasMoreFeat)
+                                            <a href="{{ route('content.show', $featuredNews->slug) }}" style="color: #256D4A; font-weight: 600; text-decoration: underline; margin-left: 4px;">Baca Selengkapnya</a>
+                                        @endif
                                     </p>
                                 </div>
                                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 24px; border-top: 2px solid #1D1D1D; color: #5C8D59; font-size: 14px; font-weight: 600; line-height: 20px;">
@@ -113,8 +126,21 @@
                                                     {{ $news->title }}
                                                 </a>
                                             </h3>
+                                            @php
+                                                $cleanNews = strip_tags($news->body);
+                                                $wordsArray = preg_split('/\s+/', trim($cleanNews));
+                                                $hasMoreNews = count($wordsArray) > 13;
+                                                if ($hasMoreNews) {
+                                                    $newsCopyLimited = implode(' ', array_slice($wordsArray, 0, 13)) . '...';
+                                                } else {
+                                                    $newsCopyLimited = $cleanNews;
+                                                }
+                                            @endphp
                                             <p style="margin: 0; color: #1D1D1D; font-size: 15px; line-height: 24px;">
-                                                {{ Str::limit(strip_tags($news->body), 140) }}
+                                                {{ $newsCopyLimited }}
+                                                @if($hasMoreNews)
+                                                    <a href="{{ route('content.show', $news->slug) }}" style="color: #256D4A; font-weight: 600; text-decoration: underline; margin-left: 4px;">Baca Selengkapnya</a>
+                                                @endif
                                             </p>
                                         </div>
                                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 16px; border-top: 2px solid #1D1D1D; color: #5C8D59; font-size: 12px; font-weight: 600; line-height: 16px; flex-wrap: wrap;">

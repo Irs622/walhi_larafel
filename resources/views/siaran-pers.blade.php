@@ -111,8 +111,21 @@
                                     {{ $item->title }}
                                 </h2>
                                 
+                                @php
+                                    $cleanBody = strip_tags($item->body);
+                                    $wordsArray = preg_split('/\s+/', trim($cleanBody));
+                                    $hasMore = count($wordsArray) > 13;
+                                    if ($hasMore) {
+                                        $limitedBody = implode(' ', array_slice($wordsArray, 0, 13)) . '...';
+                                    } else {
+                                        $limitedBody = $cleanBody;
+                                    }
+                                @endphp
                                 <p style="margin: 0; color: #1D1D1D; font-size: 18px; font-family: Inter, sans-serif; line-height: 1.7;">
-                                    {{ Str::limit($item->body, 280, '...') }}
+                                    {{ $limitedBody }}
+                                    @if($hasMore)
+                                        <a href="javascript:void(0)" onclick="openReleaseModal({{ json_encode($item) }}, '{{ $formattedDate }}')" style="color: #256D4A; font-weight: 600; text-decoration: underline; margin-left: 4px;">Baca Selengkapnya</a>
+                                    @endif
                                 </p>
                                 
                                 <div style="border-top: 2px solid #1D1D1D; padding-top: 24px; display: flex; gap: 12px; align-items: center;" class="card-actions-bar">
