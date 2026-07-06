@@ -20,6 +20,8 @@ $breadcrumbMap = [
     'admin/tentang/eksekutif-nasional' => 'Tentang Kami › Eksekutif Nasional',
     'admin/tentang/eksekutif-daerah' => 'Tentang Kami › Eksekutif Daerah',
     'admin/tentang/kontak' => 'Tentang Kami › Kontak',
+    'admin/statistik' => 'Beranda › Statistik Utama',
+    'admin/isu-kritis' => 'Beranda › Isu Kritis',
 ];
 $currentPath = request()->path();
 $breadcrumb = $breadcrumbMap[$currentPath] ?? 'Admin';
@@ -101,6 +103,22 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                     <i data-lucide="mail" class="w-4 h-4 shrink-0"></i>
                     <span class="nav-label">Pelanggan</span>
                 </a>
+
+                <!-- Halaman Beranda Dropdown Group -->
+                @php
+                    $berandaActive = request()->is('admin/statistik*') || request()->is('admin/isu-kritis*');
+                @endphp
+                <div class="group-container" id="group-beranda">
+                    <button onclick="toggleGroup('beranda')" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ $berandaActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
+                        <i data-lucide="home" class="w-4 h-4 shrink-0"></i>
+                        <span class="flex-1 text-left nav-label font-medium">Halaman Beranda</span>
+                        <i data-lucide="chevron-down" class="w-3 h-3 group-chevron nav-label" id="chevron-beranda"></i>
+                    </button>
+                    <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav" id="sub-beranda">
+                        <a href="{{ route('admin.content.index', 'statistik') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/statistik*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Statistik Utama</a>
+                        <a href="{{ route('admin.content.index', 'isu-kritis') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/isu-kritis*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Isu Kritis</a>
+                    </div>
+                </div>
 
                 <!-- Publikasi Dropdown Group -->
                 @php
@@ -255,7 +273,8 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
         const groupStates = {
             publikasi: {{ $publikasiActive ? 'true' : 'false' }},
             dukung: {{ $dukungActive ? 'true' : 'false' }},
-            tentang: {{ $tentangActive ? 'true' : 'false' }}
+            tentang: {{ $tentangActive ? 'true' : 'false' }},
+            beranda: {{ $berandaActive ? 'true' : 'false' }}
         };
 
         function toggleGroup(groupName) {

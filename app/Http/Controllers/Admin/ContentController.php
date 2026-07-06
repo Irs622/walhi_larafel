@@ -27,6 +27,8 @@ class ContentController extends Controller
         'kontak' => ['title' => 'Kontak', 'desc' => 'Kelola informasi kontak organisasi.'],
         'donasi' => ['title' => 'Kampanye Donasi', 'desc' => 'Manajemen kampanye donasi dan laporan penerimaan.'],
         'pekan-rakyat' => ['title' => 'Pekan Rakyat', 'desc' => 'Manajemen event Pekan Rakyat.'],
+        'statistik' => ['title' => 'Statistik Utama', 'desc' => 'Kelola angka-angka statistik utama di halaman Beranda.'],
+        'isu-kritis' => ['title' => 'Isu Kritis', 'desc' => 'Kelola 5 isu kritis lingkungan di halaman Beranda.'],
     ];
 
     private function getCategoryConfig($category)

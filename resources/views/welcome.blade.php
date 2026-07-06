@@ -32,7 +32,7 @@
                 ['label' => 'Tentang Kami', 'href' => route('about'), 'dropdown' => true],
             ];
 
-            $issues = [
+            $fallbackIssues = [
                 ['title' => 'Pertambangan Ilegal', 'image' => 'causes-1-1.jpg', 'icon' => 'Icon-4.svg', 'badge' => '200+ Titik', 'badgeColor' => '#D95C3F', 'copy' => 'Ratusan titik tambang ilegal di Jawa Barat merusak hutan, air, dan ruang hidup masyarakat.'],
                 ['title' => 'Deforestasi', 'image' => 'causes-1-2.jpg', 'icon' => 'Icon-5.svg', 'badge' => '15.000 Ha/Tahun', 'badgeColor' => '#8B6B4A', 'copy' => 'Alih fungsi hutan untuk perkebunan dan properti menggerus tutupan hijau dan memicu bencana ekologis.'],
                 ['title' => 'Pencemaran Sungai', 'image' => 'causes-1-3.jpg', 'icon' => 'Icon-6.svg', 'badge' => '75% Tercemar', 'badgeColor' => '#256D4A', 'copy' => 'Limbah industri dan rumah tangga mencemari sungai-sungai utama serta mengancam kesehatan warga.'],
@@ -41,22 +41,22 @@
                 ['title' => 'Krisis Iklim', 'image' => 'causes-1-6.jpg', 'icon' => 'Icon-9.svg', 'badge' => '+2.5°C Target', 'badgeColor' => '#D95C3F', 'copy' => 'Banjir bandang, kekeringan ekstrem, dan cuaca tak menentu semakin sering melanda Jawa Barat.'],
             ];
 
-            $stats = [
+            $fallbackStats = [
                 ['value' => '2,847', 'label' => 'Kasus Ditangani', 'icon' => 'Icon-10.svg', 'color' => '#256D4A'],
                 ['value' => '15,000+', 'label' => 'Keluarga Terdampak', 'icon' => 'Icon-11.svg', 'color' => '#D95C3F'],
                 ['value' => '85%', 'label' => 'Tingkat Keberhasilan', 'icon' => 'Icon-12.svg', 'color' => '#5C8D59'],
                 ['value' => '150+', 'label' => 'Laporan Investigasi', 'icon' => 'Icon-13.svg', 'color' => '#8B6B4A'],
             ];
 
-            $reports = [
+            $fallbackReports = [
                 ['year' => '2025', 'title' => 'Laporan Tahunan: Krisis Lingkungan Jawa Barat', 'copy' => 'Analisis komprehensif kondisi lingkungan, kasus-kasus yang ditangani, dan rekomendasi kebijakan untuk tahun 2025.', 'meta' => ['124 Halaman', '2.4K Downloads'], 'button' => 'Download PDF', 'icon' => 'Icon-16.svg'],
-                ['year' => '2025', 'title' => 'Investigasi: Jejak Tambang Ilegal di Kawasan Konservasi', 'copy' => 'Dokumentasi investigasi mendalam terhadap jaringan pertambangan ilegal yang merusak kawasan hutan lindung.', 'meta' => ['68 Halaman', '1.8K Downloads'], 'button' => 'Download PDF', 'icon' => 'Icon-16.svg'],
+                ['year' => '2025', 'title' => 'Investigasi: Jejak Tambang Ilegal di Kawasan Conservasi', 'copy' => 'Dokumentasi investigasi mendalam terhadap jaringan pertambangan ilegal yang merusak kawasan hutan lindung.', 'meta' => ['68 Halaman', '1.8K Downloads'], 'button' => 'Download PDF', 'icon' => 'Icon-16.svg'],
                 ['year' => '2024', 'title' => 'Monitoring Kualitas Air Sungai Citarum', 'copy' => 'Data hasil monitoring bulanan kualitas air Sungai Citarum sepanjang 2024 dengan analisis dampak kesehatan.', 'meta' => ['42 Halaman', '3.1K Downloads'], 'button' => 'Download PDF', 'icon' => 'Icon-16.svg'],
             ];
 
-            $featuredNews = ['image' => 'news-4-1.jpg', 'tag' => 'Investigasi', 'title' => 'Penelusuran Jejak Modal di Balik Tambang Ilegal Gunung Halimun', 'copy' => 'Investigasi mendalam mengungkap jaringan korporasi dan pejabat yang memfasilitasi pertambangan ilegal. Dokumen internal bocor, saksi kunci berbicara.', 'date' => '18 Mei 2026', 'read' => '12 menit'];
+            $fallbackFeaturedNews = ['image' => 'news-4-1.jpg', 'tag' => 'Investigasi', 'title' => 'Penelusuran Jejak Modal di Balik Tambang Ilegal Gunung Halimun', 'copy' => 'Investigasi mendalam mengungkap jaringan korporasi dan pejabat yang memfasilitasi pertambangan ilegal. Dokumen internal bocor, saksi kunci berbicara.', 'date' => '18 Mei 2026', 'read' => '12 menit'];
 
-            $newsCards = [
+            $fallbackNewsCards = [
                 ['image' => 'news-1-1.jpg', 'tag' => 'Advokasi', 'title' => 'Petani Garut Menang: Tanah Dikembalikan Setelah 3 Tahun Gugatan', 'copy' => 'Putusan pengadilan memenangkan gugatan 300 keluarga petani. Ini kemenangan hukum penting untuk kasus-kasus agraria serupa di seluruh Jawa Barat.', 'date' => '15 Mei 2026', 'read' => '8 menit'],
                 ['image' => 'news-1-2.jpg', 'tag' => 'Laporan', 'title' => 'Data Baru: Tingkat Pencemaran Citarum Naik 23% dalam 6 Bulan', 'copy' => 'Monitoring terbaru menunjukkan peningkatan drastis polusi industri. Pemerintah diminta bertindak cepat sebelum kondisi semakin memburuk.', 'date' => '10 Mei 2026', 'read' => '6 menit'],
                 ['image' => 'news-1-3.jpg', 'tag' => 'Kampanye', 'title' => 'Ratusan Aktivis Turun ke Jalan Tolak Pembangunan Pabrik di DAS', 'copy' => 'Aksi bersama menolak izin pembangunan pabrik semen di kawasan penyangga Daerah Aliran Sungai. Massa menuntut pencabutan izin lingkungan.', 'date' => '5 Mei 2026', 'read' => '5 menit'],
@@ -64,6 +64,13 @@
                 ['image' => 'news-4-3.jpg', 'tag' => 'Opini', 'title' => "Mengapa Kita Harus Menolak 'Green Capitalism' dalam Krisis Iklim", 'copy' => 'Analisis kritis terhadap solusi pasar dalam menghadapi krisis ekologis. Apa yang dibutuhkan adalah transformasi sistem, bukan sekadar greenwashing.', 'date' => '28 Apr 2026', 'read' => '10 menit'],
                 ['image' => 'news-2-1.jpg', 'tag' => 'Opini', 'title' => "Mengapa Kita Harus Menolak 'Green Capitalism' dalam Krisis Iklim", 'copy' => 'Analisis kritis terhadap solusi pasar dalam menghadapi krisis ekologis. Apa yang dibutuhkan adalah transformasi sistem, bukan sekadar greenwashing.', 'date' => '28 Apr 2026', 'read' => '10 menit'],
             ];
+
+            // Use database values if present, otherwise fallback
+            $issues = (isset($issues) && $issues->isNotEmpty()) ? $issues : $fallbackIssues;
+            $stats = (isset($stats) && $stats->isNotEmpty()) ? $stats : $fallbackStats;
+            $reports = (isset($reports) && $reports->isNotEmpty()) ? $reports : $fallbackReports;
+            $featuredNews = (isset($featuredNews) && $featuredNews) ? $featuredNews : $fallbackFeaturedNews;
+            $newsCards = (isset($newsCards) && $newsCards->isNotEmpty()) ? $newsCards : $fallbackNewsCards;
         @endphp
 
         @include('partials.site-header')
@@ -162,21 +169,43 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                         @foreach ($issues as $issue)
+                            @php
+                                if ($issue instanceof \App\Models\Content) {
+                                    $issueTitle = $issue->title;
+                                    $issueCopy = $issue->body;
+                                    $issueBadge = $issue->tags;
+                                    
+                                    $icons = ['Icon-4.svg', 'Icon-5.svg', 'Icon-6.svg', 'Icon-7.svg', 'Icon-8.svg', 'Icon-9.svg'];
+                                    $colors = ['#D95C3F', '#8B6B4A', '#256D4A', '#5C8D59', '#D95C3F', '#8B6B4A'];
+                                    $idx = $loop->index % 6;
+                                    $issueIcon = $icons[$idx];
+                                    $issueBadgeColor = $colors[$idx];
+                                    
+                                    $issueImage = $issue->image_url ? (str_starts_with($issue->image_url, 'http') ? $issue->image_url : asset('assets/images/resources/' . $issue->image_url)) : asset('assets/images/resources/causes-1-' . ($idx + 1) . '.jpg');
+                                } else {
+                                    $issueTitle = $issue['title'];
+                                    $issueCopy = $issue['copy'];
+                                    $issueBadge = $issue['badge'];
+                                    $issueBadgeColor = $issue['badgeColor'];
+                                    $issueIcon = $issue['icon'];
+                                    $issueImage = asset('assets/images/resources/' . $issue['image']);
+                                }
+                            @endphp
                             <article class="flex flex-col overflow-hidden border-4 border-brand-cream bg-white text-brand-dark shadow-[4px_4px_0px_0px_#D95C3F]">
-                                <div class="relative h-[192px] overflow-hidden bg-cover bg-center" style="background-image: url('{{ asset('assets/images/resources/'.$issue['image']) }}');">
-                                    <div class="absolute left-4 top-4 flex h-[50px] items-center border-2 border-brand-cream bg-brand-dark px-4 text-[20px] font-label uppercase leading-tight tracking-[0.05em]" style="color: {{ $issue['badgeColor'] }};">
-                                        {{ $issue['badge'] }}
+                                <div class="relative h-[192px] overflow-hidden bg-cover bg-center" style="background-image: url('{{ $issueImage }}');">
+                                    <div class="absolute left-4 top-4 flex h-[50px] items-center border-2 border-brand-cream bg-brand-dark px-4 text-[20px] font-label uppercase leading-tight tracking-[0.05em]" style="color: {{ $issueBadgeColor }};">
+                                        {{ $issueBadge }}
                                     </div>
                                 </div>
                                 <div class="flex flex-grow flex-col gap-4 px-6 py-6 justify-between">
                                     <div class="flex flex-col gap-3">
                                         <div class="flex items-center gap-3">
                                             <div class="flex h-10 w-10 items-center justify-center bg-brand-dark p-2 flex-shrink-0">
-                                                <img src="{{ $iqon($issue['icon']) }}" alt="{{ $issue['title'] }}" class="h-6 w-6 object-contain">
+                                                <img src="{{ $iqon($issueIcon) }}" alt="{{ $issueTitle }}" class="h-6 w-6 object-contain">
                                             </div>
-                                            <h3 class="text-[24px] font-label uppercase leading-none tracking-[0.06em] text-brand-dark">{{ $issue['title'] }}</h3>
+                                            <h3 class="text-[24px] font-label uppercase leading-none tracking-[0.06em] text-brand-dark">{{ $issueTitle }}</h3>
                                         </div>
-                                        <p class="text-sm md:text-base leading-relaxed text-brand-dark/95 font-sans">{{ $issue['copy'] }}</p>
+                                        <p class="text-sm md:text-base leading-relaxed text-brand-dark/95 font-sans">{{ $issueCopy }}</p>
                                     </div>
                                 </div>
                             </article>
@@ -200,12 +229,29 @@
                     <!-- Stats Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
                         @foreach ($stats as $stat)
+                            @php
+                                if ($stat instanceof \App\Models\Content) {
+                                    $statLabel = $stat->title;
+                                    $statValue = $stat->body;
+                                    
+                                    $icons = ['Icon-10.svg', 'Icon-11.svg', 'Icon-12.svg', 'Icon-13.svg'];
+                                    $colors = ['#256D4A', '#D95C3F', '#5C8D59', '#8B6B4A'];
+                                    $idx = $loop->index % 4;
+                                    $statIcon = $icons[$idx];
+                                    $statColor = $colors[$idx];
+                                } else {
+                                    $statLabel = $stat['label'];
+                                    $statValue = $stat['value'];
+                                    $statIcon = $stat['icon'];
+                                    $statColor = $stat['color'];
+                                }
+                            @endphp
                             <div class="bg-white border-4 border-brand-cream p-6 flex flex-col items-center justify-center gap-4 text-center shadow-[4px_4px_0px_0px_#256D4A]">
                                 <div class="flex h-14 w-14 items-center justify-center bg-brand-dark p-3">
-                                    <img src="{{ $iqon($stat['icon']) }}" alt="{{ $stat['label'] }}" class="h-8 w-8 object-contain">
+                                    <img src="{{ $iqon($statIcon) }}" alt="{{ $statLabel }}" class="h-8 w-8 object-contain">
                                 </div>
-                                <div class="text-4xl sm:text-5xl font-heading leading-none" style="color: {{ $stat['color'] }};">{{ $stat['value'] }}</div>
-                                <div class="text-sm font-semibold uppercase tracking-wider text-brand-dark font-sans">{{ $stat['label'] }}</div>
+                                <div class="text-4xl sm:text-5xl font-heading leading-none" style="color: {{ $statColor }};">{{ $statValue }}</div>
+                                <div class="text-sm font-semibold uppercase tracking-wider text-brand-dark font-sans">{{ $statLabel }}</div>
                             </div>
                         @endforeach
                     </div>
