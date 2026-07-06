@@ -44,7 +44,17 @@
                     <thead>
                         <tr class="bg-[#f9f8f5] border-b border-[#ddd]">
                             <th class="text-left px-4 py-3 text-xs font-semibold text-[#888] uppercase tracking-wide">Judul</th>
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-[#888] uppercase tracking-wide hidden md:table-cell">Tag</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-[#888] uppercase tracking-wide hidden md:table-cell">
+                                @if($category === 'kampanye-darurat')
+                                    Tautan Aksi
+                                @elseif($category === 'isu-kritis' || $category === 'statistik')
+                                    Badge/Ikon
+                                @elseif($category === 'regulasi')
+                                    Detail Regulasi
+                                @else
+                                    Tag
+                                @endif
+                            </th>
                             <th class="text-left px-4 py-3 text-xs font-semibold text-[#888] uppercase tracking-wide">Status</th>
                             <th class="text-left px-4 py-3 text-xs font-semibold text-[#888] uppercase tracking-wide hidden sm:table-cell">Tanggal</th>
                             <th class="text-right px-4 py-3 text-xs font-semibold text-[#888] uppercase tracking-wide">Aksi</th>
@@ -65,17 +75,46 @@
                                         <div class="text-xs text-[#aaa] mt-0.5">/{{ $item->slug }}</div>
                                     </td>
                                     <td class="px-4 py-3 hidden md:table-cell">
-                                        <div class="flex flex-wrap gap-1">
-                                            @if($item->tags)
+                                        @if($category === 'kampanye-darurat')
+                                            <a href="{{ $item->tags }}" target="_blank" class="text-[#256D4A] hover:underline text-xs break-all">
+                                                {{ $item->tags }}
+                                            </a>
+                                        @elseif($category === 'isu-kritis')
+                                            @php
+                                                $parts = explode('|', $item->tags);
+                                                $icon = $parts[0] ?? 'Icon-4.svg';
+                                                $badge = $parts[1] ?? '';
+                                            @endphp
+                                            <span class="inline-flex items-center gap-1.5">
+                                                <img src="{{ asset('assets/images/icons/' . $icon) }}" class="w-4 h-4" />
+                                                <span class="px-1.5 py-0.5 bg-[#f0ede8] text-[#666] text-[10px] rounded">{{ $badge }}</span>
+                                            </span>
+                                        @elseif($category === 'statistik')
+                                            <span class="inline-flex items-center gap-1.5">
+                                                <img src="{{ asset('assets/images/icons/' . $item->tags) }}" class="w-4 h-4" />
+                                                <span class="text-xs text-gray-500 font-mono">{{ $item->tags }}</span>
+                                            </span>
+                                        @elseif($category === 'regulasi')
+                                            <div class="flex flex-wrap gap-1">
                                                 @foreach(explode(',', $item->tags) as $tag)
-                                                    @if(trim($tag))
-                                                        <span class="px-1.5 py-0.5 bg-[#f0ede8] text-[#666] text-[10px] rounded">
-                                                            {{ trim($tag) }}
-                                                        </span>
-                                                    @endif
+                                                    <span class="px-1.5 py-0.5 bg-[#f0ede8] text-[#666] text-[10px] rounded">
+                                                        {{ trim($tag) }}
+                                                    </span>
                                                 @endforeach
-                                            @endif
-                                        </div>
+                                            </div>
+                                        @else
+                                            <div class="flex flex-wrap gap-1">
+                                                @if($item->tags)
+                                                    @foreach(explode(',', $item->tags) as $tag)
+                                                        @if(trim($tag))
+                                                            <span class="px-1.5 py-0.5 bg-[#f0ede8] text-[#666] text-[10px] rounded">
+                                                                {{ trim($tag) }}
+                                                            </span>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        @endif
                                     </td>
                                     <td class="px-4 py-3">
                                         @if($item->status === 'published')
@@ -322,6 +361,10 @@
         const containerUpload = document.getElementById('container-mode-upload');
         const containerUrl = document.getElementById('container-mode-url');
 
+        if (!btnUpload || !btnUrl || !containerUpload || !containerUrl) {
+            return;
+        }
+
         if (mode === 'upload') {
             btnUpload.className = "px-2.5 py-1 rounded bg-[#256D4A] text-white font-medium transition-colors";
             btnUrl.className = "px-2.5 py-1 rounded bg-[#f0ede8] text-[#666] font-medium transition-colors";
@@ -329,10 +372,11 @@
             containerUrl.classList.add('hidden');
             
             const fileInput = document.getElementById('form-upload');
-            if (fileInput.files && fileInput.files[0]) {
+            if (fileInput && fileInput.files && fileInput.files[0]) {
                 previewSelectedImage(fileInput);
             } else {
-                const formImageVal = document.getElementById('form-image').value;
+                const formImage = document.getElementById('form-image');
+                const formImageVal = formImage ? formImage.value : '';
                 if (formImageVal && formImageVal.startsWith('/storage/')) {
                     showPreview(formImageVal);
                 } else {
@@ -345,7 +389,8 @@
             containerUpload.classList.add('hidden');
             containerUrl.classList.remove('hidden');
             
-            const urlVal = document.getElementById('form-image').value;
+            const formImage = document.getElementById('form-image');
+            const urlVal = formImage ? formImage.value : '';
             if (urlVal) {
                 showPreview(urlVal);
             } else {
@@ -354,26 +399,33 @@
         }
     }
 
-    document.getElementById('form-image').addEventListener('input', function() {
-        if (imageInputMode === 'url') {
-            if (this.value) {
-                showPreview(this.value);
-            } else {
-                hidePreview();
+    const formImageEl = document.getElementById('form-image');
+    if (formImageEl) {
+        formImageEl.addEventListener('input', function() {
+            if (imageInputMode === 'url') {
+                if (this.value) {
+                    showPreview(this.value);
+                } else {
+                    hidePreview();
+                }
             }
-        }
-    });
+        });
+    }
 
     function showPreview(src) {
         const wrapper = document.getElementById('image-preview-wrapper');
         const img = document.getElementById('image-preview-el');
-        img.src = src;
-        wrapper.classList.remove('hidden');
+        if (wrapper && img) {
+            img.src = src;
+            wrapper.classList.remove('hidden');
+        }
     }
 
     function hidePreview() {
         const wrapper = document.getElementById('image-preview-wrapper');
-        wrapper.classList.add('hidden');
+        if (wrapper) {
+            wrapper.classList.add('hidden');
+        }
     }
 
     function previewSelectedImage(input) {
