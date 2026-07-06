@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Content;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
 {
@@ -102,6 +103,7 @@ class ContentController extends Controller
             'tags' => 'nullable|string',
             'status' => 'required|in:published,draft,archived',
             'image_url' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048',
         ]);
 
         if ($category === 'laporan-tahunan' && !empty($validated['body'])) {
@@ -131,6 +133,11 @@ class ContentController extends Controller
             $validated['slug'] = $originalSlug . '-' . $count;
         }
 
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('uploads', 'public');
+            $validated['image_url'] = '/storage/' . $path;
+        }
+
         $validated['category'] = $category;
 
         Content::create($validated);
@@ -147,6 +154,7 @@ class ContentController extends Controller
             'tags' => 'nullable|string',
             'status' => 'required|in:published,draft,archived',
             'image_url' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048',
             'publish_date' => 'nullable|date',
         ]);
 
@@ -174,6 +182,22 @@ class ContentController extends Controller
             $validated['slug'] = $originalSlug . '-' . $count;
         }
 
+        if ($request->hasFile('image')) {
+            // Delete old uploaded image if any
+            if ($content->image_url && str_starts_with($content->image_url, '/storage/uploads/')) {
+                $oldPath = str_replace('/storage/', '', $content->image_url);
+                Storage::disk('public')->delete($oldPath);
+            }
+            $path = $request->file('image')->store('uploads', 'public');
+            $validated['image_url'] = '/storage/' . $path;
+        } elseif (array_key_exists('image_url', $validated) && $validated['image_url'] !== $content->image_url) {
+            // If they manually cleared or changed the URL, delete old uploaded image
+            if ($content->image_url && str_starts_with($content->image_url, '/storage/uploads/')) {
+                $oldPath = str_replace('/storage/', '', $content->image_url);
+                Storage::disk('public')->delete($oldPath);
+            }
+        }
+
         $content->update($validated);
 
         return redirect()->back()->with('success', 'Konten berhasil diperbarui.');
@@ -181,6 +205,11 @@ class ContentController extends Controller
 
     public function destroy($category, Content $content)
     {
+        // Delete local uploaded image if any
+        if ($content->image_url && str_starts_with($content->image_url, '/storage/uploads/')) {
+            $oldPath = str_replace('/storage/', '', $content->image_url);
+            Storage::disk('public')->delete($oldPath);
+        }
         $content->delete();
         return redirect()->back()->with('success', 'Konten berhasil dihapus.');
     }

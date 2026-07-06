@@ -152,7 +152,7 @@
         </div>
 
         <!-- Modal Form -->
-        <form id="modal-form" action="" method="POST" class="p-6 space-y-4">
+        <form id="modal-form" action="" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
             @csrf
             <div id="method-field"></div>
 
@@ -182,8 +182,30 @@
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">URL Gambar Utama</label>
-                <input type="text" id="form-image" name="image_url" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="https://..." />
+                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Gambar Utama</label>
+                <div class="flex items-center gap-3 mb-2 text-xs">
+                    <button type="button" onclick="setImageInputMode('upload')" id="btn-mode-upload" class="px-2.5 py-1 rounded bg-[#256D4A] text-white font-medium transition-colors">Unggah File</button>
+                    <button type="button" onclick="setImageInputMode('url')" id="btn-mode-url" class="px-2.5 py-1 rounded bg-[#f0ede8] text-[#666] font-medium transition-colors">Teks URL</button>
+                </div>
+                
+                <!-- Upload File Container -->
+                <div id="container-mode-upload" class="space-y-2">
+                    <input type="file" id="form-upload" name="image" accept="image/*" onchange="previewSelectedImage(this)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#256D4A]/10 file:text-[#256D4A] hover:file:bg-[#256D4A]/20" />
+                </div>
+
+                <!-- URL Container -->
+                <div id="container-mode-url" class="hidden">
+                    <input type="text" id="form-image" name="image_url" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="https://..." />
+                </div>
+
+                <!-- Image Preview -->
+                <div id="image-preview-wrapper" class="hidden mt-3 p-2 border border-[#eee] rounded bg-gray-50 flex items-center gap-3">
+                    <img id="image-preview-el" src="" class="h-16 w-24 object-cover border border-[#ddd] rounded" />
+                    <div class="text-xs">
+                        <span class="text-[#888] block">Preview Gambar</span>
+                        <button type="button" onclick="clearImagePreview()" class="text-[#D95C3F] font-semibold hover:underline">Hapus Gambar</button>
+                    </div>
+                </div>
             </div>
 
             <div>
@@ -216,6 +238,7 @@
     const modalForm = document.getElementById('modal-form');
     const methodField = document.getElementById('method-field');
     let currentMode = 'add';
+    let imageInputMode = 'upload';
 
     // Auto-generate slug on adding
     document.getElementById('form-title').addEventListener('input', function() {
@@ -227,6 +250,83 @@
             document.getElementById('form-slug').value = slug;
         }
     });
+
+    function setImageInputMode(mode) {
+        imageInputMode = mode;
+        const btnUpload = document.getElementById('btn-mode-upload');
+        const btnUrl = document.getElementById('btn-mode-url');
+        const containerUpload = document.getElementById('container-mode-upload');
+        const containerUrl = document.getElementById('container-mode-url');
+
+        if (mode === 'upload') {
+            btnUpload.className = "px-2.5 py-1 rounded bg-[#256D4A] text-white font-medium transition-colors";
+            btnUrl.className = "px-2.5 py-1 rounded bg-[#f0ede8] text-[#666] font-medium transition-colors";
+            containerUpload.classList.remove('hidden');
+            containerUrl.classList.add('hidden');
+            
+            const fileInput = document.getElementById('form-upload');
+            if (fileInput.files && fileInput.files[0]) {
+                previewSelectedImage(fileInput);
+            } else {
+                const formImageVal = document.getElementById('form-image').value;
+                if (formImageVal && formImageVal.startsWith('/storage/')) {
+                    showPreview(formImageVal);
+                } else {
+                    hidePreview();
+                }
+            }
+        } else {
+            btnUpload.className = "px-2.5 py-1 rounded bg-[#f0ede8] text-[#666] font-medium transition-colors";
+            btnUrl.className = "px-2.5 py-1 rounded bg-[#256D4A] text-white font-medium transition-colors";
+            containerUpload.classList.add('hidden');
+            containerUrl.classList.remove('hidden');
+            
+            const urlVal = document.getElementById('form-image').value;
+            if (urlVal) {
+                showPreview(urlVal);
+            } else {
+                hidePreview();
+            }
+        }
+    }
+
+    document.getElementById('form-image').addEventListener('input', function() {
+        if (imageInputMode === 'url') {
+            if (this.value) {
+                showPreview(this.value);
+            } else {
+                hidePreview();
+            }
+        }
+    });
+
+    function showPreview(src) {
+        const wrapper = document.getElementById('image-preview-wrapper');
+        const img = document.getElementById('image-preview-el');
+        img.src = src;
+        wrapper.classList.remove('hidden');
+    }
+
+    function hidePreview() {
+        const wrapper = document.getElementById('image-preview-wrapper');
+        wrapper.classList.add('hidden');
+    }
+
+    function previewSelectedImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                showPreview(e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function clearImagePreview() {
+        document.getElementById('form-upload').value = '';
+        document.getElementById('form-image').value = '';
+        hidePreview();
+    }
 
     function openAddModal() {
         currentMode = 'add';
@@ -242,9 +342,13 @@
         document.getElementById('form-slug').value = '';
         document.getElementById('form-status').value = 'draft';
         document.getElementById('form-date').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('form-upload').value = '';
         document.getElementById('form-image').value = '';
         document.getElementById('form-tags').value = '';
         document.getElementById('form-body').value = '';
+
+        hidePreview();
+        setImageInputMode('upload');
 
         modal.classList.remove('hidden');
     }
@@ -266,16 +370,28 @@
         document.getElementById('form-status').value = item.status;
         
         if (item.publish_date) {
-            // Check if object or string
             const pDate = typeof item.publish_date === 'object' ? item.publish_date.date.slice(0,10) : item.publish_date.slice(0,10);
             document.getElementById('form-date').value = pDate;
         } else {
             document.getElementById('form-date').value = '';
         }
         
+        document.getElementById('form-upload').value = '';
         document.getElementById('form-image').value = item.image_url || '';
         document.getElementById('form-tags').value = item.tags || '';
         document.getElementById('form-body').value = item.body || '';
+
+        if (item.image_url) {
+            showPreview(item.image_url);
+            if (item.image_url.startsWith('/storage/')) {
+                setImageInputMode('upload');
+            } else {
+                setImageInputMode('url');
+            }
+        } else {
+            hidePreview();
+            setImageInputMode('upload');
+        }
 
         modal.classList.remove('hidden');
     }
