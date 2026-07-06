@@ -121,13 +121,9 @@
                         </h2>
                         <div class="h-1 w-24 bg-brand-orange"></div>
                         <div class="flex flex-col gap-4 text-base md:text-lg leading-relaxed text-brand-dark font-sans">
-                             @if(!empty($sejarah))
-                                 <div style="white-space: pre-line;">{!! $sejarah->body !!}</div>
-                             @else
-                                 <p><strong>WALHI Jawa Barat</strong> adalah organisasi lingkungan hidup independen yang berjuang untuk keadilan ekologis dan kedaulatan rakyat atas sumber daya alam.</p>
-                                 <p>Kami mendampingi masyarakat yang terdampak oleh kerusakan lingkungan, mengadvokasi kebijakan yang berpihak pada keberlanjutan, dan mengkampanyekan penghentian eksploitasi alam yang merusak.</p>
-                                 <p>Sejak berdiri, WALHI Jawa Barat telah menangani ratusan kasus konflik agraria dan kerusakan lingkungan seperti pertambangan ilegal, deforestasi, pencemaran sungai, hingga dampak krisis iklim.</p>
-                             @endif
+                            <p><strong>WALHI Jawa Barat</strong> adalah organisasi lingkungan hidup independen yang berjuang untuk keadilan ekologis dan kedaulatan rakyat atas sumber daya alam.</p>
+                            <p>Kami mendampingi masyarakat yang terdampak oleh kerusakan lingkungan, mengadvokasi kebijakan yang berpihak pada keberlanjutan, dan mengkampanyekan penghentian eksploitasi alam yang merusak.</p>
+                            <p>Sejak berdiri, WALHI Jawa Barat telah menangani ratusan kasus konflik agraria dan kerusakan lingkungan seperti pertambangan ilegal, deforestasi, pencemaran sungai, hingga dampak krisis iklim.</p>
                         </div>
                     </div>
 
