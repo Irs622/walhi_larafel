@@ -22,8 +22,9 @@
             @include('partials.site-header')
  
             <main style="display: flex; flex-direction: column; align-items: stretch;">
-                <section style="background: #1D1D1D; border-bottom: 4px #256D4A solid; padding: 64px 95px 80px; color: #F4F1EA;">
-                    <div style="width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 32px; box-sizing: border-box;">
+                <!-- Hero Section -->
+                <section style="background: #1D1D1D; border-bottom: 4px #256D4A solid; color: #F4F1EA;" class="py-12 md:py-16">
+                    <div class="w-full max-w-5xl mx-auto px-4 sm:px-8">
                         <div style="display: flex; flex-direction: column; gap: 24px; max-width: 860px; width: 100%;">
                             <div style="display: inline-flex; width: fit-content; padding: 4px 16px; background: #256D4A; color: #F4F1EA; font-size: 12px; font-weight: 700; line-height: 18px; letter-spacing: 0.7px; text-transform: uppercase;">
                                 Blog
@@ -40,8 +41,9 @@
                     </div>
                 </section>
  
-                <section style="padding: 80px 95px 96px; background: #F4F1EA; color: #1D1D1D; border-bottom: 4px #1D1D1D solid;">
-                    <div style="width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 48px;">
+                <!-- Content Section -->
+                <section style="background: #F4F1EA; color: #1D1D1D; border-bottom: 4px #1D1D1D solid;" class="py-16 md:py-20">
+                    <div class="w-full max-w-5xl mx-auto px-4 sm:px-8 flex flex-col gap-10">
                         <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: flex-start;">
                             @foreach ($blogCategories as $category)
                                 @php
