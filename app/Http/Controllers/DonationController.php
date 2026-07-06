@@ -16,9 +16,18 @@ class DonationController extends Controller
             'donor_email' => 'required|email|max:255',
             'donor_phone' => 'required|string|max:20',
             'amount' => 'required|integer|min:10000',
-            'campaign_id' => 'nullable|exists:contents,id',
         ]);
- 
+
+        if (!empty($validated['campaign_id'])) {
+            $campaign = \App\Models\Content::find($validated['campaign_id']);
+            if (!$campaign || $campaign->category !== 'donasi') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kampanye donasi tidak valid.'
+                ], 422);
+            }
+        }
+
         $orderId = 'WALHI-DON-' . time() . '-' . Str::upper(Str::random(4));
         $serverKey = config('midtrans.server_key');
         $isProduction = config('midtrans.is_production');
@@ -130,6 +139,10 @@ class DonationController extends Controller
  
     public function mockPaymentStatus(Request $request)
     {
+        if (!app()->environment('local', 'testing')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validated = $request->validate([
             'order_id' => 'required|exists:donations,order_id',
             'status' => 'required|in:success,failed,pending,expired',

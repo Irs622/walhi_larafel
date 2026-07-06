@@ -101,7 +101,7 @@
                                             </form>
                                             
                                             <!-- Edit -->
-                                            <button onclick='openEditModal({!! json_encode($item) !!})' class="p-1.5 rounded hover:bg-[#f0f5ff] text-[#555] transition-colors">
+                                            <button onclick="openEditModal(this)" data-item="{{ json_encode($item) }}" class="p-1.5 rounded hover:bg-[#f0f5ff] text-[#555] transition-colors">
                                                 <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
                                             </button>
 
@@ -249,7 +249,8 @@
         modal.classList.remove('hidden');
     }
 
-    function openEditModal(item) {
+    function openEditModal(button) {
+        const item = JSON.parse(button.getAttribute('data-item'));
         currentMode = 'edit';
         modalTitle.innerText = 'Edit ' + item.title;
         
