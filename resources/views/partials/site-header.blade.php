@@ -43,11 +43,11 @@
             </div>
             <!-- Right Side -->
             <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="https://facebook.com/walhi.jabar" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">Facebook</a>
+                <a href="{{ $globalContact->facebook }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">Facebook</a>
                 <span style="color: #256D4A; font-size: 16px; font-family: Inter, sans-serif; user-select: none;">|</span>
-                <a href="https://instagram.com/walhi.jabar" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">Instagram</a>
+                <a href="{{ $globalContact->instagram }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">Instagram</a>
                 <span style="color: #256D4A; font-size: 16px; font-family: Inter, sans-serif; user-select: none;">|</span>
-                <a href="https://www.youtube.com/@walhijabar" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">YouTube</a>
+                <a href="{{ $globalContact->youtube }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">YouTube</a>
             </div>
         </div>
     </div>
