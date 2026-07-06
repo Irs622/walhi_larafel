@@ -27,8 +27,18 @@ class PublicContentController extends Controller
         $sejarah = Content::where('category', 'sejarah')
             ->where('status', 'published')
             ->first();
+
+        $stats = Content::where('category', 'statistik')
+            ->where('status', 'published')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $issues = Content::where('category', 'isu-kritis')
+            ->where('status', 'published')
+            ->orderBy('id', 'asc')
+            ->get();
  
-        return view('welcome', compact('featuredNews', 'newsCards', 'reports', 'sejarah'));
+        return view('welcome', compact('featuredNews', 'newsCards', 'reports', 'sejarah', 'stats', 'issues'));
     }
  
     public function blog(Request $request)
