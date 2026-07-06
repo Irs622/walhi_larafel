@@ -60,13 +60,22 @@
             <div class="flex flex-col gap-2 max-w-2xl w-full">
                 <h4 class="text-2xl md:text-3xl font-label uppercase tracking-wider text-[#F4F1EA]">Berlangganan Newsletter</h4>
                 <p class="text-sm md:text-base text-[#F4F1EA]/90">Dapatkan update terbaru tentang isu lingkungan, kampanye, dan aksi-aksi WALHI Jawa Barat.</p>
+                @if(session('subscribe_success'))
+                    <div class="text-xs font-semibold text-[#1D1D1D] bg-[#F4F1EA] py-1.5 px-3 border border-[#1D1D1D] inline-block mt-2 self-start w-fit">
+                        {{ session('subscribe_success') }}
+                    </div>
+                @endif
             </div>
-            <form action="#" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <form action="{{ route('newsletter.subscribe') }}" method="POST" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                @csrf
+                <!-- Honeypot -->
+                <input type="text" name="extra_name" style="display: none !important;" tabindex="-1" autocomplete="off" />
+
                 <div class="relative flex-grow sm:w-64">
-                    <input type="email" placeholder="Email kamu" class="w-full py-3 pl-12 pr-4 bg-white text-[#1D1D1D] border-2 border-transparent focus:border-[#D95C3F] outline-none font-sans" required />
+                    <input type="email" name="email" placeholder="Email kamu" class="w-full py-3 pl-12 pr-4 bg-white text-[#1D1D1D] border-2 border-transparent focus:border-[#D95C3F] outline-none font-sans" required />
                     <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 text-[#5C8D59] w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                 </div>
-                <button type="submit" class="bg-[#D95C3F] hover:bg-[#c44e32] transition-colors text-white font-bold uppercase tracking-wider px-8 py-3 whitespace-nowrap font-sans text-sm">Subscribe</button>
+                <button type="submit" class="bg-[#D95C3F] hover:bg-[#c44e32] transition-colors text-white font-bold uppercase tracking-wider px-8 py-3 whitespace-nowrap font-sans text-sm border-2 border-transparent hover:border-[#1D1D1D]">Subscribe</button>
             </form>
         </div>
 

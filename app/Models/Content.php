@@ -23,4 +23,9 @@ class Content extends Model
     protected $casts = [
         'publish_date' => 'date:Y-m-d',
     ];
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
