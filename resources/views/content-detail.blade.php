@@ -243,6 +243,107 @@
                                     </div>
                                 @endif
                             </article>
+
+                            <!-- Comments Section -->
+                            @if($item->category === 'blog' || $item->category === 'siaran-pers')
+                                <div style="border-top: 4px solid #1D1D1D; margin-top: 48px; padding-top: 48px; display: flex; flex-direction: column; gap: 32px;">
+                                    <h3 style="font-family: Bebas Neue, sans-serif; font-size: 36px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
+                                        Komentar ({{ $item->comments()->where('status', 'approved')->count() }})
+                                    </h3>
+
+                                    <!-- Success Alert -->
+                                    @if(session('comment_success'))
+                                        <div style="background: #256D4A; border: 4px solid #1D1D1D; color: white; padding: 20px; font-weight: 600; font-size: 16px; margin: 0;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
+                                            {{ session('comment_success') }}
+                                        </div>
+                                    @endif
+
+                                    <!-- Comments List -->
+                                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                                        @forelse($item->comments()->where('status', 'approved')->whereNull('parent_id')->orderBy('created_at', 'desc')->get() as $comment)
+                                            <div style="background: white; border: 4px solid #1D1D1D; padding: 24px; display: flex; flex-direction: column; gap: 16px;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                                                    <div style="font-weight: 800; font-size: 18px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif; tracking: 0.5px;">{{ $comment->author_name }}</div>
+                                                    <div style="font-size: 12px; color: #666; font-weight: 600;">{{ $comment->created_at->translatedFormat('d M Y - H:i') }}</div>
+                                                </div>
+                                                <p style="font-size: 16px; line-height: 1.6; color: #333; margin: 0; white-space: pre-wrap; font-family: Inter, sans-serif;">{{ $comment->body }}</p>
+                                                
+                                                <!-- Reply Button -->
+                                                <div style="display: flex; justify-content: flex-end;">
+                                                    <button onclick="document.getElementById('reply-form-{{ $comment->id }}').style.display = document.getElementById('reply-form-{{ $comment->id }}').style.display === 'none' ? 'block' : 'none'" style="background: transparent; border: none; font-size: 12px; font-weight: 700; color: #256D4A; cursor: pointer; text-transform: uppercase; padding: 0; font-family: Inter, sans-serif; letter-spacing: 0.5px;">Balas Komentar</button>
+                                                </div>
+
+                                                <!-- Replies nested list -->
+                                                @if($comment->replies()->where('status', 'approved')->count() > 0)
+                                                    <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 16px; border-left: 4px solid #256D4A; padding-left: 20px;">
+                                                        @foreach($comment->replies()->where('status', 'approved')->orderBy('created_at', 'asc')->get() as $reply)
+                                                            <div style="background: #F4F1EA; border: 4px solid #1D1D1D; padding: 16px; display: flex; flex-direction: column; gap: 8px;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
+                                                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                                                    <div style="font-weight: 800; font-size: 15px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif;">
+                                                                        {{ $reply->author_name }} 
+                                                                        <span style="font-size: 10px; background: #256D4A; color: white; padding: 2px 6px; text-transform: uppercase; margin-left: 6px; font-family: Inter, sans-serif; font-weight: 700;">Moderator</span>
+                                                                    </div>
+                                                                    <div style="font-size: 11px; color: #666; font-weight: 600;">{{ $reply->created_at->translatedFormat('d M Y - H:i') }}</div>
+                                                                </div>
+                                                                <p style="font-size: 14px; line-height: 1.5; color: #333; margin: 0; white-space: pre-wrap; font-family: Inter, sans-serif;">{{ $reply->body }}</p>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+
+                                                <!-- Nested Reply Form -->
+                                                <div id="reply-form-{{ $comment->id }}" style="display: none; margin-top: 16px; padding-top: 20px; border-top: 2px dashed #1D1D1D;">
+                                                    <form action="{{ route('comments.store', $item->id) }}" method="POST" style="display: flex; flex-direction: column; gap: 12px;">
+                                                        @csrf
+                                                        <input type="hidden" name="parent_id" value="{{ $comment->id }}" />
+                                                        
+                                                        <!-- Honeypot -->
+                                                        <input type="text" name="extra_phone" style="display: none !important;" tabindex="-1" autocomplete="off" />
+
+                                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                                            <input type="text" name="author_name" placeholder="Nama Anda" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                            <input type="email" name="author_email" placeholder="Email Anda" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                        </div>
+                                                        <textarea name="body" rows="3" placeholder="Tulis balasan komentar Anda..." required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif; resize: vertical;"></textarea>
+                                                        <button type="submit" style="align-self: flex-start; height: 44px; padding: 0 20px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 12px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;">Kirim Balasan</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div style="font-style: italic; color: #666; font-size: 16px; font-family: Inter, sans-serif;">Belum ada komentar. Jadilah yang pertama memberikan tanggapan!</div>
+                                        @endforelse
+                                    </div>
+
+                                    <!-- Add Comment Form -->
+                                    <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 32px;" class="shadow-[8px_8px_0px_0px_#1D1D1D]">
+                                        <h4 style="font-family: Bebas Neue, sans-serif; font-size: 28px; text-transform: uppercase; margin: 0 0 20px; color: #1D1D1D; letter-spacing: 0.5px;">Tulis Komentar Anda</h4>
+                                        <form action="{{ route('comments.store', $item->id) }}" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
+                                            @csrf
+                                            
+                                            <!-- Honeypot -->
+                                            <input type="text" name="extra_phone" style="display: none !important;" tabindex="-1" autocomplete="off" />
+
+                                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; width: 100%;">
+                                                <div style="display: flex; flex-direction: column; gap: 6px;">
+                                                    <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Nama Lengkap *</label>
+                                                    <input type="text" name="author_name" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                </div>
+                                                <div style="display: flex; flex-direction: column; gap: 6px;">
+                                                    <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Email (tidak dipublikasikan) *</label>
+                                                    <input type="email" name="author_email" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                </div>
+                                            </div>
+
+                                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                                <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Isi Komentar *</label>
+                                                <textarea name="body" rows="5" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif; resize: vertical;"></textarea>
+                                            </div>
+
+                                            <button type="submit" style="align-self: flex-start; height: 52px; padding: 0 32px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;" class="btn-action">Kirim Komentar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endif
                         @endif
  
                     </div>

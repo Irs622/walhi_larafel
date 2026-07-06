@@ -6,6 +6,10 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\PublicContentController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\Admin\AdminCommentController;
+use App\Http\Controllers\Admin\AdminSubscriberController;
 
 // ============================================================
 // PUBLIC ROUTES (No Authentication Required)
@@ -20,6 +24,8 @@ Route::get('/dashboard', function () {
 
 Route::get('/blog', [PublicContentController::class, 'blog'])->name('blog');
 Route::get('/konten/{slug}', [PublicContentController::class, 'show'])->name('content.show');
+Route::post('/konten/{content}/komentar', [CommentController::class, 'store'])->name('comments.store');
+Route::post('/newsletter/subscribe', [SubscriptionController::class, 'subscribe'])->name('newsletter.subscribe');
  
 Route::get('/sitemap.xml', function() {
     $contents = \App\Models\Content::select('slug', 'updated_at')
@@ -171,6 +177,17 @@ Route::middleware('auth')->group(function () {
         Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.update');
         Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->name('content.destroy');
         Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.toggle-status');
+
+        // Comments Moderation
+        Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
+        Route::post('/comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
+        Route::post('/comments/{comment}/spam', [AdminCommentController::class, 'spam'])->name('comments.spam');
+        Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
+
+        // Newsletter Subscribers
+        Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
+        Route::get('/subscribers/export', [AdminSubscriberController::class, 'export'])->name('subscribers.export');
+        Route::delete('/subscribers/{subscriber}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
     });
 });
 

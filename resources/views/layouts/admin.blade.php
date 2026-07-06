@@ -12,6 +12,8 @@ $breadcrumbMap = [
     'admin/laporan-tahunan' => 'Publikasi › Laporan Tahunan',
     'admin/donasi' => 'Dukung Kami › Donasi Publik',
     'admin/pekan-rakyat' => 'Dukung Kami › Pekan Rakyat',
+    'admin/comments' => 'Moderasi Komentar',
+    'admin/subscribers' => 'Pelanggan (Newsletter)',
     'admin/tentang/sejarah' => 'Tentang Kami › Sejarah',
     'admin/tentang/visi-misi' => 'Tentang Kami › Visi & Misi',
     'admin/tentang/dewan-nasional' => 'Tentang Kami › Dewan Nasional',
@@ -86,6 +88,18 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                 <a href="{{ route('admin.content.index', 'regulasi') }}" class="flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ request()->is('admin/regulasi*') ? 'bg-[#256D4A] text-white' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
                     <i data-lucide="book-open" class="w-4 h-4 shrink-0"></i>
                     <span class="nav-label">Regulasi</span>
+                </a>
+
+                <!-- Comments Link -->
+                <a href="{{ route('admin.comments.index') }}" class="flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ request()->is('admin/comments*') ? 'bg-[#256D4A] text-white' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
+                    <i data-lucide="message-square" class="w-4 h-4 shrink-0"></i>
+                    <span class="nav-label">Komentar</span>
+                </a>
+
+                <!-- Subscribers Link -->
+                <a href="{{ route('admin.subscribers.index') }}" class="flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ request()->is('admin/subscribers*') ? 'bg-[#256D4A] text-white' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
+                    <i data-lucide="mail" class="w-4 h-4 shrink-0"></i>
+                    <span class="nav-label">Pelanggan</span>
                 </a>
 
                 <!-- Publikasi Dropdown Group -->
