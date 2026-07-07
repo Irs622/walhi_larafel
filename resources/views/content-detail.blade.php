@@ -38,62 +38,12 @@
  
             <main style="display: flex; flex-direction: column; align-items: stretch;">
                 
-                <!-- Hero Header -->
-                <section style="background: #1D1D1D; border-bottom: 4px #256D4A solid; color: #F4F1EA;" class="py-12 md:py-16">
-                    <div class="w-full max-w-5xl mx-auto px-4 sm:px-8">
-                        <div style="display: flex; flex-direction: column; gap: 24px; width: 100%;">
-                            <!-- Breadcrumbs -->
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">
-                                <a href="{{ route('home') }}" style="color: #F4F1EA; text-decoration: none; opacity: 0.8;">Beranda</a>
-                                <span style="color: #256D4A; font-weight: 400; font-size: 16px;">/</span>
-                                <span style="color: #F4F1EA; opacity: 0.8; text-transform: uppercase;">{{ str_replace('-', ' ', $item->category) }}</span>
-                                <span style="color: #256D4A; font-weight: 400; font-size: 16px;">/</span>
-                                <span style="color: #5C8D59;">Detail</span>
-                            </div>
-                            
-                            <h1 style="margin: 0; color: #F4F1EA; font-size: clamp(36px, 5vw, 64px); font-family: Anton, sans-serif; font-weight: 400; line-height: 1.05; letter-spacing: 1px; text-transform: uppercase;">
-                                {{ $item->title }}
-                            </h1>
-                            <div style="width: 128px; height: 8px; background: #D95C3F;"></div>
-                            
-                            @if($item->category === 'blog' || $item->category === 'siaran-pers')
-                                <div style="display: flex; align-items: center; gap: 16px; color: #5C8D59; font-size: 13px; font-weight: 600; flex-wrap: wrap; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    <div style="display: flex; align-items: center; gap: 6px;">
-                                        <i data-lucide="user" style="width: 15px; height: 15px;"></i>
-                                        <span>{{ $item->author ?: 'WALHI Jawa Barat' }}</span>
-                                    </div>
-                                    <span>▪</span>
-                                    <div style="display: flex; align-items: center; gap: 6px;">
-                                        <i data-lucide="calendar" style="width: 15px; height: 15px;"></i>
-                                        <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('F j, Y') : $item->created_at->translatedFormat('F j, Y') }}</span>
-                                    </div>
-                                    <span>▪</span>
-                                    <div style="display: flex; align-items: center; gap: 6px;">
-                                        <i data-lucide="message-square" style="width: 15px; height: 15px;"></i>
-                                        <span>
-                                            @php
-                                                $approvedCommentsCount = $item->comments()->where('status', 'approved')->count();
-                                            @endphp
-                                            {{ $approvedCommentsCount === 0 ? 'No Comments' : ($approvedCommentsCount === 1 ? '1 Comment' : $approvedCommentsCount . ' Comments') }}
-                                        </span>
-                                    </div>
-                                    <span>▪</span>
-                                    <div style="display: flex; align-items: center; gap: 6px;">
-                                        <i data-lucide="clock" style="width: 15px; height: 15px;"></i>
-                                        <span>{{ $readTime }} Min Read</span>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </section>
- 
                 <!-- Content Section -->
                 <section style="background: #F4F1EA;" class="py-12 md:py-16">
                     <div class="w-full @if($item->category === 'blog' || $item->category === 'siaran-pers') max-w-6xl @else max-w-4xl @endif mx-auto px-4 sm:px-8 flex flex-col gap-10">
                         
-                        <!-- Back Button -->
-                        <div>
+                        <!-- Back Button & Breadcrumbs -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                             @php
                                 $backUrl = route('home');
                                 if($item->category === 'blog') $backUrl = route('blog');
@@ -105,6 +55,15 @@
                                 <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
                                 Kembali
                             </a>
+                            
+                            <!-- Breadcrumbs -->
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">
+                                <a href="{{ route('home') }}" style="color: #1D1D1D; text-decoration: none; opacity: 0.8;">Beranda</a>
+                                <span style="color: #256D4A; font-weight: 400; font-size: 16px;">/</span>
+                                <span style="color: #1D1D1D; opacity: 0.8; text-transform: uppercase;">{{ str_replace('-', ' ', $item->category) }}</span>
+                                <span style="color: #256D4A; font-weight: 400; font-size: 16px;">/</span>
+                                <span style="color: #5C8D59;">Detail</span>
+                            </div>
                         </div>
  
                         <!-- Rendering based on Category -->
@@ -145,6 +104,40 @@
                             @endphp
  
                             <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 40px; display: flex; flex-direction: column; gap: 32px;">
+                                <!-- Title & Metadata -->
+                                <div style="display: flex; flex-direction: column; gap: 16px; border-bottom: 2px solid #f0ede8; padding-bottom: 20px;">
+                                    <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(28px, 4.5vw, 54px); font-family: Anton, sans-serif; font-weight: 400; line-height: 1.1; letter-spacing: 0.5px; text-transform: uppercase;">
+                                        {{ $item->title }}
+                                    </h1>
+                                    
+                                    <div class="flex items-center flex-nowrap gap-1.5 md:gap-2.5 lg:gap-4 overflow-x-auto whitespace-nowrap scrollbar-none text-[9px] md:text-[10.5px] lg:text-[12px]" style="color: #5C8D59; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; -ms-overflow-style: none; scrollbar-width: none;">
+                                        <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                            <i data-lucide="user" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                            <span>{{ $item->author ?: 'WALHI Jawa Barat' }}</span>
+                                        </div>
+                                        <span class="flex-shrink-0">▪</span>
+                                        <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                            <i data-lucide="calendar" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                            <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('F j, Y') : $item->created_at->translatedFormat('F j, Y') }}</span>
+                                        </div>
+                                        <span class="flex-shrink-0">▪</span>
+                                        <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                            <i data-lucide="message-square" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                            <span>
+                                                @php
+                                                    $approvedCommentsCount = $item->comments()->where('status', 'approved')->count();
+                                                @endphp
+                                                {{ $approvedCommentsCount === 0 ? 'No Comments' : ($approvedCommentsCount === 1 ? '1 Comment' : $approvedCommentsCount . ' Comments') }}
+                                            </span>
+                                        </div>
+                                        <span class="flex-shrink-0">▪</span>
+                                        <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                            <i data-lucide="clock" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                            <span>{{ $readTime }} Min Read</span>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1D1D1D; padding-bottom: 20px; flex-wrap: wrap; gap: 16px;">
                                     <div style="display: flex; align-items: center; gap: 12px;">
                                         <span style="background: #256D4A; color: white; padding: 4px 12px; font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ $cardCategory }}</span>
@@ -212,6 +205,40 @@
                             @endphp
 
                             <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 40px; display: flex; flex-direction: column; gap: 32px;">
+                                <!-- Title & Metadata -->
+                                <div style="display: flex; flex-direction: column; gap: 16px; border-bottom: 2px solid #f0ede8; padding-bottom: 20px;">
+                                    <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(28px, 4.5vw, 54px); font-family: Anton, sans-serif; font-weight: 400; line-height: 1.1; letter-spacing: 0.5px; text-transform: uppercase;">
+                                        {{ $item->title }}
+                                    </h1>
+                                    
+                                    <div class="flex items-center flex-nowrap gap-1.5 md:gap-2.5 lg:gap-4 overflow-x-auto whitespace-nowrap scrollbar-none text-[9px] md:text-[10.5px] lg:text-[12px]" style="color: #5C8D59; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; -ms-overflow-style: none; scrollbar-width: none;">
+                                        <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                            <i data-lucide="user" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                            <span>{{ $item->author ?: 'WALHI Jawa Barat' }}</span>
+                                        </div>
+                                        <span class="flex-shrink-0">▪</span>
+                                        <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                            <i data-lucide="calendar" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                            <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('F j, Y') : $item->created_at->translatedFormat('F j, Y') }}</span>
+                                        </div>
+                                        <span class="flex-shrink-0">▪</span>
+                                        <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                            <i data-lucide="message-square" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                            <span>
+                                                @php
+                                                    $approvedCommentsCount = $item->comments()->where('status', 'approved')->count();
+                                                @endphp
+                                                {{ $approvedCommentsCount === 0 ? 'No Comments' : ($approvedCommentsCount === 1 ? '1 Comment' : $approvedCommentsCount . ' Comments') }}
+                                            </span>
+                                        </div>
+                                        <span class="flex-shrink-0">▪</span>
+                                        <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                            <i data-lucide="clock" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                            <span>{{ $readTime }} Min Read</span>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div style="display: flex; gap: 24px; align-items: center; border-bottom: 2px solid #1D1D1D; padding-bottom: 20px;">
                                     <div style="width: 80px; height: 80px; background: #256D4A; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; font-family: Anton, sans-serif; font-size: 24px;">
                                         {{ $year }}
@@ -275,6 +302,40 @@
                                 <!-- Left Column: Article & Comments (70% width) -->
                                 <div class="lg:col-span-2 flex flex-col gap-10">
                                     <article style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px;" class="p-5 md:p-8 lg:p-10 flex flex-col gap-5 md:gap-6">
+                                        <!-- Title & Metadata -->
+                                        <div style="display: flex; flex-direction: column; gap: 16px; border-bottom: 2px solid #f0ede8; padding-bottom: 20px; margin-bottom: 10px;">
+                                            <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(28px, 4.5vw, 54px); font-family: Anton, sans-serif; font-weight: 400; line-height: 1.1; letter-spacing: 0.5px; text-transform: uppercase;">
+                                                {{ $item->title }}
+                                            </h1>
+                                            
+                                            <div class="flex items-center flex-nowrap gap-1.5 md:gap-2.5 lg:gap-4 overflow-x-auto whitespace-nowrap scrollbar-none text-[9px] md:text-[10.5px] lg:text-[12px]" style="color: #5C8D59; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; -ms-overflow-style: none; scrollbar-width: none;">
+                                                <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                                    <i data-lucide="user" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                                    <span>{{ $item->author ?: 'WALHI Jawa Barat' }}</span>
+                                                </div>
+                                                <span class="flex-shrink-0">▪</span>
+                                                <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                                    <i data-lucide="calendar" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                                    <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('F j, Y') : $item->created_at->translatedFormat('F j, Y') }}</span>
+                                                </div>
+                                                <span class="flex-shrink-0">▪</span>
+                                                <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                                    <i data-lucide="message-square" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                                    <span>
+                                                        @php
+                                                            $approvedCommentsCount = $item->comments()->where('status', 'approved')->count();
+                                                        @endphp
+                                                        {{ $approvedCommentsCount === 0 ? 'No Comments' : ($approvedCommentsCount === 1 ? '1 Comment' : $approvedCommentsCount . ' Comments') }}
+                                                    </span>
+                                                </div>
+                                                <span class="flex-shrink-0">▪</span>
+                                                <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
+                                                    <i data-lucide="clock" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
+                                                    <span>{{ $readTime }} Min Read</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <!-- Cover Image -->
                                         @if($item->image_url)
                                             <div style="width: 100%; border: 4px solid #1D1D1D; background: #1D1D1D; overflow: hidden; max-height: 480px;">
