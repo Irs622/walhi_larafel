@@ -18,10 +18,13 @@ class Content extends Model
         'image_url',
         'publish_date',
         'category',
+        'is_promoted',
+        'author',
     ];
 
     protected $casts = [
         'publish_date' => 'date:Y-m-d',
+        'is_promoted' => 'boolean',
     ];
 
     public function comments()

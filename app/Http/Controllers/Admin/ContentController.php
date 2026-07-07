@@ -105,7 +105,11 @@ class ContentController extends Controller
             'status' => 'required|in:published,draft,archived',
             'image_url' => 'nullable|string',
             'image' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,pdf,xls,xlsx,doc,docx|max:10240',
+            'is_promoted' => 'nullable|boolean',
+            'author' => 'nullable|string|max:255',
         ]);
+
+        $validated['is_promoted'] = $request->boolean('is_promoted');
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title']);
@@ -161,7 +165,11 @@ class ContentController extends Controller
             'image_url' => 'nullable|string',
             'image' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,pdf,xls,xlsx,doc,docx|max:10240',
             'publish_date' => 'nullable|date',
+            'is_promoted' => 'nullable|boolean',
+            'author' => 'nullable|string|max:255',
         ]);
+
+        $validated['is_promoted'] = $request->boolean('is_promoted');
 
         $validated['slug'] = Str::slug($validated['slug']);
 

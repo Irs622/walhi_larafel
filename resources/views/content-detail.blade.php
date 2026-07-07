@@ -57,15 +57,30 @@
                             <div style="width: 128px; height: 8px; background: #D95C3F;"></div>
                             
                             @if($item->category === 'blog' || $item->category === 'siaran-pers')
-                                <div style="display: flex; align-items: center; gap: 16px; color: #5C8D59; font-size: 14px; font-weight: 600; flex-wrap: wrap;">
+                                <div style="display: flex; align-items: center; gap: 16px; color: #5C8D59; font-size: 13px; font-weight: 600; flex-wrap: wrap; text-transform: uppercase; letter-spacing: 0.5px;">
                                     <div style="display: flex; align-items: center; gap: 6px;">
-                                        <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
-                                        <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('d F Y') : $item->created_at->translatedFormat('d F Y') }}</span>
+                                        <i data-lucide="user" style="width: 15px; height: 15px;"></i>
+                                        <span>{{ $item->author ?: 'WALHI Jawa Barat' }}</span>
                                     </div>
                                     <span>▪</span>
                                     <div style="display: flex; align-items: center; gap: 6px;">
-                                        <i data-lucide="clock" style="width: 16px; height: 16px;"></i>
-                                        <span>{{ $readTime }} Menit Baca</span>
+                                        <i data-lucide="calendar" style="width: 15px; height: 15px;"></i>
+                                        <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('F j, Y') : $item->created_at->translatedFormat('F j, Y') }}</span>
+                                    </div>
+                                    <span>▪</span>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <i data-lucide="message-square" style="width: 15px; height: 15px;"></i>
+                                        <span>
+                                            @php
+                                                $approvedCommentsCount = $item->comments()->where('status', 'approved')->count();
+                                            @endphp
+                                            {{ $approvedCommentsCount === 0 ? 'No Comments' : ($approvedCommentsCount === 1 ? '1 Comment' : $approvedCommentsCount . ' Comments') }}
+                                        </span>
+                                    </div>
+                                    <span>▪</span>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <i data-lucide="clock" style="width: 15px; height: 15px;"></i>
+                                        <span>{{ $readTime }} Min Read</span>
                                     </div>
                                 </div>
                             @endif
@@ -75,7 +90,7 @@
  
                 <!-- Content Section -->
                 <section style="background: #F4F1EA;" class="py-12 md:py-16">
-                    <div class="w-full max-w-4xl mx-auto px-4 sm:px-8 flex flex-col gap-10">
+                    <div class="w-full @if($item->category === 'blog' || $item->category === 'siaran-pers') max-w-6xl @else max-w-4xl @endif mx-auto px-4 sm:px-8 flex flex-col gap-10">
                         
                         <!-- Back Button -->
                         <div>
@@ -253,135 +268,252 @@
                                     @endif
                                 </div>
                             </div>
- 
                         @else
-                            <!-- DEFAULT BLOG & SIARAN PERS LAYOUT -->
-                            <article style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 48px; display: flex; flex-direction: column; gap: 32px;">
+                            <!-- DEFAULT BLOG & SIARAN PERS LAYOUT WITH SIDEBAR -->
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                                 
-                                <!-- Cover Image -->
-                                @if($item->image_url)
-                                    <div style="width: 100%; border: 4px solid #1D1D1D; background: #1D1D1D; overflow: hidden; max-height: 480px;">
-                                        <img style="width: 100%; height: auto; object-fit: cover; display: block;" src="{{ $item->image_url }}" alt="{{ $item->title }}" />
-                                    </div>
-                                @endif
-                                
-                                <!-- Article Body -->
-                                <div style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Inter, sans-serif; white-space: pre-line;">
-                                    {!! $item->body !!}
-                                </div>
-                                
-                                <!-- Tags / Chips -->
-                                @if($item->tags)
-                                    <div style="display: flex; flex-wrap: wrap; gap: 8px; border-top: 2px solid #1D1D1D; padding-top: 24px;">
-                                        @foreach(array_map('trim', explode(',', $item->tags)) as $tag)
-                                            <span style="padding: 6px 12px; background: #F4F1EA; border: 2px solid #1D1D1D; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #1D1D1D;">
-                                                #{{ $tag }}
-                                            </span>
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </article>
+                                <!-- Left Column: Article & Comments (70% width) -->
+                                <div class="lg:col-span-2 flex flex-col gap-10">
+                                    <article style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px;" class="p-5 md:p-8 lg:p-10 flex flex-col gap-5 md:gap-6">
+                                        <!-- Cover Image -->
+                                        @if($item->image_url)
+                                            <div style="width: 100%; border: 4px solid #1D1D1D; background: #1D1D1D; overflow: hidden; max-height: 480px;">
+                                                <img style="width: 100%; height: auto; object-fit: cover; display: block;" src="{{ $item->image_url }}" alt="{{ $item->title }}" />
+                                            </div>
+                                        @endif
 
-                            <!-- Comments Section -->
-                            @if($item->category === 'blog' || $item->category === 'siaran-pers' || $item->category === 'infografis')
-                                <div style="border-top: 4px solid #1D1D1D; margin-top: 48px; padding-top: 48px; display: flex; flex-direction: column; gap: 32px;">
-                                    <h3 style="font-family: Bebas Neue, sans-serif; font-size: 36px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
-                                        Komentar ({{ $item->comments()->where('status', 'approved')->count() }})
-                                    </h3>
+                                        <!-- Article Body -->
+                                        <div style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Inter, sans-serif; white-space: pre-line;">
+                                            {!! $item->body !!}
+                                        </div>
 
-                                    <!-- Success Alert -->
-                                    @if(session('comment_success'))
-                                        <div style="background: #256D4A; border: 4px solid #1D1D1D; color: white; padding: 20px; font-weight: 600; font-size: 16px; margin: 0;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
-                                            {{ session('comment_success') }}
+                                        <!-- Share Buttons -->
+                                        <div style="border-top: 2px solid #1D1D1D; padding-top: 24px; display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+                                            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #888;">Bagikan Tulisan Ini</div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px; background: #3b5998; color: white; border: 2px solid #1D1D1D; text-decoration: none; font-size: 11px; font-weight: 700; text-transform: uppercase;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">
+                                                    <i data-lucide="facebook" style="width: 14px; height: 14px;"></i>
+                                                    Facebook
+                                                </a>
+                                                <a href="https://twitter.com/intent/tweet?url={{ urlencode(url()->current()) }}&text={{ urlencode($item->title) }}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px; background: #000000; color: white; border: 2px solid #1D1D1D; text-decoration: none; font-size: 11px; font-weight: 700; text-transform: uppercase;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">
+                                                    <i data-lucide="twitter" style="width: 14px; height: 14px;"></i>
+                                                    Twitter
+                                                </a>
+                                                <a href="https://api.whatsapp.com/send?text={{ urlencode($item->title . ' ' . url()->current()) }}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px; background: #25D366; color: white; border: 2px solid #1D1D1D; text-decoration: none; font-size: 11px; font-weight: 700; text-transform: uppercase;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">
+                                                    <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>
+                                                    WhatsApp
+                                                </a>
+                                                <a href="https://telegram.me/share/url?url={{ urlencode(url()->current()) }}&text={{ urlencode($item->title) }}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px; background: #0088cc; color: white; border: 2px solid #1D1D1D; text-decoration: none; font-size: 11px; font-weight: 700; text-transform: uppercase;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">
+                                                    <i data-lucide="send" style="width: 14px; height: 14px;"></i>
+                                                    Telegram
+                                                </a>
+                                                <button onclick="copyToClipboard('{{ url()->current() }}')" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px; background: #ffffff; color: #1D1D1D; border: 2px solid #1D1D1D; cursor: pointer; font-size: 11px; font-weight: 700; text-transform: uppercase; font-family: Inter, sans-serif;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">
+                                                    <i data-lucide="link" style="width: 14px; height: 14px;"></i>
+                                                    Salin Link
+                                                </button>
+                                                <span id="copy-success-msg" style="display: none; font-size: 11px; color: #256D4A; font-weight: 700; text-transform: uppercase; margin-left: 8px;">Disalin!</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Tags / Chips -->
+                                        @if($item->tags)
+                                            <div style="display: flex; flex-wrap: wrap; gap: 8px; border-top: 2px solid #1D1D1D; padding-top: 24px;">
+                                                @foreach(array_map('trim', explode(',', $item->tags)) as $tag)
+                                                    <span style="padding: 6px 12px; background: #F4F1EA; border: 2px solid #1D1D1D; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #1D1D1D;">
+                                                        #{{ $tag }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </article>
+
+                                    <!-- Comments Section -->
+                                    @if($item->category === 'blog' || $item->category === 'siaran-pers' || $item->category === 'infografis')
+                                        <div style="border-top: 4px solid #1D1D1D; margin-top: 48px; padding-top: 48px; display: flex; flex-direction: column; gap: 32px;">
+                                            <h3 style="font-family: Bebas Neue, sans-serif; font-size: 36px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
+                                                Komentar ({{ $item->comments()->where('status', 'approved')->count() }})
+                                            </h3>
+
+                                            <!-- Success Alert -->
+                                            @if(session('comment_success'))
+                                                <div style="background: #256D4A; border: 4px solid #1D1D1D; color: white; padding: 20px; font-weight: 600; font-size: 16px; margin: 0;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
+                                                    {{ session('comment_success') }}
+                                                </div>
+                                            @endif
+
+                                            <!-- Comments List -->
+                                            <div style="display: flex; flex-direction: column; gap: 24px;">
+                                                @forelse($item->comments()->where('status', 'approved')->whereNull('parent_id')->orderBy('created_at', 'desc')->get() as $comment)
+                                                    <div style="background: white; border: 4px solid #1D1D1D; display: flex; flex-direction: column; gap: 16px;" class="p-4 md:p-5 shadow-[4px_4px_0px_0px_#1D1D1D]">
+                                                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                                                            <div style="font-weight: 800; font-size: 18px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif; tracking: 0.5px;">{{ $comment->author_name }}</div>
+                                                            <div style="font-size: 12px; color: #666; font-weight: 600;">{{ $comment->created_at->translatedFormat('d M Y - H:i') }}</div>
+                                                        </div>
+                                                        <p style="font-size: 16px; line-height: 1.6; color: #333; margin: 0; white-space: pre-wrap; font-family: Inter, sans-serif;">{{ $comment->body }}</p>
+                                                        
+                                                        <!-- Reply Button -->
+                                                        <div style="display: flex; justify-content: flex-end;">
+                                                            <button onclick="document.getElementById('reply-form-{{ $comment->id }}').style.display = document.getElementById('reply-form-{{ $comment->id }}').style.display === 'none' ? 'block' : 'none'" style="background: transparent; border: none; font-size: 12px; font-weight: 700; color: #256D4A; cursor: pointer; text-transform: uppercase; padding: 0; font-family: Inter, sans-serif; letter-spacing: 0.5px;">Balas Komentar</button>
+                                                        </div>
+
+                                                        <!-- Replies nested list -->
+                                                        @if($comment->replies()->where('status', 'approved')->count() > 0)
+                                                            <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 16px; border-left: 4px solid #256D4A; padding-left: 20px;">
+                                                                @foreach($comment->replies()->where('status', 'approved')->orderBy('created_at', 'asc')->get() as $reply)
+                                                                    <div style="background: #F4F1EA; border: 4px solid #1D1D1D; padding: 16px; display: flex; flex-direction: column; gap: 8px;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
+                                                                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                                                            <div style="font-weight: 800; font-size: 15px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif;">
+                                                                                {{ $reply->author_name }} 
+                                                                                <span style="font-size: 10px; background: #256D4A; color: white; padding: 2px 6px; text-transform: uppercase; margin-left: 6px; font-family: Inter, sans-serif; font-weight: 700;">Moderator</span>
+                                                                            </div>
+                                                                            <div style="font-size: 11px; color: #666; font-weight: 600;">{{ $reply->created_at->translatedFormat('d M Y - H:i') }}</div>
+                                                                        </div>
+                                                                        <p style="font-size: 14px; line-height: 1.5; color: #333; margin: 0; white-space: pre-wrap; font-family: Inter, sans-serif;">{{ $reply->body }}</p>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+
+                                                        <!-- Nested Reply Form -->
+                                                        <div id="reply-form-{{ $comment->id }}" style="display: none; margin-top: 16px; padding-top: 20px; border-top: 2px dashed #1D1D1D;">
+                                                            <form action="{{ route('comments.store', $item->id) }}" method="POST" style="display: flex; flex-direction: column; gap: 12px;">
+                                                                @csrf
+                                                                <input type="hidden" name="parent_id" value="{{ $comment->id }}" />
+                                                                
+                                                                <!-- Honeypot -->
+                                                                <input type="text" name="extra_phone" style="display: none !important;" tabindex="-1" autocomplete="off" />
+
+                                                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                                                    <input type="text" name="author_name" placeholder="Nama Anda" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                                    <input type="email" name="author_email" placeholder="Email Anda" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                                </div>
+                                                                <textarea name="body" rows="3" placeholder="Tulis balasan komentar Anda..." required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif; resize: vertical;"></textarea>
+                                                                <button type="submit" style="align-self: flex-start; height: 44px; padding: 0 20px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 12px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;">Kirim Balasan</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                @empty
+                                                    <div style="font-style: italic; color: #666; font-size: 16px; font-family: Inter, sans-serif;">Belum ada komentar. Jadilah yang pertama memberikan tanggapan!</div>
+                                                @endforelse
+                                            </div>
+
+                                            <!-- Add Comment Form -->
+                                            <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px;" class="p-5 md:p-6 lg:p-8 shadow-[8px_8px_0px_0px_#1D1D1D]">
+                                                <h4 style="font-family: Bebas Neue, sans-serif; font-size: 28px; text-transform: uppercase; margin: 0 0 20px; color: #1D1D1D; letter-spacing: 0.5px;">Tulis Komentar Anda</h4>
+                                                <form action="{{ route('comments.store', $item->id) }}" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
+                                                    @csrf
+                                                    
+                                                    <!-- Honeypot -->
+                                                    <input type="text" name="extra_phone" style="display: none !important;" tabindex="-1" autocomplete="off" />
+
+                                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; width: 100%;">
+                                                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                                                            <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Nama Lengkap *</label>
+                                                            <input type="text" name="author_name" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                        </div>
+                                                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                                                            <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Email (tidak dipublikasikan) *</label>
+                                                            <input type="email" name="author_email" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                                                        <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Isi Komentar *</label>
+                                                        <textarea name="body" rows="5" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif; resize: vertical;"></textarea>
+                                                    </div>
+
+                                                    <button type="submit" style="align-self: flex-start; height: 52px; padding: 0 32px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;" class="btn-action">Kirim Komentar</button>
+                                                </form>
+                                            </div>
                                         </div>
                                     @endif
+                                </div>
 
-                                    <!-- Comments List -->
-                                    <div style="display: flex; flex-direction: column; gap: 24px;">
-                                        @forelse($item->comments()->where('status', 'approved')->whereNull('parent_id')->orderBy('created_at', 'desc')->get() as $comment)
-                                            <div style="background: white; border: 4px solid #1D1D1D; padding: 24px; display: flex; flex-direction: column; gap: 16px;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
-                                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-                                                    <div style="font-weight: 800; font-size: 18px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif; tracking: 0.5px;">{{ $comment->author_name }}</div>
-                                                    <div style="font-size: 12px; color: #666; font-weight: 600;">{{ $comment->created_at->translatedFormat('d M Y - H:i') }}</div>
-                                                </div>
-                                                <p style="font-size: 16px; line-height: 1.6; color: #333; margin: 0; white-space: pre-wrap; font-family: Inter, sans-serif;">{{ $comment->body }}</p>
-                                                
-                                                <!-- Reply Button -->
-                                                <div style="display: flex; justify-content: flex-end;">
-                                                    <button onclick="document.getElementById('reply-form-{{ $comment->id }}').style.display = document.getElementById('reply-form-{{ $comment->id }}').style.display === 'none' ? 'block' : 'none'" style="background: transparent; border: none; font-size: 12px; font-weight: 700; color: #256D4A; cursor: pointer; text-transform: uppercase; padding: 0; font-family: Inter, sans-serif; letter-spacing: 0.5px;">Balas Komentar</button>
-                                                </div>
-
-                                                <!-- Replies nested list -->
-                                                @if($comment->replies()->where('status', 'approved')->count() > 0)
-                                                    <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 16px; border-left: 4px solid #256D4A; padding-left: 20px;">
-                                                        @foreach($comment->replies()->where('status', 'approved')->orderBy('created_at', 'asc')->get() as $reply)
-                                                            <div style="background: #F4F1EA; border: 4px solid #1D1D1D; padding: 16px; display: flex; flex-direction: column; gap: 8px;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
-                                                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                                                                    <div style="font-weight: 800; font-size: 15px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif;">
-                                                                        {{ $reply->author_name }} 
-                                                                        <span style="font-size: 10px; background: #256D4A; color: white; padding: 2px 6px; text-transform: uppercase; margin-left: 6px; font-family: Inter, sans-serif; font-weight: 700;">Moderator</span>
-                                                                    </div>
-                                                                    <div style="font-size: 11px; color: #666; font-weight: 600;">{{ $reply->created_at->translatedFormat('d M Y - H:i') }}</div>
-                                                                </div>
-                                                                <p style="font-size: 14px; line-height: 1.5; color: #333; margin: 0; white-space: pre-wrap; font-family: Inter, sans-serif;">{{ $reply->body }}</p>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                @endif
-
-                                                <!-- Nested Reply Form -->
-                                                <div id="reply-form-{{ $comment->id }}" style="display: none; margin-top: 16px; padding-top: 20px; border-top: 2px dashed #1D1D1D;">
-                                                    <form action="{{ route('comments.store', $item->id) }}" method="POST" style="display: flex; flex-direction: column; gap: 12px;">
-                                                        @csrf
-                                                        <input type="hidden" name="parent_id" value="{{ $comment->id }}" />
-                                                        
-                                                        <!-- Honeypot -->
-                                                        <input type="text" name="extra_phone" style="display: none !important;" tabindex="-1" autocomplete="off" />
-
-                                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                                            <input type="text" name="author_name" placeholder="Nama Anda" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
-                                                            <input type="email" name="author_email" placeholder="Email Anda" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
-                                                        </div>
-                                                        <textarea name="body" rows="3" placeholder="Tulis balasan komentar Anda..." required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif; resize: vertical;"></textarea>
-                                                        <button type="submit" style="align-self: flex-start; height: 44px; padding: 0 20px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 12px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;">Kirim Balasan</button>
-                                                    </form>
-                                                </div>
+                                <!-- Right Column: Sidebar (30% width) -->
+                                <div class="lg:col-span-1 flex flex-col gap-8 lg:sticky lg:top-6">
+                                    <!-- Subscription Box -->
+                                    <div style="background: linear-gradient(135deg, #256D4A 0%, #8B6B4A 100%); border: 4px solid #1D1D1D;" class="p-5 md:p-6 shadow-[4px_4px_0px_0px_#1D1D1D]">
+                                        <h4 style="font-family: Bebas Neue, sans-serif; font-size: 24px; color: white; text-transform: uppercase; margin: 0 0 16px; line-height: 1.25; letter-spacing: 0.5px;">Langganan buletin WALHI Jabar untuk menerima notifikasi update kami</h4>
+                                        
+                                        @if(session('subscribe_success'))
+                                            <div style="background: white; border: 2px solid #1D1D1D; color: #256D4A; padding: 12px; font-weight: 700; font-size: 13px; margin-bottom: 12px;">
+                                                {{ session('subscribe_success') }}
                                             </div>
-                                        @empty
-                                            <div style="font-style: italic; color: #666; font-size: 16px; font-family: Inter, sans-serif;">Belum ada komentar. Jadilah yang pertama memberikan tanggapan!</div>
-                                        @endforelse
-                                    </div>
+                                        @endif
 
-                                    <!-- Add Comment Form -->
-                                    <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 32px;" class="shadow-[8px_8px_0px_0px_#1D1D1D]">
-                                        <h4 style="font-family: Bebas Neue, sans-serif; font-size: 28px; text-transform: uppercase; margin: 0 0 20px; color: #1D1D1D; letter-spacing: 0.5px;">Tulis Komentar Anda</h4>
-                                        <form action="{{ route('comments.store', $item->id) }}" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
+                                        <form action="{{ route('newsletter.subscribe') }}" method="POST" style="display: flex; flex-direction: column; gap: 12px;">
                                             @csrf
-                                            
                                             <!-- Honeypot -->
-                                            <input type="text" name="extra_phone" style="display: none !important;" tabindex="-1" autocomplete="off" />
+                                            <input type="text" name="extra_name" style="display: none !important;" tabindex="-1" autocomplete="off" />
 
-                                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; width: 100%;">
-                                                <div style="display: flex; flex-direction: column; gap: 6px;">
-                                                    <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Nama Lengkap *</label>
-                                                    <input type="text" name="author_name" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
-                                                </div>
-                                                <div style="display: flex; flex-direction: column; gap: 6px;">
-                                                    <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Email (tidak dipublikasikan) *</label>
-                                                    <input type="email" name="author_email" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
-                                                </div>
-                                            </div>
-
-                                            <div style="display: flex; flex-direction: column; gap: 6px;">
-                                                <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Isi Komentar *</label>
-                                                <textarea name="body" rows="5" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif; resize: vertical;"></textarea>
-                                            </div>
-
-                                            <button type="submit" style="align-self: flex-start; height: 52px; padding: 0 32px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;" class="btn-action">Kirim Komentar</button>
+                                            <input type="text" placeholder="Nama Lengkap" style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                            <input type="email" name="email" placeholder="Email Anda" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                            <button type="submit" style="height: 48px; background: #1D1D1D; color: #F4F1EA; border: 2px solid #1D1D1D; font-weight: 700; font-size: 13px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">Sign Up</button>
                                         </form>
                                     </div>
+
+                                    <!-- Latest/Trending News Box -->
+                                    <div style="background: white; border: 4px solid #1D1D1D;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
+                                        <div style="background: linear-gradient(135deg, #256D4A 0%, #5C8D59 100%); border-bottom: 4px solid #1D1D1D; padding: 16px 20px;">
+                                            <h4 style="font-family: Bebas Neue, sans-serif; font-size: 24px; color: white; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">Berita Terbaru</h4>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 16px;" class="p-4 md:p-5">
+                                            @forelse($sidebarNews as $sideItem)
+                                                <div style="display: flex; gap: 12px; align-items: center; border-bottom: 2px solid #f0ede8; padding-bottom: 16px; last-border: none;" class="last:border-0 last:pb-0">
+                                                    <a href="{{ route('content.show', $sideItem->slug) }}" style="width: 72px; height: 72px; flex-shrink: 0; border: 2px solid #1D1D1D; overflow: hidden; background: #ddd; display: block;">
+                                                        <img src="{{ $sideItem->image_url ?: asset('assets/images/blog/news-4-1.jpg') }}" alt="{{ $sideItem->title }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                                                    </a>
+                                                    <div style="display: flex; flex-direction: column; gap: 4px; min-w: 0; flex: 1;">
+                                                        <a href="{{ route('content.show', $sideItem->slug) }}" style="font-family: Inter, sans-serif; font-size: 13px; font-weight: 700; color: #1D1D1D; text-decoration: none; line-height: 1.3;" class="hover:text-[#256D4A] line-clamp-2">
+                                                            {{ $sideItem->title }}
+                                                        </a>
+                                                        <span style="font-size: 11px; color: #888; font-weight: 600;">
+                                                            {{ $sideItem->publish_date ? \Carbon\Carbon::parse($sideItem->publish_date)->translatedFormat('d M Y') : $sideItem->created_at->translatedFormat('d M Y') }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <div style="font-style: italic; color: #666; font-size: 13px;">Tidak ada berita terbaru.</div>
+                                            @endforelse
+                                        </div>
+                                    </div>
                                 </div>
-                            @endif
+                            </div>
+
+                            <!-- Related / Recommended News Section (at the bottom) -->
+                            <div style="border-top: 4px solid #1D1D1D; margin-top: 56px; padding-top: 48px; display: flex; flex-direction: column; gap: 32px;">
+                                <h3 style="font-family: Bebas Neue, sans-serif; font-size: 36px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
+                                    Rekomendasi Berita Lainnya
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    @forelse($relatedNews as $rel)
+                                        @php
+                                            $relImage = $rel->image_url ?: asset('assets/images/blog/news-4-1.jpg');
+                                            $relTag = array_map('trim', explode(',', $rel->tags ?? ''))[0] ?? 'Berita';
+                                            $relDate = $rel->publish_date ? \Carbon\Carbon::parse($rel->publish_date)->translatedFormat('d M Y') : $rel->created_at->translatedFormat('d M Y');
+                                            $relWordCount = str_word_count(strip_tags($rel->body));
+                                            $relReadTime = ceil($relWordCount / 200) . ' menit';
+                                        @endphp
+                                        <div style="background: white; border: 4px solid #1D1D1D; display: flex; flex-direction: column; gap: 16px;" class="shadow-[4px_4px_0px_0px_#256D4A] hover:translate-x-1 hover:translate-y-1 transition-all">
+                                            <div style="width: 100%; height: 180px; overflow: hidden; border-bottom: 4px solid #1D1D1D; position: relative; background: #eee;">
+                                                <img src="{{ $relImage }}" alt="{{ $rel->title }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                                                <span style="position: absolute; left: 12px; top: 12px; background: #D95C3F; color: white; padding: 4px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase;">{{ $relTag }}</span>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; gap: 16px;" class="p-4 md:p-5">
+                                                <a href="{{ route('content.show', $rel->slug) }}" style="font-family: Anton, sans-serif; font-size: 18px; color: #1D1D1D; text-decoration: none; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.3px;" class="hover:text-[#256D4A] line-clamp-2">
+                                                    {{ $rel->title }}
+                                                </a>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #5C8D59; font-weight: 600; border-top: 2px solid #f0ede8; padding-top: 12px;">
+                                                    <span>{{ $relDate }}</span>
+                                                    <span>{{ $relReadTime }} Baca</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div style="font-style: italic; color: #666; font-size: 14px;">Tidak ada berita terkait lainnya.</div>
+                                    @endforelse
+                                </div>
+                            </div>
                         @endif
  
                     </div>
@@ -397,6 +529,20 @@
             document.addEventListener('DOMContentLoaded', function() {
                 lucide.createIcons();
             });
+
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text).then(function() {
+                    const msg = document.getElementById('copy-success-msg');
+                    if (msg) {
+                        msg.style.display = 'inline';
+                        setTimeout(() => {
+                            msg.style.display = 'none';
+                        }, 2000);
+                    }
+                }, function(err) {
+                    console.error('Gagal menyalin tautan: ', err);
+                });
+            }
         </script>
     </body>
 </html>
