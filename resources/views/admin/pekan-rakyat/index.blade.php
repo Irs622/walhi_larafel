@@ -259,7 +259,10 @@
 
             <div>
                 <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Lokasi & Deskripsi Event</label>
-                <textarea id="form-body" name="body" rows="8" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] resize-y" placeholder="Bandung, 15-20 Agustus 2025. Diskusi publik tentang..."></textarea>
+                <input type="hidden" id="form-body" name="body" />
+                <div id="editor-wrapper" class="border border-[#ddd] rounded overflow-hidden">
+                    <div id="editor-container" style="height: 320px; background: white;" class="text-sm"></div>
+                </div>
             </div>
 
             <div class="flex justify-end gap-3 pt-2">
@@ -276,7 +279,53 @@
 @endsection
 
 @push('scripts')
+<!-- Quill CSS and JS -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
 <script>
+    // Register style attributors to produce inline CSS (e.g. style="text-align: justify")
+    var Align = Quill.import('attributors/style/align');
+    Quill.register(Align, true);
+    var Size = Quill.import('attributors/style/size');
+    Quill.register(Size, true);
+
+    let quillEditor = null;
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('editor-container');
+        if (container) {
+            var toolbarOptions = [
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                ['blockquote', 'code-block'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                [{ 'align': [] }],
+                ['link', 'image', 'video'],
+                ['clean']
+            ];
+
+            quillEditor = new Quill('#editor-container', {
+                modules: {
+                    toolbar: toolbarOptions
+                },
+                theme: 'snow'
+            });
+
+            // Keep form-body in sync before submission
+            const form = document.getElementById('modal-form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    const bodyInput = document.getElementById('form-body');
+                    if (bodyInput && quillEditor) {
+                        bodyInput.value = quillEditor.root.innerHTML;
+                    }
+                });
+            }
+        }
+    });
+
     const modal = document.getElementById('editor-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalForm = document.getElementById('modal-form');
@@ -310,6 +359,7 @@
         document.getElementById('form-image').value = '';
         document.getElementById('form-tags').value = '';
         document.getElementById('form-body').value = '';
+        if(quillEditor) quillEditor.root.innerHTML = '';
 
         modal.classList.remove('hidden');
     }
@@ -339,6 +389,7 @@
         document.getElementById('form-image').value = item.image_url || '';
         document.getElementById('form-tags').value = item.tags || '';
         document.getElementById('form-body').value = item.body || '';
+        if(quillEditor) quillEditor.root.innerHTML = item.body || '';
 
         modal.classList.remove('hidden');
     }
