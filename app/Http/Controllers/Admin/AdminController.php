@@ -49,6 +49,15 @@ class AdminController extends Controller
  
         $recentTransactions = Donation::orderBy('created_at', 'desc')->take(5)->get();
  
+        $latestPostings = Content::whereIn('category', [
+            'blog', 'regulasi', 'siaran-pers', 'infografis', 
+            'kertas-posisi', 'newsletter', 'buletin-bumi', 
+            'jurnal', 'laporan-tahunan'
+        ])
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get();
+ 
         $stats = [
             'total_articles' => $totalArticles,
             'active_campaigns' => $activeDonations + $activeEvents,
@@ -59,6 +68,6 @@ class AdminController extends Controller
             'chart_data' => $monthsData,
         ];
  
-        return view('admin.dashboard', compact('stats', 'recentTransactions'));
+        return view('admin.dashboard', compact('stats', 'recentTransactions', 'latestPostings'));
     }
 }

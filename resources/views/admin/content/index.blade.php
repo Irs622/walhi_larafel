@@ -130,6 +130,13 @@
                                     </td>
                                     <td class="px-4 py-3">
                                         <div class="flex items-center justify-end gap-1">
+                                            <!-- Lihat Postingan -->
+                                            @if(in_array($category, ['blog', 'regulasi', 'siaran-pers', 'infografis', 'laporan-tahunan', 'kertas-posisi', 'newsletter', 'buletin-bumi', 'jurnal']))
+                                                <a href="{{ route('content.show', $item->slug) }}" target="_blank" title="Lihat Postingan" class="p-1.5 rounded hover:bg-[#f4faf6] text-[#256D4A] transition-colors">
+                                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                                </a>
+                                            @endif
+
                                             <!-- Toggle Status -->
                                             <form action="{{ route('admin.content' . (request()->is('admin/tentang/*') ? '.tentang' : '') . '.toggle-status', [$category, $item->id]) }}" method="POST">
                                                 @csrf
@@ -219,6 +226,21 @@
                     <input type="date" id="form-date" name="publish_date" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" />
                 </div>
             </div>
+
+            @if(in_array($category, ['blog', 'siaran-pers', 'infografis', 'kertas-posisi', 'newsletter', 'buletin-bumi', 'jurnal', 'laporan-tahunan', 'regulasi']))
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Penulis / Kontributor</label>
+                    <input type="text" id="form-author" name="author" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="Contoh: WALHI Jawa Barat" />
+                </div>
+                <div class="flex items-center pt-2 sm:pt-6">
+                    <label class="inline-flex items-center cursor-pointer select-none">
+                        <input type="checkbox" id="form-is-promoted" name="is_promoted" value="1" class="rounded border-gray-300 text-[#256D4A] shadow-sm focus:border-[#256D4A] focus:ring focus:ring-[#256D4A] focus:ring-opacity-50">
+                        <span class="ml-2 text-xs font-semibold text-[#555] uppercase tracking-wide">Promosikan / Tampilkan sebagai Hype</span>
+                    </label>
+                </div>
+            </div>
+            @endif
 
             @if($category !== 'kampanye-darurat')
             <div>
@@ -462,6 +484,8 @@
         if(document.getElementById('form-image')) document.getElementById('form-image').value = '';
         if(document.getElementById('form-tags')) document.getElementById('form-tags').value = '';
         if(document.getElementById('form-body')) document.getElementById('form-body').value = '';
+        if(document.getElementById('form-author')) document.getElementById('form-author').value = '';
+        if(document.getElementById('form-is-promoted')) document.getElementById('form-is-promoted').checked = false;
 
         if(document.getElementById('form-isu-icon')) document.getElementById('form-isu-icon').value = 'Icon-4.svg';
         if(document.getElementById('form-isu-badge')) document.getElementById('form-isu-badge').value = '';
@@ -502,6 +526,8 @@
         if(document.getElementById('form-image')) document.getElementById('form-image').value = item.image_url || '';
         if(document.getElementById('form-tags')) document.getElementById('form-tags').value = item.tags || '';
         if(document.getElementById('form-body')) document.getElementById('form-body').value = item.body || '';
+        if(document.getElementById('form-author')) document.getElementById('form-author').value = item.author || '';
+        if(document.getElementById('form-is-promoted')) document.getElementById('form-is-promoted').checked = !!item.is_promoted;
 
         // Handle tags parsing for specific categories
         if (item.tags) {

@@ -1,7 +1,7 @@
 @php
     $seoTitle = $title ?? 'WALHI Jawa Barat - Advokasi Lingkungan & Keadilan Ekologis';
     $seoDesc = $description ?? 'Organisasi gerakan lingkungan hidup independen terbesar di Jawa Barat. Memperjuangkan keadilan ekologis, pendampingan hukum agraria, dan perlindungan hutan.';
-    $seoImage = isset($image) && $image ? $image : asset('assets/images/resources/logo-2-walhi.png');
+    $seoImage = isset($image) && $image ? (str_starts_with($image, 'http') ? $image : asset($image)) : asset('assets/images/resources/logo-2-walhi.png');
     $seoUrl = url()->current();
 @endphp
  

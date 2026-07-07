@@ -12,6 +12,7 @@ class PublicContentController extends Controller
     {
         $news = Content::whereIn('category', ['blog', 'siaran-pers'])
             ->where('status', 'published')
+            ->orderBy('is_promoted', 'desc')
             ->orderBy('publish_date', 'desc')
             ->get();
  
@@ -68,7 +69,35 @@ class PublicContentController extends Controller
         $wordCount = str_word_count(strip_tags($item->body));
         $readTime = ceil($wordCount / 200);
         $readTime = $readTime > 0 ? $readTime : 1;
+
+        // Fetch related news (same category or overlapping tags, excluding current)
+        $relatedNews = Content::where('category', $item->category)
+            ->where('status', 'published')
+            ->where('id', '!=', $item->id)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+
+        // If not enough related news, fetch random news from blog/siaran-pers
+        if ($relatedNews->count() < 3) {
+            $extraNews = Content::whereIn('category', ['blog', 'siaran-pers'])
+                ->where('status', 'published')
+                ->where('id', '!=', $item->id)
+                ->whereNotIn('id', $relatedNews->pluck('id'))
+                ->inRandomOrder()
+                ->take(3 - $relatedNews->count())
+                ->get();
+            $relatedNews = $relatedNews->merge($extraNews);
+        }
+
+        // Fetch sidebar news (latest 5 published blog/siaran-pers)
+        $sidebarNews = Content::whereIn('category', ['blog', 'siaran-pers'])
+            ->where('status', 'published')
+            ->where('id', '!=', $item->id)
+            ->orderBy('publish_date', 'desc')
+            ->take(5)
+            ->get();
  
-        return view('content-detail', compact('item', 'readTime'));
+        return view('content-detail', compact('item', 'readTime', 'relatedNews', 'sidebarNews'));
     }
 }
