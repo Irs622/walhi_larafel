@@ -2,20 +2,28 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserRole;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     /**
      * Get the attributes that should be cast.
@@ -26,7 +34,43 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Role Helpers
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Resolve the UserRole enum for this user.
+     */
+    public function getRoleEnumAttribute(): UserRole
+    {
+        return UserRole::from($this->role ?? UserRole::Admin->value);
+    }
+
+    /**
+     * Check if the user is an administrator.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->roleEnum === UserRole::Admin;
+    }
+
+    /**
+     * Check if the user can manage content (admin or editor).
+     */
+    public function canManageContent(): bool
+    {
+        return $this->roleEnum->canManageContent();
+    }
+
+    /**
+     * Check if the user can delete records.
+     */
+    public function canDelete(): bool
+    {
+        return $this->roleEnum->canDelete();
     }
 }

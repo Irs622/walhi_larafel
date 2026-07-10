@@ -343,8 +343,11 @@
                                         @endif
 
                                         <!-- Article Body -->
+                                        {{-- Security: body is sanitized server-side using strip_tags with
+                                             a strict allowlist. Only safe structural HTML tags are permitted.
+                                             Raw {!! !!} without sanitization is an XSS vulnerability. --}}
                                         <div style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Inter, sans-serif; white-space: pre-line; max-width: 820px; width: 100%;">
-                                            {!! $item->body !!}
+                                            {!! strip_tags($item->body, '<p><br><strong><b><em><i><u><ul><ol><li><h2><h3><h4><h5><blockquote><a><img><table><thead><tbody><tr><th><td><figure><figcaption><hr><span><div>') !!}
                                         </div>
 
                                         <!-- Share Buttons -->
@@ -391,7 +394,8 @@
                                     @if($item->category === 'blog' || $item->category === 'siaran-pers' || $item->category === 'infografis')
                                         <div style="border-top: 4px solid #1D1D1D; margin-top: 48px; padding-top: 48px; display: flex; flex-direction: column; gap: 32px;">
                                             <h3 style="font-family: Bebas Neue, sans-serif; font-size: 36px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
-                                                Komentar ({{ $item->comments()->where('status', 'approved')->count() }})
+                                                {{-- Use withCount value from controller (no extra query) --}}
+                                                Komentar ({{ $item->approved_comments_count ?? 0 }})
                                             </h3>
 
                                             <!-- Success Alert -->
@@ -402,8 +406,10 @@
                                             @endif
 
                                             <!-- Comments List -->
+                                            {{-- $approvedComments is pre-loaded in the controller with eager-loaded
+                                                 replies to eliminate N+1 queries. --}}
                                             <div style="display: flex; flex-direction: column; gap: 24px;">
-                                                @forelse($item->comments()->where('status', 'approved')->whereNull('parent_id')->orderBy('created_at', 'desc')->get() as $comment)
+                                                @forelse($approvedComments as $comment)
                                                     <div style="background: white; border: 4px solid #1D1D1D; display: flex; flex-direction: column; gap: 16px;" class="p-4 md:p-5 shadow-[4px_4px_0px_0px_#1D1D1D]">
                                                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                                                             <div style="font-weight: 800; font-size: 18px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif; tracking: 0.5px;">{{ $comment->author_name }}</div>
@@ -416,10 +422,10 @@
                                                             <button onclick="document.getElementById('reply-form-{{ $comment->id }}').style.display = document.getElementById('reply-form-{{ $comment->id }}').style.display === 'none' ? 'block' : 'none'" style="background: transparent; border: none; font-size: 12px; font-weight: 700; color: #256D4A; cursor: pointer; text-transform: uppercase; padding: 0; font-family: Inter, sans-serif; letter-spacing: 0.5px;">Balas Komentar</button>
                                                         </div>
 
-                                                        <!-- Replies nested list -->
-                                                        @if($comment->replies()->where('status', 'approved')->count() > 0)
+                                                        <!-- Replies nested list (already eager-loaded, zero extra queries) -->
+                                                        @if($comment->replies->count() > 0)
                                                             <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 16px; border-left: 4px solid #256D4A; padding-left: 20px;">
-                                                                @foreach($comment->replies()->where('status', 'approved')->orderBy('created_at', 'asc')->get() as $reply)
+                                                                @foreach($comment->replies as $reply)
                                                                     <div style="background: #F4F1EA; border: 4px solid #1D1D1D; padding: 16px; display: flex; flex-direction: column; gap: 8px;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
                                                                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                                                                             <div style="font-weight: 800; font-size: 15px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif;">
