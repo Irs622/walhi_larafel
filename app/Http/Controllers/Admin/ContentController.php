@@ -3,42 +3,55 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreContentRequest;
+use App\Http\Requests\Admin\UpdateContentRequest;
 use App\Models\Content;
+use App\Models\Donation;
+use App\Services\Content\SlugService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
 {
-    protected $config = [
-        'blog' => ['title' => 'Blog', 'desc' => 'Kelola artikel dan tulisan di halaman Blog.'],
-        'regulasi' => ['title' => 'Regulasi', 'desc' => 'Kelola dokumen peraturan dan regulasi lingkungan.'],
-        'siaran-pers' => ['title' => 'Siaran Pers', 'desc' => 'Kelola siaran pers dan rilis media WALHI Jabar.'],
-        'infografis' => ['title' => 'Infografis', 'desc' => 'Kelola infografis dan visualisasi data lingkungan.'],
-        'kertas-posisi' => ['title' => 'Kertas Posisi', 'desc' => 'Kelola dokumen posisi kebijakan WALHI Jabar.'],
-        'newsletter' => ['title' => 'E-Newsletter', 'desc' => 'Kelola edisi E-Newsletter WALHI Jabar.'],
-        'buletin-bumi' => ['title' => 'Buletin Bumi', 'desc' => 'Kelola edisi Buletin Bumi.'],
-        'jurnal' => ['title' => 'Jurnal Tanah Air', 'desc' => 'Kelola edisi Jurnal Tanah Air.'],
-        'laporan-tahunan' => ['title' => 'Laporan Tahunan', 'desc' => 'Kelola laporan tahunan organisasi.'],
-        'sejarah' => ['title' => 'Sejarah', 'desc' => 'Kelola halaman Sejarah organisasi.'],
-        'visi-misi' => ['title' => 'Visi & Misi', 'desc' => 'Kelola konten Visi dan Misi.'],
-        'dewan-nasional' => ['title' => 'Dewan Nasional', 'desc' => 'Kelola data anggota Dewan Nasional.'],
+    public function __construct(private readonly SlugService $slugService) {}
+
+    /**
+     * Map of category slugs to display titles and descriptions.
+     * Used to drive the Admin UI labels.
+     */
+    protected array $config = [
+        'blog'               => ['title' => 'Blog',              'desc' => 'Kelola artikel dan tulisan di halaman Blog.'],
+        'regulasi'           => ['title' => 'Regulasi',           'desc' => 'Kelola dokumen peraturan dan regulasi lingkungan.'],
+        'siaran-pers'        => ['title' => 'Siaran Pers',        'desc' => 'Kelola siaran pers dan rilis media WALHI Jabar.'],
+        'infografis'         => ['title' => 'Infografis',         'desc' => 'Kelola infografis dan visualisasi data lingkungan.'],
+        'kertas-posisi'      => ['title' => 'Kertas Posisi',      'desc' => 'Kelola dokumen posisi kebijakan WALHI Jabar.'],
+        'newsletter'         => ['title' => 'E-Newsletter',       'desc' => 'Kelola edisi E-Newsletter WALHI Jabar.'],
+        'buletin-bumi'       => ['title' => 'Buletin Bumi',       'desc' => 'Kelola edisi Buletin Bumi.'],
+        'jurnal'             => ['title' => 'Jurnal Tanah Air',   'desc' => 'Kelola edisi Jurnal Tanah Air.'],
+        'laporan-tahunan'    => ['title' => 'Laporan Tahunan',    'desc' => 'Kelola laporan tahunan organisasi.'],
+        'sejarah'            => ['title' => 'Sejarah',            'desc' => 'Kelola halaman Sejarah organisasi.'],
+        'visi-misi'          => ['title' => 'Visi & Misi',        'desc' => 'Kelola konten Visi dan Misi.'],
+        'dewan-nasional'     => ['title' => 'Dewan Nasional',     'desc' => 'Kelola data anggota Dewan Nasional.'],
         'eksekutif-nasional' => ['title' => 'Eksekutif Nasional', 'desc' => 'Kelola data Eksekutif Nasional.'],
-        'eksekutif-daerah' => ['title' => 'Eksekutif Daerah', 'desc' => 'Kelola data Eksekutif Daerah.'],
-        'kontak' => ['title' => 'Kontak', 'desc' => 'Kelola informasi kontak organisasi.'],
-        'donasi' => ['title' => 'Kampanye Donasi', 'desc' => 'Manajemen kampanye donasi dan laporan penerimaan.'],
-        'pekan-rakyat' => ['title' => 'Pekan Rakyat', 'desc' => 'Manajemen event Pekan Rakyat.'],
-        'statistik' => ['title' => 'Statistik Utama', 'desc' => 'Kelola angka-angka statistik utama di halaman Beranda.'],
-        'isu-kritis' => ['title' => 'Isu Kritis', 'desc' => 'Kelola 5 isu kritis lingkungan di halaman Beranda.'],
-        'kampanye-darurat' => ['title' => 'Kampanye Darurat', 'desc' => 'Kelola teks & link Kampanye Darurat di bar navigasi atas.'],
+        'eksekutif-daerah'   => ['title' => 'Eksekutif Daerah',  'desc' => 'Kelola data Eksekutif Daerah.'],
+        'kontak'             => ['title' => 'Kontak',             'desc' => 'Kelola informasi kontak organisasi.'],
+        'donasi'             => ['title' => 'Kampanye Donasi',    'desc' => 'Manajemen kampanye donasi dan laporan penerimaan.'],
+        'pekan-rakyat'       => ['title' => 'Pekan Rakyat',       'desc' => 'Manajemen event Pekan Rakyat.'],
+        'statistik'          => ['title' => 'Statistik Utama',    'desc' => 'Kelola angka-angka statistik utama di halaman Beranda.'],
+        'isu-kritis'         => ['title' => 'Isu Kritis',         'desc' => 'Kelola 5 isu kritis lingkungan di halaman Beranda.'],
+        'kampanye-darurat'   => ['title' => 'Kampanye Darurat',   'desc' => 'Kelola teks & link Kampanye Darurat di bar navigasi atas.'],
     ];
 
-    private function getCategoryConfig($category)
+    private function getCategoryConfig(string $category): array
     {
         return $this->config[$category] ?? ['title' => Str::title($category), 'desc' => ''];
     }
 
-    public function index(Request $request, $category)
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function index(Request $request, string $category)
     {
         $config = $this->getCategoryConfig($category);
         $search = $request->input('search');
@@ -46,7 +59,7 @@ class ContentController extends Controller
         $query = Content::where('category', $category);
 
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('tags', 'like', "%{$search}%");
             });
@@ -54,99 +67,57 @@ class ContentController extends Controller
 
         $items = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
-        // Calculate counts
-        $total = Content::where('category', $category)->count();
+        // Status counts (single query via conditional aggregation workaround)
+        $total    = Content::where('category', $category)->count();
         $published = Content::where('category', $category)->where('status', 'published')->count();
-        $draft = Content::where('category', $category)->where('status', 'draft')->count();
+        $draft    = Content::where('category', $category)->where('status', 'draft')->count();
         $archived = Content::where('category', $category)->where('status', 'archived')->count();
 
         $counts = compact('total', 'published', 'draft', 'archived');
 
-        // Different view for specific pages (donasi, pekan-rakyat, standard content)
+        // Donation-specific dashboard
         if ($category === 'donasi') {
-            $recentDonations = \App\Models\Donation::orderBy('created_at', 'desc')->take(10)->get();
-            $totalAmount = \App\Models\Donation::where('status', 'success')->sum('amount');
-            $uniqueDonors = \App\Models\Donation::where('status', 'success')->distinct('donor_email')->count('donor_email');
-            $avgDonation = \App\Models\Donation::where('status', 'success')->avg('amount') ?: 0;
- 
-            // Trend last 12 months
-            $chartData = [];
-            $chartLabels = [];
-            for ($i = 11; $i >= 0; $i--) {
-                $month = \Carbon\Carbon::now()->startOfMonth()->subMonths($i);
-                $chartLabels[] = $month->translatedFormat("M 'y");
-                $sum = \App\Models\Donation::where('status', 'success')
-                    ->whereYear('created_at', $month->year)
-                    ->whereMonth('created_at', $month->month)
-                    ->sum('amount');
-                $chartData[] = (int) $sum;
-            }
- 
-            // Fallback to mock data if no real donations yet
-            if (array_sum($chartData) === 0) {
-                $chartData = [12500000, 18200000, 14800000, 22000000, 31500000, 19300000, 16700000, 24100000, 27800000, 33200000, 29400000, 38900000];
-            }
- 
-            return view('admin.donasi.index', compact('items', 'config', 'counts', 'category', 'recentDonations', 'totalAmount', 'uniqueDonors', 'avgDonation', 'chartLabels', 'chartData'));
-        } elseif ($category === 'pekan-rakyat') {
+            $recentDonations = Donation::orderBy('created_at', 'desc')->take(10)->get();
+            $totalAmount     = Donation::where('status', 'success')->sum('amount');
+            $uniqueDonors    = Donation::where('status', 'success')->distinct('donor_email')->count('donor_email');
+            $avgDonation     = Donation::where('status', 'success')->avg('amount') ?: 0;
+
+            // Monthly trend — last 12 months (real data only)
+            [$chartLabels, $chartData] = $this->buildMonthlyChart();
+
+            return view('admin.donasi.index', compact(
+                'items', 'config', 'counts', 'category',
+                'recentDonations', 'totalAmount', 'uniqueDonors', 'avgDonation',
+                'chartLabels', 'chartData'
+            ));
+        }
+
+        if ($category === 'pekan-rakyat') {
             return view('admin.pekan-rakyat.index', compact('items', 'config', 'counts', 'category'));
         }
 
         return view('admin.content.index', compact('items', 'config', 'counts', 'category'));
     }
 
-    public function store(Request $request, $category)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255',
-            'body' => 'nullable|string',
-            'tags' => 'nullable|string',
-            'status' => 'required|in:published,draft,archived',
-            'image_url' => 'nullable|string',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,pdf,xls,xlsx,doc,docx|max:10240',
-            'is_promoted' => 'nullable|boolean',
-            'author' => 'nullable|string|max:255',
-        ]);
+    // ──────────────────────────────────────────────────────────────────────────
 
+    public function store(StoreContentRequest $request, string $category)
+    {
+        $validated = $request->validated();
         $validated['is_promoted'] = $request->boolean('is_promoted');
 
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title']);
-        } else {
-            $validated['slug'] = Str::slug($validated['slug']);
-        }
+        // Slug
+        $rawSlug = ! empty($validated['slug']) ? $validated['slug'] : $validated['title'];
+        $validated['slug'] = $this->slugService->makeUnique(Str::slug($rawSlug));
 
-        // Handle unique slug
-        $originalSlug = $validated['slug'];
-        $matchingSlugs = Content::where('slug', 'like', $originalSlug . '%')
-            ->pluck('slug')
-            ->toArray();
-
-        if (in_array($originalSlug, $matchingSlugs)) {
-            $count = 1;
-            while (in_array($originalSlug . '-' . $count, $matchingSlugs)) {
-                $count++;
-            }
-            $validated['slug'] = $originalSlug . '-' . $count;
-        }
-
+        // Image upload
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('uploads', 'public');
             $validated['image_url'] = '/storage/' . $path;
         }
 
-        if ($category === 'isu-kritis') {
-            $icon = $request->input('isu_icon', 'Icon-4.svg');
-            $badge = $request->input('isu_badge', 'Isu');
-            $validated['tags'] = $icon . '|' . $badge;
-        } elseif ($category === 'regulasi') {
-            $regCategory = $request->input('reg_category', 'undang-undang');
-            $regIssuer = $request->input('reg_issuer', 'Pemerintah RI');
-            $regStatus = $request->input('reg_status', 'berlaku');
-            $validated['tags'] = implode(', ', [$regCategory, $regIssuer, $regStatus]);
-        }
-
+        // Category-specific tag encoding
+        $validated['tags'] = $this->encodeTags($request, $category, $validated['tags'] ?? null);
         $validated['category'] = $category;
 
         Content::create($validated);
@@ -154,88 +125,115 @@ class ContentController extends Controller
         return redirect()->back()->with('success', 'Konten berhasil ditambahkan.');
     }
 
-    public function update(Request $request, $category, Content $content)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255',
-            'body' => 'nullable|string',
-            'tags' => 'nullable|string',
-            'status' => 'required|in:published,draft,archived',
-            'image_url' => 'nullable|string',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,pdf,xls,xlsx,doc,docx|max:10240',
-            'publish_date' => 'nullable|date',
-            'is_promoted' => 'nullable|boolean',
-            'author' => 'nullable|string|max:255',
-        ]);
+    // ──────────────────────────────────────────────────────────────────────────
 
+    public function update(UpdateContentRequest $request, string $category, Content $content)
+    {
+        $validated = $request->validated();
         $validated['is_promoted'] = $request->boolean('is_promoted');
 
-        $validated['slug'] = Str::slug($validated['slug']);
+        // Slug (unique, excluding current record)
+        $validated['slug'] = $this->slugService->makeUnique(
+            Str::slug($validated['slug']),
+            $content->id
+        );
 
-        // Handle unique slug excluding current
-        $originalSlug = $validated['slug'];
-        $matchingSlugs = Content::where('slug', 'like', $originalSlug . '%')
-            ->where('id', '!=', $content->id)
-            ->pluck('slug')
-            ->toArray();
-
-        if (in_array($originalSlug, $matchingSlugs)) {
-            $count = 1;
-            while (in_array($originalSlug . '-' . $count, $matchingSlugs)) {
-                $count++;
-            }
-            $validated['slug'] = $originalSlug . '-' . $count;
-        }
-
+        // Image upload / removal
         if ($request->hasFile('image')) {
-            // Delete old uploaded image if any
-            if ($content->image_url && str_starts_with($content->image_url, '/storage/uploads/')) {
-                $oldPath = str_replace('/storage/', '', $content->image_url);
-                Storage::disk('public')->delete($oldPath);
-            }
+            $this->deleteOldImage($content);
             $path = $request->file('image')->store('uploads', 'public');
             $validated['image_url'] = '/storage/' . $path;
-        } elseif (array_key_exists('image_url', $validated) && $validated['image_url'] !== $content->image_url) {
-            // If they manually cleared or changed the URL, delete old uploaded image
-            if ($content->image_url && str_starts_with($content->image_url, '/storage/uploads/')) {
-                $oldPath = str_replace('/storage/', '', $content->image_url);
-                Storage::disk('public')->delete($oldPath);
-            }
+        } elseif (
+            array_key_exists('image_url', $validated) &&
+            $validated['image_url'] !== $content->image_url
+        ) {
+            $this->deleteOldImage($content);
         }
 
-        if ($category === 'isu-kritis') {
-            $icon = $request->input('isu_icon', 'Icon-4.svg');
-            $badge = $request->input('isu_badge', 'Isu');
-            $validated['tags'] = $icon . '|' . $badge;
-        } elseif ($category === 'regulasi') {
-            $regCategory = $request->input('reg_category', 'undang-undang');
-            $regIssuer = $request->input('reg_issuer', 'Pemerintah RI');
-            $regStatus = $request->input('reg_status', 'berlaku');
-            $validated['tags'] = implode(', ', [$regCategory, $regIssuer, $regStatus]);
-        }
+        // Category-specific tag encoding
+        $validated['tags'] = $this->encodeTags($request, $category, $validated['tags'] ?? null);
 
         $content->update($validated);
 
         return redirect()->back()->with('success', 'Konten berhasil diperbarui.');
     }
 
-    public function destroy($category, Content $content)
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function destroy(string $category, Content $content)
     {
-        // Delete local uploaded image if any
-        if ($content->image_url && str_starts_with($content->image_url, '/storage/uploads/')) {
-            $oldPath = str_replace('/storage/', '', $content->image_url);
-            Storage::disk('public')->delete($oldPath);
-        }
-        $content->delete();
+        $this->deleteOldImage($content);
+        $content->delete(); // SoftDeletes — record still in DB, deleted_at is set
+
         return redirect()->back()->with('success', 'Konten berhasil dihapus.');
     }
 
-    public function toggleStatus($category, Content $content)
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function toggleStatus(string $category, Content $content)
     {
         $next = $content->status === 'published' ? 'archived' : 'published';
         $content->update(['status' => $next]);
 
         return redirect()->back()->with('success', 'Status konten berhasil diubah.');
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Private Helpers
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Build monthly donation chart data (real data only — no mock fallback).
+     * Returns [$labels, $data] for the last 12 months.
+     *
+     * @return array{0: array<string>, 1: array<int>}
+     */
+    private function buildMonthlyChart(): array
+    {
+        $labels = [];
+        $data   = [];
+
+        for ($i = 11; $i >= 0; $i--) {
+            $month    = Carbon::now()->startOfMonth()->subMonths($i);
+            $labels[] = $month->translatedFormat("M 'y");
+            $data[]   = (int) Donation::where('status', 'success')
+                ->whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->sum('amount');
+        }
+
+        return [$labels, $data];
+    }
+
+    /**
+     * Encode category-specific tags from the request.
+     */
+    private function encodeTags(Request $request, string $category, ?string $defaultTags): ?string
+    {
+        if ($category === 'isu-kritis') {
+            $icon  = $request->input('isu_icon', 'Icon-4.svg');
+            $badge = $request->input('isu_badge', 'Isu');
+            return $icon . '|' . $badge;
+        }
+
+        if ($category === 'regulasi') {
+            $regCategory = $request->input('reg_category', 'undang-undang');
+            $regIssuer   = $request->input('reg_issuer', 'Pemerintah RI');
+            $regStatus   = $request->input('reg_status', 'berlaku');
+            return implode(', ', [$regCategory, $regIssuer, $regStatus]);
+        }
+
+        return $defaultTags;
+    }
+
+    /**
+     * Delete a locally uploaded image file if it exists.
+     */
+    private function deleteOldImage(Content $content): void
+    {
+        if ($content->image_url && str_starts_with($content->image_url, '/storage/uploads/')) {
+            $oldPath = str_replace('/storage/', '', $content->image_url);
+            Storage::disk('public')->delete($oldPath);
+        }
     }
 }

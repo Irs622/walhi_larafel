@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,77 +23,123 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Rate limiting for web routes (general)
+        $this->configureRateLimiting();
+        $this->configureViewComposers();
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Rate Limiting
+    // ──────────────────────────────────────────────────────────────────────────
+
+    private function configureRateLimiting(): void
+    {
+        // General web traffic
         RateLimiter::for('web', function (Request $request) {
             return Limit::perMinute(120)->by($request->user()?->id ?: $request->ip());
         });
 
-        // Rate limiting for login attempts
+        // Login attempts — keyed by email + IP to prevent brute-force
         RateLimiter::for('login', function (Request $request) {
             return Limit::perMinute(5)->by($request->input('email') . '|' . $request->ip());
         });
 
-        // Rate limiting for search/filter endpoints
+        // Search / filter endpoints
         RateLimiter::for('search', function (Request $request) {
             return Limit::perMinute(30)->by($request->ip());
         });
 
-        // Rate limiting for admin actions (store/update/delete)
+        // Admin mutation endpoints (store / update / delete)
         RateLimiter::for('admin-actions', function (Request $request) {
             return Limit::perMinute(30)->by($request->user()?->id ?: $request->ip());
         });
+    }
 
-        // Share global contact and campaign data loaded dynamically from the database
-        view()->composer('*', function ($view) {
-            $contactData = [
-                'email' => 'walhijabar@gmail.com',
-                'whatsapp' => '+62 821-1982-1159',
-                'address' => 'Jl. Simponi No.29, Turangga, Kec. Lengkong, Kota Bandung, Jawa Barat 40264',
-                'facebook' => 'https://facebook.com/walhi.jabar',
-                'instagram' => 'https://instagram.com/walhi.jabar',
-                'youtube' => 'https://www.youtube.com/@walhijabar',
-            ];
+    // ──────────────────────────────────────────────────────────────────────────
+    // View Composers
+    // ──────────────────────────────────────────────────────────────────────────
 
-            $campaignData = [
-                'title' => 'Kampanye Darurat: Hentikan Tambang Ilegal',
-                'url' => '#',
-            ];
+    private function configureViewComposers(): void
+    {
+        // Only inject global data into the two partials that actually need it.
+        // Previously this was bound to '*' (every view), causing 2 DB queries
+        // on every single page load. Now it only runs for header & footer,
+        // and the results are cached for 1 hour.
+        view()->composer(
+            ['partials.site-header', 'partials.site-footer'],
+            function ($view) {
+                $contactData  = Cache::remember('global_contact', 3600, fn () => $this->resolveContactData());
+                $campaignData = Cache::remember('global_campaign', 3600, fn () => $this->resolveCampaignData());
 
-            try {
-                if (\Schema::hasTable('contents')) {
-                    $kontak = \App\Models\Content::where('category', 'kontak')
-                        ->where('status', 'published')
-                        ->first();
+                $view->with('globalContact', (object) $contactData);
+                $view->with('globalCampaign', (object) $campaignData);
+            }
+        );
+    }
 
-                    if ($kontak) {
-                        $lines = explode("\n", str_replace("\r", "", $kontak->body));
-                        foreach ($lines as $line) {
-                            if (strpos($line, ':') !== false) {
-                                list($key, $value) = explode(':', $line, 2);
-                                $key = strtolower(trim($key));
-                                $value = trim($value);
-                                if (array_key_exists($key, $contactData)) {
-                                    $contactData[$key] = $value;
-                                }
+    // ──────────────────────────────────────────────────────────────────────────
+    // Private Resolvers
+    // ──────────────────────────────────────────────────────────────────────────
+
+    private function resolveContactData(): array
+    {
+        $defaults = [
+            'email'     => 'walhijabar@gmail.com',
+            'whatsapp'  => '+62 821-1982-1159',
+            'address'   => 'Jl. Simponi No.29, Turangga, Kec. Lengkong, Kota Bandung, Jawa Barat 40264',
+            'facebook'  => 'https://facebook.com/walhi.jabar',
+            'instagram' => 'https://instagram.com/walhi.jabar',
+            'youtube'   => 'https://www.youtube.com/@walhijabar',
+        ];
+
+        try {
+            if (\Schema::hasTable('contents')) {
+                $kontak = \App\Models\Content::where('category', 'kontak')
+                    ->where('status', 'published')
+                    ->first();
+
+                if ($kontak?->body) {
+                    $lines = explode("\n", str_replace("\r", '', $kontak->body));
+                    foreach ($lines as $line) {
+                        if (strpos($line, ':') !== false) {
+                            [$key, $value] = explode(':', $line, 2);
+                            $key = strtolower(trim($key));
+                            $value = trim($value);
+                            if (array_key_exists($key, $defaults)) {
+                                $defaults[$key] = $value;
                             }
                         }
                     }
-
-                    $campaign = \App\Models\Content::where('category', 'kampanye-darurat')
-                        ->where('status', 'published')
-                        ->first();
-
-                    if ($campaign) {
-                        $campaignData['title'] = $campaign->title;
-                        $campaignData['url'] = $campaign->tags ?: '#';
-                    }
                 }
-            } catch (\Exception $e) {
-                // Fail silently to prevent breaking during migrations/CLI
             }
+        } catch (\Exception) {
+            // Fail silently during migrations / CLI commands
+        }
 
-            $view->with('globalContact', (object) $contactData);
-            $view->with('globalCampaign', (object) $campaignData);
-        });
+        return $defaults;
+    }
+
+    private function resolveCampaignData(): array
+    {
+        $defaults = [
+            'title' => 'Kampanye Darurat: Hentikan Tambang Ilegal',
+            'url'   => '#',
+        ];
+
+        try {
+            if (\Schema::hasTable('contents')) {
+                $campaign = \App\Models\Content::where('category', 'kampanye-darurat')
+                    ->where('status', 'published')
+                    ->first();
+
+                if ($campaign) {
+                    $defaults['title'] = $campaign->title;
+                    $defaults['url']   = $campaign->tags ?: '#';
+                }
+            }
+        } catch (\Exception) {
+            // Fail silently during migrations / CLI commands
+        }
+
+        return $defaults;
     }
 }

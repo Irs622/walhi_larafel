@@ -2,32 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Content;
+use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Models\Comment;
-use Illuminate\Http\Request;
+use App\Models\Content;
 
 class CommentController extends Controller
 {
-    public function store(Request $request, Content $content)
+    /**
+     * Store a new comment for a content item.
+     * Honeypot check is delegated to StoreCommentRequest.
+     */
+    public function store(StoreCommentRequest $request, Content $content)
     {
-        // Honeypot check to block bots
-        if ($request->filled('extra_phone')) {
-            // Silently ignore to avoid alerting the spam bot
-            return redirect()->back()->with('comment_success', 'Komentar Anda berhasil dikirim dan sedang menunggu moderasi admin.');
+        // Silently ignore spam submissions to avoid revealing detection to bots
+        if ($request->isSpam()) {
+            return redirect()->back()->with(
+                'comment_success',
+                'Komentar Anda berhasil dikirim dan sedang menunggu moderasi admin.'
+            );
         }
 
-        $validated = $request->validate([
-            'author_name' => 'required|string|max:255',
-            'author_email' => 'required|email|max:255',
-            'body' => 'required|string|max:5000',
-            'parent_id' => 'nullable|exists:comments,id',
-        ]);
-
-        $comment = new Comment($validated);
+        $comment = new Comment($request->validated());
         $comment->content_id = $content->id;
-        $comment->status = 'pending';
+        $comment->status     = 'pending';
         $comment->save();
 
-        return redirect()->back()->with('comment_success', 'Komentar Anda berhasil dikirim dan sedang menunggu moderasi admin.');
+        return redirect()->back()->with(
+            'comment_success',
+            'Komentar Anda berhasil dikirim dan sedang menunggu moderasi admin.'
+        );
     }
 }

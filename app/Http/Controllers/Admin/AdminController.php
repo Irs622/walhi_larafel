@@ -1,73 +1,69 @@
 <?php
- 
+
 namespace App\Http\Controllers\Admin;
- 
+
+use App\Enums\ContentCategory;
 use App\Http\Controllers\Controller;
 use App\Models\Content;
 use App\Models\Donation;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
- 
+
 class AdminController extends Controller
 {
     public function index()
     {
-        // Calculate dynamic stats
-        $totalArticles = Content::whereIn('category', [
-            'blog', 'regulasi', 'siaran-pers', 'infografis', 
-            'kertas-posisi', 'newsletter', 'buletin-bumi', 
-            'jurnal', 'laporan-tahunan'
-        ])->count();
- 
-        $activeDonations = Content::where('category', 'donasi')
-            ->where('status', 'published')
-            ->count();
-            
-        $activeEvents = Content::where('category', 'pekan-rakyat')
-            ->where('status', 'published')
-            ->count();
- 
+        // Article counts across all publishable categories
+        $totalArticles = Content::publishable()->count();
+
+        $activeDonations = Content::ofCategory('donasi')->published()->count();
+        $activeEvents    = Content::ofCategory('pekan-rakyat')->published()->count();
+
         $totalDonationsAmount = Donation::where('status', 'success')->sum('amount');
- 
-        // Trend last 12 months
-        $monthsData = [];
+
+        // Monthly donation trend — last 12 months (real data only)
+        [$labels, $monthsData] = $this->buildMonthlyChart();
+
+        $recentTransactions = Donation::orderBy('created_at', 'desc')->take(5)->get();
+
+        $latestPostings = Content::publishable()
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
+
+        $stats = [
+            'total_articles'        => $totalArticles,
+            'active_campaigns'      => $activeDonations + $activeEvents,
+            'active_donations'      => $activeDonations,
+            'active_events'         => $activeEvents,
+            'total_donations_amount'=> $totalDonationsAmount,
+            'chart_labels'          => $labels,
+            'chart_data'            => $monthsData,
+            'has_donations'         => array_sum($monthsData) > 0,
+        ];
+
+        return view('admin.dashboard', compact('stats', 'recentTransactions', 'latestPostings'));
+    }
+
+    /**
+     * Build monthly donation chart data (real data only — no mock fallback).
+     * Returns [$labels, $data] for the last 12 months.
+     *
+     * @return array{0: array<string>, 1: array<int>}
+     */
+    private function buildMonthlyChart(): array
+    {
         $labels = [];
+        $data   = [];
+
         for ($i = 11; $i >= 0; $i--) {
-            $month = Carbon::now()->startOfMonth()->subMonths($i);
+            $month    = Carbon::now()->startOfMonth()->subMonths($i);
             $labels[] = $month->translatedFormat("M 'y");
-            $sum = Donation::where('status', 'success')
+            $data[]   = (int) Donation::where('status', 'success')
                 ->whereYear('created_at', $month->year)
                 ->whereMonth('created_at', $month->month)
                 ->sum('amount');
-            $monthsData[] = (int) $sum;
         }
- 
-        // Fallback to mock data if no donations yet
-        if (array_sum($monthsData) === 0) {
-            $monthsData = [12500000, 18200000, 14800000, 22000000, 31500000, 19300000, 16700000, 24100000, 27800000, 33200000, 29400000, 38900000];
-        }
- 
-        $recentTransactions = Donation::orderBy('created_at', 'desc')->take(5)->get();
- 
-        $latestPostings = Content::whereIn('category', [
-            'blog', 'regulasi', 'siaran-pers', 'infografis', 
-            'kertas-posisi', 'newsletter', 'buletin-bumi', 
-            'jurnal', 'laporan-tahunan'
-        ])
-        ->orderBy('created_at', 'desc')
-        ->take(10)
-        ->get();
- 
-        $stats = [
-            'total_articles' => $totalArticles,
-            'active_campaigns' => $activeDonations + $activeEvents,
-            'active_donations' => $activeDonations,
-            'active_events' => $activeEvents,
-            'total_donations_amount' => $totalDonationsAmount,
-            'chart_labels' => $labels,
-            'chart_data' => $monthsData,
-        ];
- 
-        return view('admin.dashboard', compact('stats', 'recentTransactions', 'latestPostings'));
+
+        return [$labels, $data];
     }
 }
