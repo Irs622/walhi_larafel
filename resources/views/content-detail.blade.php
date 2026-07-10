@@ -40,9 +40,8 @@
                 
                 <!-- Content Section -->
                 <section style="background: #F4F1EA;" class="py-12 md:py-16">
-                    <div class="w-full @if($item->category === 'blog' || $item->category === 'siaran-pers') max-w-6xl @else max-w-4xl @endif mx-auto px-4 sm:px-8 flex flex-col gap-10">
-                        
-                        <!-- Back Button & Breadcrumbs -->
+                    <!-- Back Button & Breadcrumbs Container -->
+                    <div class="w-full max-w-[1440px] mx-auto px-2 sm:px-4 flex flex-col gap-10">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                             @php
                                 $backUrl = route('home');
@@ -103,7 +102,7 @@
                                 $year = $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->format('Y') : '2025';
                             @endphp
  
-                            <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 40px; display: flex; flex-direction: column; gap: 32px;">
+                            <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 40px; display: flex; flex-direction: column; gap: 32px;" class="w-full max-w-4xl mx-auto">
                                 <!-- Title & Metadata -->
                                 <div style="display: flex; flex-direction: column; gap: 16px; border-bottom: 2px solid #f0ede8; padding-bottom: 20px;">
                                     <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(28px, 4.5vw, 54px); font-family: Anton, sans-serif; font-weight: 400; line-height: 1.1; letter-spacing: 0.5px; text-transform: uppercase;">
@@ -204,7 +203,7 @@
                                 }
                             @endphp
 
-                            <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 40px; display: flex; flex-direction: column; gap: 32px;">
+                            <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 40px; display: flex; flex-direction: column; gap: 32px;" class="w-full max-w-4xl mx-auto">
                                 <!-- Title & Metadata -->
                                 <div style="display: flex; flex-direction: column; gap: 16px; border-bottom: 2px solid #f0ede8; padding-bottom: 20px;">
                                     <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(28px, 4.5vw, 54px); font-family: Anton, sans-serif; font-weight: 400; line-height: 1.1; letter-spacing: 0.5px; text-transform: uppercase;">
@@ -297,10 +296,10 @@
                             </div>
                         @else
                             <!-- DEFAULT BLOG & SIARAN PERS LAYOUT WITH SIDEBAR -->
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                                 
-                                <!-- Left Column: Article & Comments (70% width) -->
-                                <div class="lg:col-span-2 flex flex-col gap-10">
+                                <!-- Left Column: Article & Comments (75% width) -->
+                                <div class="lg:col-span-9 flex flex-col gap-10">
                                     <article style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px;" class="p-5 md:p-8 lg:p-10 flex flex-col gap-5 md:gap-6">
                                         <!-- Title & Metadata -->
                                         <div style="display: flex; flex-direction: column; gap: 16px; border-bottom: 2px solid #f0ede8; padding-bottom: 20px; margin-bottom: 10px;">
@@ -344,7 +343,7 @@
                                         @endif
 
                                         <!-- Article Body -->
-                                        <div style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Inter, sans-serif; white-space: pre-line;">
+                                        <div style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Inter, sans-serif; white-space: pre-line; max-width: 820px; width: 100%;">
                                             {!! $item->body !!}
                                         </div>
 
@@ -490,11 +489,11 @@
                                     @endif
                                 </div>
 
-                                <!-- Right Column: Sidebar (30% width) -->
-                                <div class="lg:col-span-1 flex flex-col gap-8 lg:sticky lg:top-6">
+                                <!-- Right Column: Sidebar (25% width) -->
+                                <div class="lg:col-span-3 flex flex-col gap-8 lg:sticky lg:top-6">
                                     <!-- Subscription Box -->
-                                    <div style="background: linear-gradient(135deg, #256D4A 0%, #8B6B4A 100%); border: 4px solid #1D1D1D;" class="p-5 md:p-6 shadow-[4px_4px_0px_0px_#1D1D1D]">
-                                        <h4 style="font-family: Bebas Neue, sans-serif; font-size: 24px; color: white; text-transform: uppercase; margin: 0 0 16px; line-height: 1.25; letter-spacing: 0.5px;">Langganan buletin WALHI Jabar untuk menerima notifikasi update kami</h4>
+                                    <div style="background: linear-gradient(135deg, #256D4A 0%, #8B6B4A 100%); border: 4px solid #1D1D1D;" class="p-4 md:p-5 shadow-[4px_4px_0px_0px_#1D1D1D]">
+                                        <h4 style="font-family: Bebas Neue, sans-serif; font-size: 20px; color: white; text-transform: uppercase; margin: 0 0 16px; line-height: 1.25; letter-spacing: 0.5px;">Langganan buletin WALHI Jabar untuk menerima notifikasi update kami</h4>
                                         
                                         @if(session('subscribe_success'))
                                             <div style="background: white; border: 2px solid #1D1D1D; color: #256D4A; padding: 12px; font-weight: 700; font-size: 13px; margin-bottom: 12px;">
@@ -515,8 +514,8 @@
 
                                     <!-- Latest/Trending News Box -->
                                     <div style="background: white; border: 4px solid #1D1D1D;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
-                                        <div style="background: linear-gradient(135deg, #256D4A 0%, #5C8D59 100%); border-bottom: 4px solid #1D1D1D; padding: 16px 20px;">
-                                            <h4 style="font-family: Bebas Neue, sans-serif; font-size: 24px; color: white; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">Berita Terbaru</h4>
+                                        <div style="background: linear-gradient(135deg, #256D4A 0%, #5C8D59 100%); border-bottom: 4px solid #1D1D1D; padding: 12px 16px;">
+                                            <h4 style="font-family: Bebas Neue, sans-serif; font-size: 20px; color: white; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">Berita Terbaru</h4>
                                         </div>
                                         <div style="display: flex; flex-direction: column; gap: 16px;" class="p-4 md:p-5">
                                             @forelse($sidebarNews as $sideItem)
@@ -542,8 +541,8 @@
                             </div>
 
                             <!-- Related / Recommended News Section (at the bottom) -->
-                            <div style="border-top: 4px solid #1D1D1D; margin-top: 56px; padding-top: 48px; display: flex; flex-direction: column; gap: 32px;">
-                                <h3 style="font-family: Bebas Neue, sans-serif; font-size: 36px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
+                            <div style="border-top: 4px solid #1D1D1D; margin-top: 56px; padding-top: 48px; display: flex; flex-direction: column; gap: 32px;" class="w-full max-w-5xl mx-auto">
+                                <h3 style="font-family: Bebas Neue, sans-serif; font-size: 32px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
                                     Rekomendasi Berita Lainnya
                                 </h3>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
