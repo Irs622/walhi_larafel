@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
         // on every single page load. Now it only runs for header & footer,
         // and the results are cached for 1 hour.
         view()->composer(
-            ['partials.site-header', 'partials.site-footer'],
+            '*',
             function ($view) {
                 $contactData  = Cache::remember('global_contact', 3600, fn () => $this->resolveContactData());
                 $campaignData = Cache::remember('global_campaign', 3600, fn () => $this->resolveCampaignData());
