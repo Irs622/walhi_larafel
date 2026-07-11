@@ -28,11 +28,17 @@ Route::get('/blog', [PublicContentController::class, 'blog'])->name('blog');
 Route::get('/konten/{slug}', [PublicContentController::class, 'show'])->name('content.show');
 
 // Comments & Newsletter
-Route::post('/konten/{content}/komentar', [CommentController::class, 'store'])->name('comments.store');
-Route::post('/newsletter/subscribe', [SubscriptionController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::post('/konten/{content}/komentar', [CommentController::class, 'store'])
+    ->middleware('throttle:comment')
+    ->name('comments.store');
+Route::post('/newsletter/subscribe', [SubscriptionController::class, 'subscribe'])
+    ->middleware('throttle:comment')
+    ->name('newsletter.subscribe');
 
 // Donation
-Route::post('/donasi/pay', [DonationController::class, 'pay'])->name('donasi.pay');
+Route::post('/donasi/pay', [DonationController::class, 'pay'])
+    ->middleware('throttle:donation')
+    ->name('donasi.pay');
 Route::post('/donasi/webhook', [DonationController::class, 'webhook'])->name('donasi.webhook');
 
 // Public Pages (moved from inline closures to PageController)
@@ -71,34 +77,41 @@ Route::middleware('auth')->group(function () {
     // ADMIN ROUTES
     // ──────────────────────────────────────────────────────────────────────
     Route::prefix('admin')->name('admin.')->middleware('throttle:admin-actions')->group(function () {
-        Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+        // Shared routes for both admin and editor
+        Route::middleware('role:admin,editor')->group(function () {
+            Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
-        // "Tentang" sub-prefix (sejarah, visi-misi, dewan-nasional, etc.)
-        Route::prefix('tentang')->group(function () {
-            Route::get('/{category}', [ContentController::class, 'index'])->name('content.tentang.index');
-            Route::post('/{category}', [ContentController::class, 'store'])->name('content.tentang.store');
-            Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.tentang.update');
-            Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->name('content.tentang.destroy');
-            Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.tentang.toggle-status');
+            // "Tentang" sub-prefix (sejarah, visi-misi, dewan-nasional, etc.)
+            Route::prefix('tentang')->group(function () {
+                Route::get('/{category}', [ContentController::class, 'index'])->name('content.tentang.index');
+                Route::post('/{category}', [ContentController::class, 'store'])->name('content.tentang.store');
+                Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.tentang.update');
+                Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.tentang.toggle-status');
+            });
+
+            // Root categories
+            Route::get('/{category}', [ContentController::class, 'index'])->name('content.index');
+            Route::post('/{category}', [ContentController::class, 'store'])->name('content.store');
+            Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.update');
+            Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.toggle-status');
+
+            // Comment moderation (Approving and marking spam)
+            Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
+            Route::post('/comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
+            Route::post('/comments/{comment}/spam', [AdminCommentController::class, 'spam'])->name('comments.spam');
+
+            // Newsletter subscribers listing
+            Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
         });
 
-        // Root categories
-        Route::get('/{category}', [ContentController::class, 'index'])->name('content.index');
-        Route::post('/{category}', [ContentController::class, 'store'])->name('content.store');
-        Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.update');
-        Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->name('content.destroy');
-        Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.toggle-status');
-
-        // Comment moderation
-        Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
-        Route::post('/comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
-        Route::post('/comments/{comment}/spam', [AdminCommentController::class, 'spam'])->name('comments.spam');
-        Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
-
-        // Newsletter subscribers
-        Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
-        Route::get('/subscribers/export', [AdminSubscriberController::class, 'export'])->name('subscribers.export');
-        Route::delete('/subscribers/{subscriber}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
+        // Destructive / Export actions restricted to admin role only
+        Route::middleware('role:admin')->group(function () {
+            Route::delete('/tentang/{category}/{content}', [ContentController::class, 'destroy'])->name('content.tentang.destroy');
+            Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->name('content.destroy');
+            Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
+            Route::get('/subscribers/export', [AdminSubscriberController::class, 'export'])->name('subscribers.export');
+            Route::delete('/subscribers/{subscriber}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
+        });
     });
 });
 

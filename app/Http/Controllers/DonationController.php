@@ -54,15 +54,13 @@ class DonationController extends Controller
         $statusCode      = $payload['status_code'] ?? null;
         $grossAmount     = $payload['gross_amount'] ?? null;
         $signatureKey    = $payload['signature_key'] ?? null;
-        $serverKey       = config('midtrans.server_key');
 
-        if (! $orderId || ! $statusCode || ! $grossAmount || ! $signatureKey || ! $serverKey) {
+        if (! $orderId || ! $statusCode || ! $grossAmount || ! $signatureKey) {
             return response('Bad Request', 400);
         }
 
-        // Validate Midtrans signature
-        $localSignature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
-        if (! hash_equals($localSignature, $signatureKey)) {
+        // Validate Midtrans signature using service
+        if (! $this->donationService->validateSignature($orderId, $statusCode, $grossAmount, $signatureKey)) {
             return response('Invalid Signature', 403);
         }
 
@@ -85,6 +83,9 @@ class DonationController extends Controller
      */
     public function mockPaymentStatus(Request $request)
     {
+        // Double-check environment as defense-in-depth
+        abort_unless(app()->environment('local', 'testing'), 403, 'Mock payment is only available in local or testing environments.');
+
         $validated = $request->validate([
             'order_id' => ['required', 'exists:donations,order_id'],
             'status'   => ['required', 'in:success,failed,pending,expired'],

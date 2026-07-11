@@ -113,4 +113,18 @@ class Content extends Model
         $wordCount = str_word_count(strip_tags($this->body ?? ''));
         return max(1, (int) ceil($wordCount / 200));
     }
+
+    /**
+     * Sanitized HTML body to prevent XSS.
+     */
+    public function getSanitizedBodyAttribute(): string
+    {
+        $config = \HTMLPurifier_Config::createDefault();
+        $config->set('HTML.Allowed', 'p,br,strong,b,em,i,u,ul,ol,li,h2,h3,h4,h5,blockquote,a[href|title|target],img[src|alt|width|height],table,thead,tbody,tr,th,td,figure,figcaption,hr,span,div');
+        $config->set('HTML.TargetBlank', true);
+        $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true]);
+        
+        $purifier = new \HTMLPurifier($config);
+        return $purifier->purify($this->body ?? '');
+    }
 }
