@@ -52,6 +52,16 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('admin-actions', function (Request $request) {
             return Limit::perMinute(30)->by($request->user()?->id ?: $request->ip());
         });
+
+        // Public comments / subscriber rate limiter
+        RateLimiter::for('comment', function (Request $request) {
+            return Limit::perMinute(3)->by($request->ip());
+        });
+
+        // Public donation attempts rate limiter
+        RateLimiter::for('donation', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -61,11 +71,9 @@ class AppServiceProvider extends ServiceProvider
     private function configureViewComposers(): void
     {
         // Only inject global data into the two partials that actually need it.
-        // Previously this was bound to '*' (every view), causing 2 DB queries
-        // on every single page load. Now it only runs for header & footer,
-        // and the results are cached for 1 hour.
+        // Bound specifically to header and footer partials instead of wildcard '*'.
         view()->composer(
-            '*',
+            ['partials.site-header', 'partials.site-footer'],
             function ($view) {
                 $contactData  = Cache::remember('global_contact', 3600, fn () => $this->resolveContactData());
                 $campaignData = Cache::remember('global_campaign', 3600, fn () => $this->resolveCampaignData());
@@ -103,8 +111,16 @@ class AppServiceProvider extends ServiceProvider
                         if (strpos($line, ':') !== false) {
                             [$key, $value] = explode(':', $line, 2);
                             $key = strtolower(trim($key));
-                            $value = trim($value);
+                            $value = trim(filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS));
                             if (array_key_exists($key, $defaults)) {
+                                if (in_array($key, ['facebook', 'instagram', 'youtube', 'email'])) {
+                                    if ($key === 'email' && ! filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                                        continue;
+                                    }
+                                    if ($key !== 'email' && ! filter_var($value, FILTER_VALIDATE_URL)) {
+                                        continue;
+                                    }
+                                }
                                 $defaults[$key] = $value;
                             }
                         }
@@ -132,8 +148,8 @@ class AppServiceProvider extends ServiceProvider
                     ->first();
 
                 if ($campaign) {
-                    $defaults['title'] = $campaign->title;
-                    $defaults['url']   = $campaign->tags ?: '#';
+                    $defaults['title'] = filter_var($campaign->title, FILTER_SANITIZE_SPECIAL_CHARS);
+                    $defaults['url']   = filter_var($campaign->tags, FILTER_VALIDATE_URL) ? $campaign->tags : '#';
                 }
             }
         } catch (\Exception) {

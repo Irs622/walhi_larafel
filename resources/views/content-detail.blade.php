@@ -343,11 +343,10 @@
                                         @endif
 
                                         <!-- Article Body -->
-                                        {{-- Security: body is sanitized server-side using strip_tags with
-                                             a strict allowlist. Only safe structural HTML tags are permitted.
+                                        {{-- Security: body is sanitized server-side using HTMLPurifier.
                                              Raw {!! !!} without sanitization is an XSS vulnerability. --}}
                                         <div style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Inter, sans-serif; white-space: pre-line; max-width: 820px; width: 100%;">
-                                            {!! strip_tags($item->body, '<p><br><strong><b><em><i><u><ul><ol><li><h2><h3><h4><h5><blockquote><a><img><table><thead><tbody><tr><th><td><figure><figcaption><hr><span><div>') !!}
+                                            {!! $item->sanitized_body !!}
                                         </div>
 
                                         <!-- Share Buttons -->

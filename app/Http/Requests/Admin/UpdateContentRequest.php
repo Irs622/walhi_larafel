@@ -8,7 +8,7 @@ class UpdateContentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user() !== null; // Requires authentication
+        return $this->user() !== null && $this->user()->canManageContent();
     }
 
     public function rules(): array
@@ -20,7 +20,28 @@ class UpdateContentRequest extends FormRequest
             'tags'        => ['nullable', 'string', 'max:500'],
             'status'      => ['required', 'in:published,draft,archived'],
             'image_url'   => ['nullable', 'string', 'max:500'],
-            'image'       => ['nullable', 'file', 'mimes:jpeg,png,jpg,webp,gif,pdf,xls,xlsx,doc,docx', 'max:10240'],
+            'image'       => [
+                'nullable',
+                'file',
+                'mimes:jpeg,png,jpg,webp,gif,pdf,xls,xlsx,doc,docx',
+                'max:10240',
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $mime = $value->getMimeType();
+                        $allowedMimes = [
+                            'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+                            'application/pdf',
+                            'application/msword',
+                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                            'application/vnd.ms-excel',
+                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        ];
+                        if (!in_array($mime, $allowedMimes)) {
+                            $fail('File yang diunggah memiliki tipe MIME asli yang tidak valid.');
+                        }
+                    }
+                }
+            ],
             'publish_date'=> ['nullable', 'date'],
             'is_promoted' => ['nullable', 'boolean'],
             'author'      => ['nullable', 'string', 'max:255'],

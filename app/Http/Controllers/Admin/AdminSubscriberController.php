@@ -25,20 +25,21 @@ class AdminSubscriberController extends Controller
             'Expires' => '0',
         ];
 
-        $subscribers = Subscriber::all();
-
-        $callback = function () use ($subscribers) {
+        $callback = function () {
             $file = fopen('php://output', 'w');
             fputcsv($file, ['ID', 'Email', 'Status', 'Tanggal Daftar']);
 
-            foreach ($subscribers as $subscriber) {
-                fputcsv($file, [
-                    $subscriber->id,
-                    $subscriber->email,
-                    $subscriber->is_active ? 'Aktif' : 'Tidak Aktif',
-                    $subscriber->created_at->format('Y-m-d H:i:s'),
-                ]);
-            }
+            // Chunk records to prevent memory exhaustion
+            Subscriber::orderBy('id')->chunk(500, function ($subscribers) use ($file) {
+                foreach ($subscribers as $subscriber) {
+                    fputcsv($file, [
+                        $subscriber->id,
+                        $subscriber->email,
+                        $subscriber->is_active ? 'Aktif' : 'Tidak Aktif',
+                        $subscriber->created_at ? $subscriber->created_at->format('Y-m-d H:i:s') : '',
+                    ]);
+                }
+            });
 
             fclose($file);
         };

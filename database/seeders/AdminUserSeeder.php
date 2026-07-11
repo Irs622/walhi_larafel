@@ -13,13 +13,24 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
+        $email = env('ADMIN_EMAIL');
+        $password = env('ADMIN_PASSWORD');
+
+        if (! $email || ! $password) {
+            $this->command->warn('ADMIN_EMAIL dan ADMIN_PASSWORD tidak di-set di file .env. AdminUserSeeder dilewati.');
+            return;
+        }
+
         User::updateOrCreate(
-            ['email' => 'admin@walhi-jabar.org'],
+            ['email' => $email],
             [
                 'name' => 'Admin WALHI Jabar',
-                'password' => Hash::make('walhi@2026!secure'),
+                'password' => Hash::make($password),
                 'email_verified_at' => now(),
+                'role' => 'admin', // Set explicitly to admin role
             ]
         );
+
+        $this->command->info("Admin user {$email} berhasil dibuat/diperbarui.");
     }
 }

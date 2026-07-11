@@ -94,10 +94,18 @@ class DonationService
     }
 
     /**
+     * Validate incoming webhook signature.
+     */
+    public function validateSignature(string $orderId, string $statusCode, string $grossAmount, string $signature): bool
+    {
+        return $this->midtrans->validateSignature($orderId, $statusCode, $grossAmount, $signature);
+    }
+
+    /**
      * Generate a unique, human-readable order ID.
      */
     private function generateOrderId(): string
     {
-        return 'WALHI-DON-' . time() . '-' . Str::upper(Str::random(4));
+        return 'WALHI-DON-' . date('YmdHis') . '-' . Str::upper(Str::random(8));
     }
 }
