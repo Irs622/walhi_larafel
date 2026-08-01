@@ -21,13 +21,13 @@ class DonationController extends Controller
     {
         $validated = $request->validated();
 
-        // Validate campaign exists and is a donation campaign
+        // Validate campaign exists, is a donation campaign, and is published
         if (! empty($validated['campaign_id'])) {
             $campaign = Content::find($validated['campaign_id']);
-            if (! $campaign || $campaign->category !== 'donasi') {
+            if (! $campaign || $campaign->category !== 'donasi' || $campaign->status !== 'published') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Kampanye donasi tidak valid.',
+                    'message' => 'Kampanye donasi tidak valid atau sudah tidak aktif.',
                 ], 422);
             }
         }
@@ -48,6 +48,22 @@ class DonationController extends Controller
      */
     public function webhook(Request $request)
     {
+        // IP Whitelist Check for Midtrans in Production
+        if (config('app.env') === 'production') {
+            $clientIp = $request->ip();
+            $allowedPrefixes = ['103.208.23.', '103.127.16.', '103.127.17.', '127.0.0.1'];
+            $isAllowed = false;
+            foreach ($allowedPrefixes as $prefix) {
+                if (str_starts_with($clientIp, $prefix)) {
+                    $isAllowed = true;
+                    break;
+                }
+            }
+            if (! $isAllowed) {
+                return response('Forbidden IP', 403);
+            }
+        }
+
         $payload = $request->all();
 
         $orderId         = $payload['order_id'] ?? null;

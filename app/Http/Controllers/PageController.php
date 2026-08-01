@@ -30,10 +30,11 @@ class PageController extends Controller
         $query = Content::ofCategory(ContentCategory::Regulasi)->published();
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('body', 'like', "%{$search}%")
-                  ->orWhere('tags', 'like', "%{$search}%");
+            $escapedSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $query->where(function ($q) use ($escapedSearch) {
+                $q->where('title', 'like', "%{$escapedSearch}%")
+                  ->orWhere('body', 'like', "%{$escapedSearch}%")
+                  ->orWhere('tags', 'like', "%{$escapedSearch}%");
             });
         }
 

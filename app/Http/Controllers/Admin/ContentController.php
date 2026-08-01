@@ -59,21 +59,31 @@ class ContentController extends Controller
         $query = Content::where('category', $category);
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('tags', 'like', "%{$search}%");
+            $escapedSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $query->where(function ($q) use ($escapedSearch) {
+                $q->where('title', 'like', "%{$escapedSearch}%")
+                  ->orWhere('tags', 'like', "%{$escapedSearch}%");
             });
         }
 
         $items = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
-        // Status counts (single query via conditional aggregation workaround)
-        $total    = Content::where('category', $category)->count();
-        $published = Content::where('category', $category)->where('status', 'published')->count();
-        $draft    = Content::where('category', $category)->where('status', 'draft')->count();
-        $archived = Content::where('category', $category)->where('status', 'archived')->count();
+        // Status counts (consolidated into a single query via conditional aggregation)
+        $rawCounts = Content::where('category', $category)
+            ->selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as published,
+                SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) as draft,
+                SUM(CASE WHEN status = 'archived' THEN 1 ELSE 0 END) as archived
+            ")
+            ->first();
 
-        $counts = compact('total', 'published', 'draft', 'archived');
+        $counts = [
+            'total'     => (int) ($rawCounts->total ?? 0),
+            'published' => (int) ($rawCounts->published ?? 0),
+            'draft'     => (int) ($rawCounts->draft ?? 0),
+            'archived'  => (int) ($rawCounts->archived ?? 0),
+        ];
 
         // Donation-specific dashboard
         if ($category === 'donasi') {

@@ -49,7 +49,8 @@ class PublicContentController extends Controller
         $query = Content::ofCategory(ContentCategory::Blog)->published();
 
         if ($categoryFilter && $categoryFilter !== 'Semua') {
-            $query->where('tags', 'like', "%{$categoryFilter}%");
+            $escapedFilter = str_replace(['%', '_'], ['\%', '\_'], $categoryFilter);
+            $query->where('tags', 'like', "%{$escapedFilter}%");
         }
 
         $items = $query->orderBy('publish_date', 'desc')->paginate(9)->withQueryString();
@@ -67,8 +68,12 @@ class PublicContentController extends Controller
             }])
             ->firstOrFail();
 
-        // Increment views count
-        $item->increment('views');
+        // Increment views count with session deduplication
+        $sessionKey = 'viewed_content_' . $item->id;
+        if (!session()->has($sessionKey)) {
+            $item->increment('views');
+            session()->put($sessionKey, true);
+        }
 
         // Read time is now an accessor on the model
         $readTime = $item->read_time;

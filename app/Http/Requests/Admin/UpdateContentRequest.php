@@ -16,7 +16,7 @@ class UpdateContentRequest extends FormRequest
         return [
             'title'       => ['required', 'string', 'max:255'],
             'slug'        => ['required', 'string', 'max:255'],
-            'body'        => ['nullable', 'string'],
+            'body'        => ['nullable', 'string', 'max:500000'],
             'tags'        => ['nullable', 'string', 'max:500'],
             'status'      => ['required', 'in:published,draft,archived'],
             'image_url'   => ['nullable', 'string', 'max:500'],
@@ -27,6 +27,13 @@ class UpdateContentRequest extends FormRequest
                 'max:10240',
                 function (string $attribute, mixed $value, \Closure $fail) {
                     if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $ext = strtolower($value->getClientOriginalExtension());
+                        $dangerousExts = ['php', 'phtml', 'phar', 'php3', 'php4', 'php5', 'phps', 'cgi', 'pl', 'py', 'sh', 'bat', 'exe', 'svg', 'htaccess'];
+                        if (in_array($ext, $dangerousExts)) {
+                            $fail('Ekstensi file yang diunggah tidak diizinkan demi alasan keamanan.');
+                            return;
+                        }
+
                         $mime = $value->getMimeType();
                         $allowedMimes = [
                             'image/jpeg', 'image/png', 'image/webp', 'image/gif',
