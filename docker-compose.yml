@@ -1,0 +1,27 @@
+name: walhi-jabar
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: walhi_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8000
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/var/www/html/database/database.sqlite
+      - SESSION_DRIVER=database
+      - QUEUE_CONNECTION=database
+      - SEED_ON_START=true
+    volumes:
+      - walhi_storage:/var/www/html/storage
+      - walhi_db:/var/www/html/database
+
+volumes:
+  walhi_storage:
+  walhi_db:

@@ -1,0 +1,13 @@
+.git
+.github
+.env
+.editorconfig
+node_modules
+vendor
+public/build
+public/storage
+storage/*.key
+storage/logs/*.log
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
