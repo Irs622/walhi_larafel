@@ -14,9 +14,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(
+            at: ['127.0.0.1', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'],
+            headers: Request::HEADER_X_FORWARDED_FOR |
+                     Request::HEADER_X_FORWARDED_HOST |
+                     Request::HEADER_X_FORWARDED_PORT |
+                     Request::HEADER_X_FORWARDED_PROTO,
+        );
+
+        $middleware->trustHosts(
+            at: ['^(.+\.)?walhi\-jabar\.org$', 'localhost', '127\.0\.0\.1'],
+        );
+
         $middleware->validateCsrfTokens(except: [
             'donasi/webhook',
-            'donasi/mock-payment-status',
         ]);
 
         $middleware->alias([
@@ -34,10 +45,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (QueryException $e, Request $request) {
             if (!config('app.debug')) {
-                Log::error('Database Query Exception: ' . $e->getMessage(), [
-                    'sql' => $e->getSql(),
-                    'bindings' => $e->getBindings(),
-                    'exception' => $e
+                Log::error('Database Query Exception', [
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage(),
                 ]);
 
                 if ($request->is('api/*') || $request->expectsJson()) {
@@ -52,9 +62,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (PDOException $e, Request $request) {
             if (!config('app.debug')) {
-                Log::error('PDO Exception: ' . $e->getMessage(), [
-                    'exception' => $e
-                ]);
+                Log::error('PDO Exception: ' . $e->getMessage());
 
                 if ($request->is('api/*') || $request->expectsJson()) {
                     return response()->json([

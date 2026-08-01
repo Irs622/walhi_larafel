@@ -17,7 +17,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
     ];
 
     protected $hidden = [
@@ -47,7 +46,7 @@ class User extends Authenticatable
      */
     public function getRoleEnumAttribute(): UserRole
     {
-        return UserRole::from($this->role ?? UserRole::Admin->value);
+        return UserRole::from($this->role ?? UserRole::Editor->value);
     }
 
     /**

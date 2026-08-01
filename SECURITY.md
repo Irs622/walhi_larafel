@@ -87,6 +87,12 @@ location ~ /\.(env|git|htaccess|composer) {
     return 404;
 }
 
+# 2. Blokir eksekusi PHP pada folder storage / uploads
+location ~* /storage/.*\.php$ {
+    deny all;
+    return 404;
+}
+
 # 2. Filter SQL Injection dasar pada URI dan Query String
 if ($query_string ~* "union.*select.*\(") {
     return 403;

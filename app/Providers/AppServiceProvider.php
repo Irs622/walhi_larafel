@@ -2,11 +2,15 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Events\Lockout;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +27,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Password::defaults(function () {
+            return Password::min(12)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+                ->uncompromised();
+        });
+
+        Event::listen(Lockout::class, function (Lockout $event) {
+            Log::warning('Security Alert: Account Lockout triggered due to excessive failed login attempts.', [
+                'ip'         => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'email'      => request()->input('email'),
+            ]);
+        });
+
         $this->configureRateLimiting();
         $this->configureViewComposers();
     }
