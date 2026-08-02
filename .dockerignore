@@ -8,6 +8,8 @@ public/build
 public/storage
 storage/*.key
 storage/logs/*.log
-storage/framework/cache/*
+storage/framework/cache/data/*
 storage/framework/sessions/*
 storage/framework/views/*
+storage/database.sqlite
+*.sqlite-journal

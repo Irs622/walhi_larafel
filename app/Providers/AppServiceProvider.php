@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,8 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Password::defaults(function () {
-            return Password::min(12)
+        PasswordRule::defaults(function () {
+            return PasswordRule::min(12)
                 ->letters()
                 ->mixedCase()
                 ->numbers()
@@ -94,7 +94,7 @@ class AppServiceProvider extends ServiceProvider
         // Only inject global data into the two partials that actually need it.
         // Bound specifically to header and footer partials instead of wildcard '*'.
         view()->composer(
-            ['partials.site-header', 'partials.site-footer'],
+            ['welcome', 'partials.site-header', 'partials.site-footer'],
             function ($view) {
                 $contactData  = Cache::remember('global_contact', 3600, fn () => $this->resolveContactData());
                 $campaignData = Cache::remember('global_campaign', 3600, fn () => $this->resolveCampaignData());
