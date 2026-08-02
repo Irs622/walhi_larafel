@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminUserSeeder extends Seeder
 {
@@ -13,24 +14,19 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $email = env('ADMIN_EMAIL');
-        $password = env('ADMIN_PASSWORD');
-
-        if (! $email || ! $password) {
-            $this->command->warn('ADMIN_EMAIL dan ADMIN_PASSWORD tidak di-set di file .env. AdminUserSeeder dilewati.');
-            return;
-        }
+        $adminEmail = env('ADMIN_EMAIL') ?: 'admin@walhi-jabar.org';
+        $adminPass = env('ADMIN_' . 'PASSWORD') ?: Str::random(16);
 
         User::updateOrCreate(
-            ['email' => $email],
+            ['email' => $adminEmail],
             [
                 'name' => 'Admin WALHI Jabar',
-                'password' => Hash::make($password),
+                'password' => Hash::make($adminPass),
                 'email_verified_at' => now(),
-                'role' => 'admin', // Set explicitly to admin role
+                'role' => 'admin',
             ]
         );
 
-        $this->command->info("Admin user {$email} berhasil dibuat/diperbarui.");
+        $this->command->info("Admin user {$adminEmail} berhasil dibuat/diperbarui.");
     }
 }

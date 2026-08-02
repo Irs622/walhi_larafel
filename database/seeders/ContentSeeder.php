@@ -372,7 +372,10 @@ class ContentSeeder extends Seeder
         ];
 
         foreach ($data as $item) {
-            Content::create($item);
+            Content::updateOrCreate(
+                ['slug' => $item['slug']],
+                $item
+            );
         }
     }
 }

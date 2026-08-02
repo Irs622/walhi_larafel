@@ -10,18 +10,29 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - APP_NAME=WALHI Jabar
       - APP_ENV=local
       - APP_DEBUG=true
       - APP_URL=http://localhost:8000
+      - APP_KEY=base64:c3VwZXJzZWNyZXRrZXlmb3J3YWxoaWphYmFyYXBwMTI=
       - DB_CONNECTION=sqlite
-      - DB_DATABASE=/var/www/html/database/database.sqlite
-      - SESSION_DRIVER=database
-      - QUEUE_CONNECTION=database
+      - DB_DATABASE=/var/www/html/storage/app/database.sqlite
+      - SESSION_DRIVER=file
+      - CACHE_STORE=file
+      - QUEUE_CONNECTION=sync
+      - LOG_CHANNEL=stack
+      - LOG_LEVEL=debug
       - SEED_ON_START=true
     volumes:
-      - walhi_storage:/var/www/html/storage
-      - walhi_db:/var/www/html/database
+      # Only persist the SQLite database — NOT the entire storage/ directory
+      # This prevents volume shadowing of storage/framework/* dirs built into the image
+      - walhi_db:/var/www/html/storage/app
+    healthcheck:
+      test: ["CMD", "php", "artisan", "about", "--no-ansi"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
-  walhi_storage:
   walhi_db:

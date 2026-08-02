@@ -58,9 +58,14 @@ class AdminController extends Controller
 
         $startDate = Carbon::now()->startOfMonth()->subMonths(11);
 
+        $driver = \DB::getDriverName();
+        $dateExpr = $driver === 'sqlite'
+            ? "strftime('%Y-%m', created_at) as year_month"
+            : "DATE_FORMAT(created_at, '%Y-%m') as year_month";
+
         $monthlyTotals = Donation::where('status', 'success')
             ->where('created_at', '>=', $startDate)
-            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as year_month, SUM(amount) as total")
+            ->selectRaw("{$dateExpr}, SUM(amount) as total")
             ->groupBy('year_month')
             ->pluck('total', 'year_month');
 
