@@ -31,7 +31,7 @@ class SecurityHeaders
         // Content Security Policy
         $response->headers->set('Content-Security-Policy', implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://app.midtrans.com https://app.sandbox.midtrans.com https://cdn.jsdelivr.net https://unpkg.com",
+            "script-src 'self' https://app.midtrans.com https://app.sandbox.midtrans.com https://cdn.jsdelivr.net https://unpkg.com",
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com",
             "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com",
             "img-src 'self' data: https:",
