@@ -32,9 +32,13 @@ class AdminSubscriberController extends Controller
             // Chunk records to prevent memory exhaustion
             Subscriber::orderBy('id')->chunk(500, function ($subscribers) use ($file) {
                 foreach ($subscribers as $subscriber) {
+                    $email = $subscriber->email;
+                    if (in_array(substr($email, 0, 1), ['=', '+', '-', '@'], true)) {
+                        $email = "'" . $email;
+                    }
                     fputcsv($file, [
                         $subscriber->id,
-                        $subscriber->email,
+                        $email,
                         $subscriber->is_active ? 'Aktif' : 'Tidak Aktif',
                         $subscriber->created_at ? $subscriber->created_at->format('Y-m-d H:i:s') : '',
                     ]);
