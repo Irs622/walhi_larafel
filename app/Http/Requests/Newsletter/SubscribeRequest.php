@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class SubscribeRequest extends FormRequest
 {
+    private bool $spamDetected = false;
+
     public function authorize(): bool
     {
         return true; // Public endpoint
@@ -19,8 +21,7 @@ class SubscribeRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         if ($this->filled('extra_name')) {
-            // Mark as spam — controller checks this flag
-            $this->merge(['_is_spam' => true]);
+            $this->spamDetected = true;
         }
     }
 
@@ -44,6 +45,6 @@ class SubscribeRequest extends FormRequest
      */
     public function isSpam(): bool
     {
-        return (bool) $this->input('_is_spam', false);
+        return $this->spamDetected;
     }
 }
