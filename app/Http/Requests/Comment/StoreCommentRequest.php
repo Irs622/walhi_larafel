@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCommentRequest extends FormRequest
 {
+    private bool $spamDetected = false;
+
     public function authorize(): bool
     {
         return true; // Public endpoint
@@ -17,7 +19,7 @@ class StoreCommentRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         if ($this->filled('extra_phone')) {
-            $this->merge(['_is_spam' => true]);
+            $this->spamDetected = true;
         }
     }
 
@@ -49,6 +51,6 @@ class StoreCommentRequest extends FormRequest
      */
     public function isSpam(): bool
     {
-        return (bool) $this->input('_is_spam', false);
+        return $this->spamDetected;
     }
 }
