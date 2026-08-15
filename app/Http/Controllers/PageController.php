@@ -46,8 +46,10 @@ class PageController extends Controller
                 'keputusan-menteri'   => 'keputusan menteri',
                 'peraturan-menteri'   => 'peraturan menteri',
             ];
-            $mappedTag = $tagMap[$categoryFilter] ?? $categoryFilter;
-            $query->where('tags', 'like', "%{$mappedTag}%");
+            if (isset($tagMap[$categoryFilter])) {
+                $mappedTag = $tagMap[$categoryFilter];
+                $query->where('tags', 'like', "%{$mappedTag}%");
+            }
         }
 
         $items = $query->orderBy('publish_date', 'desc')->paginate(10)->withQueryString();
