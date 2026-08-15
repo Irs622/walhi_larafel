@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subscriber;
+use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 
 class AdminSubscriberController extends Controller
@@ -17,6 +18,8 @@ class AdminSubscriberController extends Controller
 
     public function export()
     {
+        AuditLogService::log('SUBSCRIBER_EXPORT', 'Subscriber');
+
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="newsletter_subscribers_' . now()->format('Y-m-d') . '.csv"',
@@ -49,6 +52,8 @@ class AdminSubscriberController extends Controller
 
     public function destroy(Subscriber $subscriber)
     {
+        AuditLogService::log('SUBSCRIBER_DELETE', 'Subscriber', $subscriber->id);
+
         $subscriber->delete();
 
         return redirect()->back()->with('success', 'Pelanggan berhasil dihapus.');
