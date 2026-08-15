@@ -67,7 +67,7 @@ RUN mkdir -p storage/framework/views \
              bootstrap/cache
 
 # Set permissions for Laravel storage and cache
-RUN chmod -R 777 storage bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache
 RUN chmod +x docker-entrypoint.sh
 
 EXPOSE 8000
