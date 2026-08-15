@@ -68,6 +68,14 @@ class PublicContentController extends Controller
             }])
             ->firstOrFail();
 
+        // Ensure non-published (draft/archived) articles are not accessible to public guests
+        if ($item->status !== 'published') {
+            $user = auth()->user();
+            if (! $user || ! $user->canManageContent()) {
+                abort(404);
+            }
+        }
+
         // Increment views count with session deduplication
         $sessionKey = 'viewed_content_' . $item->id;
         if (!session()->has($sessionKey)) {
