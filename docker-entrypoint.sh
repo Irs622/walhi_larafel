@@ -17,7 +17,7 @@ mkdir -p storage/framework/views \
 
 # ── 2. Fix permissions ──
 echo "[2/7] Setting permissions..."
-chmod -R 777 storage bootstrap/cache 2>/dev/null || true
+chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
 # ── 3. Generate .env from Docker environment variables ──
 # Always regenerate .env to ensure Docker env vars take precedence.
@@ -45,11 +45,12 @@ LOG_LEVEL=${LOG_LEVEL:-debug}
 DB_CONNECTION=${DB_CONNECTION:-sqlite}
 DB_DATABASE=${DB_DATABASE:-/var/www/html/storage/app/database.sqlite}
 
-SESSION_DRIVER=${SESSION_DRIVER:-file}
+SESSION_DRIVER=${SESSION_DRIVER:-database}
 SESSION_LIFETIME=120
-SESSION_ENCRYPT=false
+SESSION_ENCRYPT=true
 SESSION_PATH=/
 SESSION_DOMAIN=null
+SESSION_SECURE_COOKIE=true
 
 BROADCAST_CONNECTION=log
 FILESYSTEM_DISK=local
@@ -112,13 +113,13 @@ if [ "${SEED_ON_START:-false}" = "true" ]; then
 fi
 
 # Final permission fix after all operations
-chmod -R 777 storage bootstrap/cache 2>/dev/null || true
+chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
 echo ""
 echo "═══════════════════════════════════════════════════════════"
 echo "  ✅ WALHI Jabar is starting on http://0.0.0.0:8000"
 echo "  📧 Admin: ${ADMIN_EMAIL:-admin@walhi-jabar.org}"
-echo "  🔑 Key: ${ADMIN_PASS_VAL}"
+echo "  🔑 Password: (set via ADMIN_PASSWORD env var)"
 echo "═══════════════════════════════════════════════════════════"
 echo ""
 
