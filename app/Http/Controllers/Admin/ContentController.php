@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\UpdateContentRequest;
 use App\Models\Content;
 use App\Models\Donation;
 use App\Services\Content\SlugService;
+use App\Services\AuditLogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -113,6 +114,8 @@ class ContentController extends Controller
 
     public function store(StoreContentRequest $request, string $category)
     {
+        $this->authorize('create', Content::class);
+
         $validated = $request->validated();
         $validated['is_promoted'] = $request->boolean('is_promoted');
 
@@ -130,7 +133,12 @@ class ContentController extends Controller
         $validated['tags'] = $this->encodeTags($request, $category, $validated['tags'] ?? null);
         $validated['category'] = $category;
 
-        Content::create($validated);
+        $content = Content::create($validated);
+
+        AuditLogService::log('CONTENT_CREATE', 'Content', $content->id, [
+            'title' => $content->title,
+            'category' => $category,
+        ]);
 
         return redirect()->back()->with('success', 'Konten berhasil ditambahkan.');
     }
@@ -139,6 +147,8 @@ class ContentController extends Controller
 
     public function update(UpdateContentRequest $request, string $category, Content $content)
     {
+        $this->authorize('update', $content);
+
         $validated = $request->validated();
         $validated['is_promoted'] = $request->boolean('is_promoted');
 
@@ -165,6 +175,11 @@ class ContentController extends Controller
 
         $content->update($validated);
 
+        AuditLogService::log('CONTENT_UPDATE', 'Content', $content->id, [
+            'title' => $content->title,
+            'category' => $category,
+        ]);
+
         return redirect()->back()->with('success', 'Konten berhasil diperbarui.');
     }
 
@@ -172,6 +187,13 @@ class ContentController extends Controller
 
     public function destroy(string $category, Content $content)
     {
+        $this->authorize('delete', $content);
+
+        AuditLogService::log('CONTENT_DELETE', 'Content', $content->id, [
+            'title' => $content->title,
+            'category' => $category,
+        ]);
+
         $this->deleteOldImage($content);
         $content->delete(); // SoftDeletes — record still in DB, deleted_at is set
 
@@ -182,8 +204,15 @@ class ContentController extends Controller
 
     public function toggleStatus(string $category, Content $content)
     {
+        $this->authorize('update', $content);
+
         $next = $content->status === 'published' ? 'archived' : 'published';
         $content->update(['status' => $next]);
+
+        AuditLogService::log('CONTENT_TOGGLE_STATUS', 'Content', $content->id, [
+            'title' => $content->title,
+            'status' => $next,
+        ]);
 
         return redirect()->back()->with('success', 'Status konten berhasil diubah.');
     }
