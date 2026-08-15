@@ -12,9 +12,9 @@ services:
     environment:
       - APP_NAME=WALHI Jabar
       - APP_ENV=local
-      - APP_DEBUG=true
+      - APP_DEBUG=false
       - APP_URL=http://localhost:8000
-      - APP_KEY=base64:c3VwZXJzZWNyZXRrZXlmb3J3YWxoaWphYmFyYXBwMTI=
+      - APP_KEY=
       - DB_CONNECTION=sqlite
       - DB_DATABASE=/var/www/html/storage/app/database.sqlite
       - SESSION_DRIVER=file
