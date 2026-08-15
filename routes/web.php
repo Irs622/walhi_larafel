@@ -39,7 +39,9 @@ Route::post('/newsletter/subscribe', [SubscriptionController::class, 'subscribe'
 Route::post('/donasi/pay', [DonationController::class, 'pay'])
     ->middleware('throttle:donation')
     ->name('donasi.pay');
-Route::post('/donasi/webhook', [DonationController::class, 'webhook'])->name('donasi.webhook');
+Route::post('/donasi/webhook', [DonationController::class, 'webhook'])
+    ->middleware('throttle:60,1')
+    ->name('donasi.webhook');
 
 // Public Pages (moved from inline closures to PageController)
 Route::get('/tentang-kami', [PageController::class, 'about'])->name('about');
