@@ -369,7 +369,9 @@
             `;
             feedContainer.insertAdjacentHTML('beforeend', itemHTML);
         });
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+            lucide.createIcons();
+        }
     }
 
     // Schedule periodic feed updates

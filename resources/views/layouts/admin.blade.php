@@ -268,7 +268,9 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                     }
                 });
             }
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
         }
 
         // Submenu groups toggling
@@ -292,7 +294,9 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                 sub.style.display = 'none';
                 chevron.setAttribute('data-lucide', 'chevron-right');
             }
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
         }
 
         // Initialize group visibilities
@@ -327,7 +331,9 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
 
         // Initialize Lucide icons on boot
         document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
         });
     </script>
     @stack('scripts')

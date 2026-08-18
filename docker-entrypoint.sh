@@ -23,6 +23,12 @@ chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 # Always regenerate .env to ensure Docker env vars take precedence.
 # This avoids sed/parsing issues and stale config.
 echo "[3/7] Generating .env from environment variables..."
+
+ADMIN_PASS_VAL="${ADMIN_PASSWORD:-}"
+if [ -z "$ADMIN_PASS_VAL" ]; then
+    ADMIN_PASS_VAL=$(tr -dc 'A-Za-z0-9' < /dev/urandom 2>/dev/null | head -c 16 || date +%s | sha256sum | head -c 16)
+fi
+
 cat > .env <<ENVFILE
 APP_NAME="${APP_NAME:-Laravel}"
 APP_ENV=${APP_ENV:-local}
@@ -62,14 +68,9 @@ MAIL_MAILER=log
 
 VITE_APP_NAME="${APP_NAME:-Laravel}"
 
-ADMIN_PASS_VAL="${ADMIN_PASSWORD:-}"
-if [ -z "$ADMIN_PASS_VAL" ]; then
-    ADMIN_PASS_VAL=$(tr -dc 'A-Za-z0-9' < /dev/urandom 2>/dev/null | head -c 16 || date +%s | sha256sum | head -c 16)
-fi
-
 ADMIN_EMAIL=${ADMIN_EMAIL:-admin@walhi-jabar.org}
+ADMIN_PASSWORD=${ADMIN_PASS_VAL}
 ENVFILE
-echo "ADMIN_""PASSWORD=${ADMIN_PASS_VAL}" >> .env
 chmod 644 .env
 
 # ── 4. Ensure SQLite database file exists ──
@@ -103,8 +104,11 @@ else
 fi
 
 # ── 7. Run Database Migrations & Seeding ──
-echo "[7/7] Running database migrations..."
+echo "[7/7] Clearing cache & running database migrations..."
 php artisan config:clear 2>/dev/null || true
+php artisan view:clear 2>/dev/null || true
+php artisan route:clear 2>/dev/null || true
+php artisan cache:clear 2>/dev/null || true
 php artisan migrate --force
 
 if [ "${SEED_ON_START:-false}" = "true" ]; then
