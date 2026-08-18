@@ -1,0 +1,36 @@
+name: Security Audit
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Setiap hari Senin jam 00:00 UTC
+  pull_request:
+    branches:
+      - main
+      - prod
+  workflow_dispatch:
+
+jobs:
+  security-audit:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Run Composer Security Audit
+        run: composer audit --abandoned=ignore || true
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run NPM Security Audit
+        run: npm audit --audit-level=high || true
