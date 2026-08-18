@@ -1,6 +1,6 @@
-# 🤝 Panduan Kontribusi (Contributing Guidelines)
+# 🤝 Panduan Kontribusi & Aturan Kolaborasi (Contributing Guidelines)
 
-Terima kasih telah tertarik untuk berkontribusi pada proyek pengembangan website resmi **WALHI Jawa Barat**! Dokumen ini berisi panduan alur kerja (*workflow*), standar kode, dan langkah-langkah kolaborasi bagi seluruh anggota tim dan kontributor terbuka.
+Terima kasih telah tertarik untuk berkontribusi pada proyek pengembangan website resmi **WALHI Jawa Barat**! Dokumen ini berisi panduan alur kerja (*workflow*), standar kode, dan **ketentuan serta aturan resmi Pull Request (PR)** bagi seluruh anggota tim dan kontributor terbuka.
 
 ---
 
@@ -8,15 +8,16 @@ Terima kasih telah tertarik untuk berkontribusi pada proyek pengembangan website
 1. [Alur Kerja Git & Percabangan (Branching Workflow)](#-alur-kerja-git--percabangan)
 2. [Konvensi Pesan Komit (Commit Conventions)](#-konvensi-pesan-komit)
 3. [Standar Kode (Coding Standards)](#-standar-kode)
-4. [Langkah Membuat Pull Request (PR)](#-langkah-membuat-pull-request)
-5. [Menjalankan Pengujian (Testing)](#-menjalankan-pengujian)
-6. [Pelaporan Masalah (Reporting Issues)](#-pelaporan-masalah)
+4. [📜 Ketentuan & Aturan Pull Request (PR Rules)](#-ketentuan--aturan-pull-request)
+5. [Langkah Membuat Pull Request (Step-by-Step)](#-langkah-membuat-pull-request)
+6. [Menjalankan Pengujian (Testing)](#-menjalankan-pengujian)
+7. [Pelaporan Masalah (Reporting Issues)](#-pelaporan-masalah)
 
 ---
 
 ## 🌿 Alur Kerja Git & Percabangan
 
-Branch utama proyek ini adalah `main`. Semua pengembangan fitur dan perbaikan bug harus dilakukan pada branch terpisah sebelum digabungkan (*merged*) ke `main` melalui Pull Request.
+Branch utama proyek ini adalah `main`. Semua pengembangan fitur, perbaikan bug, dan perubahan dokumentasi harus dilakukan pada branch terpisah sebelum digabungkan (*merged*) ke `main` melalui Pull Request.
 
 ### Format Penamaan Branch:
 - `feat/nama-fitur` : Untuk penambahan fitur baru (contoh: `feat/payment-gateway-midtrans`).
@@ -24,6 +25,7 @@ Branch utama proyek ini adalah `main`. Semua pengembangan fitur dan perbaikan bu
 - `refactor/nama-refactor` : Untuk restrukturisasi kode tanpa mengubah fungsionalitas (contoh: `refactor/audit-log-service`).
 - `docs/nama-dokumen` : Untuk pembaruan dokumentasi (contoh: `docs/api-documentation`).
 - `style/nama-styling` : Untuk penyesuaian tampilan CSS/Tailwind (contoh: `style/neo-brutalist-card`).
+- `hotfix/nama-masalah` : Untuk perbaikan mendesak di production langsung dari `main`.
 
 ---
 
@@ -68,6 +70,45 @@ Daftar `type`:
 
 ---
 
+## 📜 Ketentuan & Aturan Pull Request
+
+Setiap Pull Request yang diajukan ke repository ini **wajib mematuhi ketentuan berikut** agar dapat ditinjau dan digabungkan:
+
+### 1. Prinsip 1 PR = 1 Topik (*Single Responsibility*)
+- **Dilarang membuat "Mega PR"**: Jangan menggabungkan banyak fitur yang tidak berkaitan atau mencampur *refactoring* besar dengan *bug fix* dalam satu PR.
+- PR yang fokus dan berukuran kecil/sedang (< 400 baris perubahan) akan ditinjau dan di-merge jauh lebih cepat.
+
+### 2. Bebas Konflik (*No Merge Conflicts*)
+- Branch pengaju PR **wajib up-to-date** dengan branch `main` terbaru sebelum mengajukan review:
+  ```bash
+  git checkout feat/nama-fitur
+  git fetch origin
+  git merge origin/main
+  ```
+- Jika ada konflik, selesaikan (*resolve*) di branch Anda terlebih dahulu.
+
+### 3. Bersih dari File Sensitif & Kredensial (*Security Policy*)
+- **DILARANG KERAS** menyertakan file `.env`, kredensial database, API keys, password pribadi, atau file backup (`.sql`, `.sqlite`) ke dalam commit / PR.
+- Pastikan file `.gitignore` dihormati.
+
+### 4. Kelengkapan Informasi & Template PR
+- **Judul PR Jelas**: Mengikuti format `[Tipe]: Ringkasan singkat` (contoh: `Fix: Perbaikan tab Tentang Kami dan icon inline SVG`).
+- **Deskripsi Lengkap**: Wajib mengisi formulir template PR (ringkasan perubahan, alasan/konteks, dan langkah pengujian).
+- **Bukti Visual (Screenshot / Video)**: Wajib melampirkan screenshot atau rekaman layar untuk setiap perubahan antarmuka pengguna (UI/UX).
+- **Tautkan Issue Terkait**: Gunakan kata kunci GitHub seperti `Fixes #12` atau `Closes #15` jika PR menyelesaikan isu yang terdaftar.
+
+### 5. Aturan Review & Approval (Persetujuan)
+- **Minimal 1 Approval**: Setiap PR wajib mendapatkan persetujuan (*approval*) dari minimal 1 maintainer / lead developer atau rekan tim sebelum di-merge.
+- **Dilarang Self-Merge**: Kontributor dilarang melakukan merge pada PR miliknya sendiri tanpa persetujuan dari tim peninjau (kecuali hotfix kritis yang telah dikoordinasikan).
+- **Responsif terhadap Masukan**: Pembuat PR diharapkan menanggapi dan merevisi catatan/komentar dari reviewer secara berkala.
+
+### 6. Strategi Penggabungan (Merge Strategy)
+- Gunakan metode **Squash and Merge** untuk fitur kecil/sedang agar git log pada `main` tetap bersih dan linear.
+- Gunakan metode **Create a Merge Commit** untuk fitur besar atau rilis sprint terencana.
+- Selalu **hapus branch fitur** setelah PR berhasil di-merge (*Delete branch after merge*).
+
+---
+
 ## 🚀 Langkah Membuat Pull Request
 
 1. **Fork atau Clone Repository:**
@@ -76,8 +117,10 @@ Daftar `type`:
    cd walhi_larafel
    ```
 
-2. **Buat Branch Baru:**
+2. **Buat Branch Baru dari `main`:**
    ```bash
+   git checkout main
+   git pull origin main
    git checkout -b feat/nama-fitur-kamu
    ```
 
@@ -86,7 +129,7 @@ Daftar `type`:
    docker compose up -d --build
    ```
 
-4. **Komit Perubahan Anda:**
+4. **Komit Perubahan Anda (Sesuai Konvensi):**
    ```bash
    git add .
    git commit -m "feat(konten): tambahkan filter kategori artikel"
@@ -97,10 +140,10 @@ Daftar `type`:
    git push -u origin feat/nama-fitur-kamu
    ```
 
-6. **Buat Pull Request (PR):**
-   - Buka repository di GitHub dan klik tombol **New Pull Request**.
-   - Isi form PR sesuai template yang telah disediakan (deskripsikan apa yang diubah dan bagaimana cara mengujinya).
-   - Minta review dari setidaknya 1 rekan tim sebelum melakukan merge ke `main`.
+6. **Buka Pull Request (PR):**
+   - Buka repository di GitHub dan klik **Compare & pull request**.
+   - Isi deskripsi sesuai template PR.
+   - Tetapkan reviewer dari tim Anda.
 
 ---
 
