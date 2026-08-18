@@ -181,11 +181,12 @@
             @include('partials.site-footer')
         </div>
 
-        <!-- Premium Details Modal Removed -->
         <script>
             // Initialize Lucide icons on page load
             document.addEventListener('DOMContentLoaded', function() {
-                lucide.createIcons();
+                if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                    lucide.createIcons();
+                }
             });
         </script>
     </body>
