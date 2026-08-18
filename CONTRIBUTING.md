@@ -17,7 +17,11 @@ Terima kasih telah tertarik untuk berkontribusi pada proyek pengembangan website
 
 ## 🌿 Alur Kerja Git & Percabangan
 
-Branch utama proyek ini adalah `main`. Semua pengembangan fitur, perbaikan bug, dan perubahan dokumentasi harus dilakukan pada branch terpisah sebelum digabungkan (*merged*) ke `main` melalui Pull Request.
+Repository ini menggunakan model percabangan dua jalur utama:
+- **`prod`** : Branch **Produksi (Production/Live)**. Selalu berisi kode stabil yang sedang berjalan di server live WALHI Jawa Barat.
+- **`main`** : Branch **Pengembangan Utama (Development & Staging)**. Tempat penggabungan seluruh fitur dan perbaikan yang telah ditinjau.
+
+Semua pengembangan fitur, perbaikan bug, dan perubahan dokumentasi harus dilakukan pada branch terpisah sebelum digabungkan (*merged*) ke `main` melalui Pull Request, lalu dirilis ke `prod`.
 
 ### Format Penamaan Branch:
 - `feat/nama-fitur` : Untuk penambahan fitur baru (contoh: `feat/payment-gateway-midtrans`).
