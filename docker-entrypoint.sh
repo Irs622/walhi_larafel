@@ -30,15 +30,15 @@ if [ -z "$ADMIN_PASS_VAL" ]; then
 fi
 
 cat > .env <<ENVFILE
-APP_NAME="${APP_NAME:-Laravel}"
+APP_NAME="${APP_NAME:-WALHI Jawa Barat}"
 APP_ENV=${APP_ENV:-local}
 APP_DEBUG=${APP_DEBUG:-true}
 APP_URL=${APP_URL:-http://localhost:8000}
 APP_KEY=${APP_KEY:-}
 
-APP_LOCALE=en
+APP_LOCALE=id
 APP_FALLBACK_LOCALE=en
-APP_FAKER_LOCALE=en_US
+APP_FAKER_LOCALE=id_ID
 APP_MAINTENANCE_DRIVER=file
 
 BCRYPT_ROUNDS=12
@@ -49,14 +49,18 @@ LOG_DEPRECATIONS_CHANNEL=null
 LOG_LEVEL=${LOG_LEVEL:-debug}
 
 DB_CONNECTION=${DB_CONNECTION:-sqlite}
+DB_HOST=${DB_HOST:-127.0.0.1}
+DB_PORT=${DB_PORT:-3306}
 DB_DATABASE=${DB_DATABASE:-/var/www/html/storage/app/database.sqlite}
+DB_USERNAME=${DB_USERNAME:-root}
+DB_PASSWORD=${DB_PASSWORD:-}
 
-SESSION_DRIVER=${SESSION_DRIVER:-database}
-SESSION_LIFETIME=120
+SESSION_DRIVER=${SESSION_DRIVER:-file}
+SESSION_LIFETIME=${SESSION_LIFETIME:-120}
 SESSION_ENCRYPT=true
 SESSION_PATH=/
 SESSION_DOMAIN=null
-SESSION_SECURE_COOKIE=true
+SESSION_SECURE_COOKIE=${SESSION_SECURE_COOKIE:-false}
 
 BROADCAST_CONNECTION=log
 FILESYSTEM_DISK=local
@@ -64,9 +68,20 @@ QUEUE_CONNECTION=${QUEUE_CONNECTION:-sync}
 
 CACHE_STORE=${CACHE_STORE:-file}
 
-MAIL_MAILER=log
+MAIL_MAILER=${MAIL_MAILER:-log}
+MAIL_HOST=${MAIL_HOST:-smtp.mailtrap.io}
+MAIL_PORT=${MAIL_PORT:-2525}
+MAIL_USERNAME=${MAIL_USERNAME:-}
+MAIL_PASSWORD=${MAIL_PASSWORD:-}
+MAIL_ENCRYPTION=${MAIL_ENCRYPTION:-tls}
+MAIL_FROM_ADDRESS="${MAIL_FROM_ADDRESS:-kontak@walhijabar.or.id}"
+MAIL_FROM_NAME="${MAIL_FROM_NAME:-WALHI Jawa Barat}"
 
-VITE_APP_NAME="${APP_NAME:-Laravel}"
+MIDTRANS_SERVER_KEY=${MIDTRANS_SERVER_KEY:-}
+MIDTRANS_CLIENT_KEY=${MIDTRANS_CLIENT_KEY:-}
+MIDTRANS_IS_PRODUCTION=${MIDTRANS_IS_PRODUCTION:-false}
+
+VITE_APP_NAME="${APP_NAME:-WALHI Jawa Barat}"
 
 ADMIN_EMAIL=${ADMIN_EMAIL:-admin@walhi-jabar.org}
 ADMIN_PASSWORD=${ADMIN_PASS_VAL}
@@ -114,6 +129,14 @@ php artisan migrate --force
 if [ "${SEED_ON_START:-false}" = "true" ]; then
     echo "       Seeding database..."
     php artisan db:seed --force
+fi
+
+# ── 8. Production Optimizations (if production & debug false) ──
+if [ "${APP_ENV:-local}" = "production" ] && [ "${APP_DEBUG:-false}" = "false" ]; then
+    echo "[8/8] Caching configuration, routes, and views for production..."
+    php artisan config:cache 2>/dev/null || true
+    php artisan route:cache 2>/dev/null || true
+    php artisan view:cache 2>/dev/null || true
 fi
 
 # Final permission fix after all operations
