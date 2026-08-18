@@ -31,12 +31,12 @@ class SecurityHeaders
         // Content Security Policy
         $response->headers->set('Content-Security-Policy', implode('; ', [
             "default-src 'self'",
-            "script-src 'self' https://app.midtrans.com https://app.sandbox.midtrans.com https://cdn.jsdelivr.net https://unpkg.com",
+            "script-src 'self' 'unsafe-inline' https://app.midtrans.com https://app.sandbox.midtrans.com https://cdn.jsdelivr.net https://unpkg.com",
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com",
-            "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com",
+            "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com data:",
             "img-src 'self' data: https:",
-            "connect-src 'self'",
-            "frame-src 'none'",
+            "connect-src 'self' https://app.midtrans.com https://app.sandbox.midtrans.com https://api.midtrans.com https://api.sandbox.midtrans.com",
+            "frame-src 'self' https://app.midtrans.com https://app.sandbox.midtrans.com",
             "object-src 'none'",
             "base-uri 'self'",
         ]));
