@@ -134,17 +134,35 @@
             </nav>
  
             <!-- Icons (Globe, Search) (Desktop) -->
-            <div class="desktop-icons" style="display: flex; align-items: center; gap: 20px; color: #1D1D1D;">
-                <!-- Language Selector / Globe -->
-                <a href="#" style="color: #1D1D1D; display: flex; align-items: center; justify-content: center; transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-                </a>
+            <div class="desktop-icons" style="display: flex; align-items: center; gap: 20px; color: #1D1D1D; position: relative;">
+                <!-- Language Selector / Globe (ID) -->
+                <div style="position: relative;">
+                    <button type="button" id="lang-toggle-btn" title="Ganti Bahasa / Switch Language" style="background: transparent; border: none; cursor: pointer; color: #1D1D1D; display: flex; align-items: center; justify-content: center; transition: color 0.2s; padding: 4px;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                    </button>
+                    <div id="lang-dropdown" style="display: none; position: absolute; right: 0; top: 32px; background: #FFFFFF; border: 2px solid #1D1D1D; box-shadow: 4px 4px 0px 0px #1D1D1D; z-index: 50; width: 140px; flex-direction: column;">
+                        <span style="display: block; padding: 10px 16px; font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: #256D4A; background: #F4F1EA; border-bottom: 1px solid #1D1D1D;">🇮🇩 Indonesia</span>
+                        <span style="display: block; padding: 10px 16px; font-size: 13px; font-weight: 600; font-family: Inter, sans-serif; color: #888;">🇬🇧 English (Soon)</span>
+                    </div>
+                </div>
+
                 <!-- Search Button -->
-                <a href="#" style="color: #1D1D1D; display: flex; align-items: center; justify-content: center; transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
+                <button type="button" id="search-toggle-btn" title="Cari Berita & Regulasi" style="background: transparent; border: none; cursor: pointer; color: #1D1D1D; display: flex; align-items: center; justify-content: center; transition: color 0.2s; padding: 4px;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                </a>
+                </button>
             </div>
- 
+
+            <!-- Quick Search Bar Overlay (Desktop) -->
+            <div id="desktop-search-bar" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #1D1D1D; border-bottom: 4px solid #256D4A; padding: 16px 32px; box-sizing: border-box; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                <div style="max-width: 1280px; margin: 0 auto; display: flex; align-items: center; gap: 16px;">
+                    <form action="{{ route('blog') }}" method="GET" style="display: flex; flex: 1; align-items: center; gap: 12px;">
+                        <input type="text" name="search" id="desktop-search-input" placeholder="Ketik kata kunci pencarian berita, advokasi, atau laporan..." style="flex: 1; height: 46px; background: #FFFFFF; border: 2px solid #256D4A; padding: 0 16px; font-family: Inter, sans-serif; font-size: 15px; color: #1D1D1D; outline: none;" />
+                        <button type="submit" style="height: 46px; background: #256D4A; color: #F4F1EA; font-weight: 700; font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: 0.5px; border: none; padding: 0 24px; cursor: pointer;">CARI</button>
+                    </form>
+                    <button type="button" id="desktop-search-close" style="background: transparent; border: none; color: #F4F1EA; font-size: 24px; cursor: pointer; padding: 4px 8px; line-height: 1;">&times;</button>
+                </div>
+            </div>
+
             <!-- Hamburger menu button (Mobile only) -->
             <button id="mobile-menu-toggle" class="mobile-menu-btn" style="display: none; width: 40px; height: 40px; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: #1D1D1D; outline: none;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -161,28 +179,29 @@
             </button>
         </div>
         <nav style="display: flex; flex-direction: column; gap: 20px; font-family: Oswald, sans-serif; font-size: 20px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;">
-            <a href="{{ route('home') }}" style="color: {{ $isHome ? '#256D4A' : '#1D1D1D' }}; text-decoration: none;">BERANDA</a>
-            <a href="{{ route('blog') }}" style="color: {{ $isBlog ? '#256D4A' : '#1D1D1D' }}; text-decoration: none;">BLOG</a>
-            <a href="{{ route('regulasi') }}" style="color: {{ $isRegulasi ? '#256D4A' : '#1D1D1D' }}; text-decoration: none;">REGULASI</a>
+            <a href="{{ route('home') }}" class="mobile-nav-link" style="color: {{ $isHome ? '#256D4A' : '#1D1D1D' }}; text-decoration: none;">BERANDA</a>
+            <a href="{{ route('blog') }}" class="mobile-nav-link" style="color: {{ $isBlog ? '#256D4A' : '#1D1D1D' }}; text-decoration: none;">BLOG</a>
+            <a href="{{ route('regulasi') }}" class="mobile-nav-link" style="color: {{ $isRegulasi ? '#256D4A' : '#1D1D1D' }}; text-decoration: none;">REGULASI</a>
             
             <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px;">
                 <span style="font-size: 13px; color: #666; font-family: Inter, sans-serif; font-weight: 700; letter-spacing: 0.5px;">PUBLIKASI</span>
-                <a href="{{ route('siaran-pers') }}" style="color: {{ request()->routeIs('siaran-pers') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Siaran Pers</a>
-                <a href="{{ route('infografis') }}" style="color: {{ request()->routeIs('infografis') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Infografis</a>
-                <a href="{{ route('laporan-tahunan') }}" style="color: {{ request()->routeIs('laporan-tahunan') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Laporan Tahunan</a>
+                <a href="{{ route('siaran-pers') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('siaran-pers') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Siaran Pers</a>
+                <a href="{{ route('infografis') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('infografis') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Infografis</a>
+                <a href="{{ route('laporan-tahunan') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('laporan-tahunan') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Laporan Tahunan</a>
             </div>
  
-            <a href="{{ route('donasi') }}" style="color: {{ $isDonasi ? '#256D4A' : '#D95C3F' }}; text-decoration: none; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; font-weight: 700;">DUKUNG KAMI</a>
+            <a href="{{ route('donasi') }}" class="mobile-nav-link" style="color: {{ $isDonasi ? '#256D4A' : '#D95C3F' }}; text-decoration: none; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; font-weight: 700;">DUKUNG KAMI</a>
             <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px;">
                 <span style="font-size: 13px; color: #666; font-family: Inter, sans-serif; font-weight: 700; letter-spacing: 0.5px;">TENTANG KAMI</span>
-                <a href="{{ route('about') }}" style="color: {{ $isAbout ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Profil & Sejarah</a>
-                <a href="{{ route('about') }}#kontak" style="color: #1D1D1D; text-decoration: none; padding-left: 12px; font-size: 18px;">Kontak Kami</a>
+                <a href="{{ route('about') }}" class="mobile-nav-link" style="color: {{ $isAbout ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Profil & Sejarah</a>
+                <a href="{{ route('about') }}#kontak" class="mobile-nav-link" style="color: #1D1D1D; text-decoration: none; padding-left: 12px; font-size: 18px;">Kontak Kami</a>
             </div>
         </nav>
     </div>
  
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Mobile Menu
             const toggleBtn = document.getElementById('mobile-menu-toggle');
             const closeBtn = document.getElementById('mobile-menu-close');
             const overlay = document.getElementById('mobile-menu-overlay');
@@ -193,10 +212,71 @@
                     document.body.style.overflow = 'hidden';
                 });
  
-                closeBtn.addEventListener('click', () => {
+                const closeMenu = () => {
                     overlay.style.display = 'none';
                     document.body.style.overflow = '';
+                };
+
+                closeBtn.addEventListener('click', closeMenu);
+                overlay.querySelectorAll('.mobile-nav-link').forEach(link => {
+                    link.addEventListener('click', closeMenu);
                 });
+            }
+
+            // Desktop Details Dropdowns Auto-Close
+            const dropdowns = document.querySelectorAll('details.site-nav-dropdown');
+            dropdowns.forEach(dd => {
+                dd.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        dd.removeAttribute('open');
+                    });
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                dropdowns.forEach(dd => {
+                    if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+
+                // Language dropdown close
+                const langDropdown = document.getElementById('lang-dropdown');
+                const langBtn = document.getElementById('lang-toggle-btn');
+                if (langDropdown && langBtn && !langBtn.contains(e.target) && !langDropdown.contains(e.target)) {
+                    langDropdown.style.display = 'none';
+                }
+            });
+
+            // Language Toggle
+            const langBtn = document.getElementById('lang-toggle-btn');
+            const langDropdown = document.getElementById('lang-dropdown');
+            if (langBtn && langDropdown) {
+                langBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    langDropdown.style.display = langDropdown.style.display === 'flex' ? 'none' : 'flex';
+                });
+            }
+
+            // Search Bar Toggle
+            const searchBtn = document.getElementById('search-toggle-btn');
+            const searchBar = document.getElementById('desktop-search-bar');
+            const searchClose = document.getElementById('desktop-search-close');
+            const searchInput = document.getElementById('desktop-search-input');
+
+            if (searchBtn && searchBar) {
+                searchBtn.addEventListener('click', () => {
+                    searchBar.style.display = searchBar.style.display === 'block' ? 'none' : 'block';
+                    if (searchBar.style.display === 'block' && searchInput) {
+                        setTimeout(() => searchInput.focus(), 100);
+                    }
+                });
+
+                if (searchClose) {
+                    searchClose.addEventListener('click', () => {
+                        searchBar.style.display = 'none';
+                    });
+                }
             }
         });
     </script>

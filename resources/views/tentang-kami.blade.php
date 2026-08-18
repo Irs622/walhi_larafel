@@ -10,8 +10,9 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
         
-        <!-- Lucide Icons -->
-        <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+        <style>
+            [x-cloak] { display: none !important; }
+        </style>
         
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -42,19 +43,31 @@
             
             <!-- Navigation Tabs (Neo-Brutalist Style) -->
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-12">
-                <button onclick="switchTab('profil')" id="btn-profil" class="tab-btn px-6 py-3 border-4 border-[#1D1D1D] font-heading text-base md:text-lg uppercase tracking-wider transition-all bg-[#256D4A] text-[#F4F1EA] shadow-[4px_4px_0px_0px_#1D1D1D] outline-none">
+                <button type="button" 
+                        onclick="setTentangTab('profil')"
+                        id="tab-btn-profil" 
+                        style="background-color: #256D4A; color: #F4F1EA;"
+                        class="tab-btn px-6 py-3 border-4 border-[#1D1D1D] font-heading text-base md:text-lg uppercase tracking-wider transition-all shadow-[4px_4px_0px_0px_#1D1D1D] active:translate-x-[2px] active:translate-y-[2px] cursor-pointer outline-none select-none">
                     Profil & Anggota
                 </button>
-                <button onclick="switchTab('visi-misi')" id="btn-visi-misi" class="tab-btn px-6 py-3 border-4 border-[#1D1D1D] font-heading text-base md:text-lg uppercase tracking-wider transition-all bg-white text-[#1D1D1D] shadow-[4px_4px_0px_0px_#1D1D1D] hover:bg-[#F4F1EA] outline-none">
+                <button type="button" 
+                        onclick="setTentangTab('visi-misi')"
+                        id="tab-btn-visi-misi" 
+                        style="background-color: #FFFFFF; color: #1D1D1D;"
+                        class="tab-btn px-6 py-3 border-4 border-[#1D1D1D] font-heading text-base md:text-lg uppercase tracking-wider transition-all shadow-[4px_4px_0px_0px_#1D1D1D] hover:bg-[#F4F1EA] active:translate-x-[2px] active:translate-y-[2px] cursor-pointer outline-none select-none">
                     Visi, Misi & Nilai
                 </button>
-                <button onclick="switchTab('pengurus')" id="btn-pengurus" class="tab-btn px-6 py-3 border-4 border-[#1D1D1D] font-heading text-base md:text-lg uppercase tracking-wider transition-all bg-white text-[#1D1D1D] shadow-[4px_4px_0px_0px_#1D1D1D] hover:bg-[#F4F1EA] outline-none">
+                <button type="button" 
+                        onclick="setTentangTab('pengurus')"
+                        id="tab-btn-pengurus" 
+                        style="background-color: #FFFFFF; color: #1D1D1D;"
+                        class="tab-btn px-6 py-3 border-4 border-[#1D1D1D] font-heading text-base md:text-lg uppercase tracking-wider transition-all shadow-[4px_4px_0px_0px_#1D1D1D] hover:bg-[#F4F1EA] active:translate-x-[2px] active:translate-y-[2px] cursor-pointer outline-none select-none">
                     Kepengurusan & Sejarah
                 </button>
             </div>
 
             <!-- TAB 1: PROFIL & ANGGOTA -->
-            <div id="tab-content-profil" class="tab-content flex flex-col gap-12">
+            <div id="tab-content-profil" class="tentang-tab-panel flex flex-col gap-12" style="display: flex;">
                 <!-- Tentang WALHI -->
                 <section class="bg-white border-4 border-[#1D1D1D] shadow-[8px_8px_0px_0px_#1D1D1D] p-8 md:p-12">
                     <div class="flex items-center bg-[#256D4A] text-white px-4 py-1.5 text-xs font-bold uppercase tracking-[0.06em] w-fit mb-6">
@@ -158,7 +171,7 @@
             </div>
 
             <!-- TAB 2: VISI, MISI & NILAI -->
-            <div id="tab-content-visi-misi" class="tab-content hidden flex flex-col gap-12">
+            <div id="tab-content-visi-misi" class="tentang-tab-panel flex flex-col gap-12" style="display: none;">
                 <!-- Visi & Motto -->
                 <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <!-- Visi -->
@@ -303,7 +316,7 @@
             </div>
 
             <!-- TAB 3: KEPENGURUSAN & SEJARAH -->
-            <div id="tab-content-pengurus" class="tab-content hidden flex flex-col gap-12">
+            <div id="tab-content-pengurus" class="tentang-tab-panel flex flex-col gap-12" style="display: none;">
                 <!-- Sejarah Capaian -->
                 <section class="bg-white border-4 border-[#1D1D1D] shadow-[8px_8px_0px_0px_#1D1D1D] p-8 md:p-12">
                     <div class="mb-8">
@@ -332,7 +345,7 @@
                         @foreach ($achievements as $ach)
                             <div class="flex gap-4 items-start p-4 bg-[#F4F1EA] border border-[#1D1D1D]">
                                 <div class="w-6 h-6 bg-[#D95C3F] text-white flex items-center justify-center shrink-0 mt-0.5">
-                                    <i data-lucide="check" class="w-4 h-4"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                                 </div>
                                 <p class="text-sm md:text-base text-[#1D1D1D] leading-relaxed">{{ $ach }}</p>
                             </div>
@@ -370,7 +383,7 @@
                                     <!-- Keuangan -->
                                     <div class="p-4 bg-white border border-[#1D1D1D] flex flex-col justify-between">
                                         <div>
-                                            <div class="text-[10px] uppercase font-bold text-[#256D4A] tracking-wider">Divisi Keuangan</div>
+                                             <div class="text-[10px] uppercase font-bold text-[#256D4A] tracking-wider">Divisi Keuangan</div>
                                             <div class="font-bold text-base mt-1">Dwi Retnastuti</div>
                                         </div>
                                         <div class="text-xs text-gray-500 mt-2 border-t border-gray-100 pt-1">Staf: Putri Rodhiyatul</div>
@@ -453,7 +466,7 @@
                     <div class="flex flex-col gap-6">
                         <div class="flex gap-4 items-start">
                             <div class="w-10 h-10 bg-[#1D1D1D] text-[#5C8D59] flex items-center justify-center shrink-0">
-                                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
                             </div>
                             <div>
                                 <h4 class="font-bold text-[#1D1D1D] text-sm uppercase tracking-wider mb-1">Alamat Kantor</h4>
@@ -463,24 +476,26 @@
 
                         <div class="flex gap-4 items-start">
                             <div class="w-10 h-10 bg-[#1D1D1D] text-[#5C8D59] flex items-center justify-center shrink-0">
-                                <i data-lucide="mail" class="w-5 h-5"></i>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                             </div>
                             <div>
                                 <h4 class="font-bold text-[#1D1D1D] text-sm uppercase tracking-wider mb-1">E-mail Resmi</h4>
                                 <p class="text-base text-[#1D1D1D]/80">
-                                    <a href="mailto:walhijabar@gmail.com" class="hover:text-[#256D4A] underline">walhijabar@gmail.com</a><br>
-                                    <a href="mailto:walhijabar@walhijabar.id" class="hover:text-[#256D4A] underline">walhijabar@walhijabar.id</a>
+                                    <a href="mailto:walhijabar@gmail.com" class="hover:text-[#256D4A] underline font-semibold">walhijabar@gmail.com</a><br>
+                                    <a href="mailto:walhijabar@walhijabar.id" class="hover:text-[#256D4A] underline font-semibold">walhijabar@walhijabar.id</a>
                                 </p>
                             </div>
                         </div>
 
                         <div class="flex gap-4 items-start">
                             <div class="w-10 h-10 bg-[#1D1D1D] text-[#5C8D59] flex items-center justify-center shrink-0">
-                                <i data-lucide="phone" class="w-5 h-5"></i>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                             </div>
                             <div>
                                 <h4 class="font-bold text-[#1D1D1D] text-sm uppercase tracking-wider mb-1">Telepon & Fax</h4>
-                                <p class="text-base text-[#1D1D1D]/80">022 - 20458503</p>
+                                <p class="text-base text-[#1D1D1D]/80">
+                                    <a href="tel:02220458503" class="hover:text-[#256D4A] underline font-semibold">022 - 20458503</a>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -490,18 +505,22 @@
                         <div>
                             <h4 class="font-heading text-2xl text-[#1D1D1D] uppercase tracking-wide mb-4">Media Sosial Resmi</h4>
                             <div class="grid grid-cols-2 gap-4 text-sm font-semibold">
-                                <a href="https://instagram.com/walhi.jabar" target="_blank" class="flex items-center gap-2 text-[#1D1D1D] hover:text-[#256D4A] transition-colors">
-                                    <i data-lucide="instagram" class="w-4 h-4"></i> Instagram
+                                <a href="https://instagram.com/walhi.jabar" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-[#1D1D1D] hover:text-[#256D4A] transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#D95C3F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                                    <span>Instagram</span>
                                 </a>
-                                <a href="https://www.youtube.com/@walhijabar" target="_blank" class="flex items-center gap-2 text-[#1D1D1D] hover:text-[#256D4A] transition-colors">
-                                    <i data-lucide="youtube" class="w-4 h-4"></i> YouTube
+                                <a href="https://www.youtube.com/@walhijabar" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-[#1D1D1D] hover:text-[#256D4A] transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#D95C3F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+                                    <span>YouTube</span>
                                 </a>
-                                <a href="https://facebook.com/walhi.jabar" target="_blank" class="flex items-center gap-2 text-[#1D1D1D] hover:text-[#256D4A] transition-colors">
-                                    <i data-lucide="facebook" class="w-4 h-4"></i> Facebook
+                                <a href="https://facebook.com/walhi.jabar" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-[#1D1D1D] hover:text-[#256D4A] transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#256D4A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                                    <span>Facebook</span>
                                 </a>
-                                <span class="flex items-center gap-2 text-[#1D1D1D] opacity-75">
-                                    <i data-lucide="twitter" class="w-4 h-4"></i> @walhijabar
-                                </span>
+                                <a href="https://x.com/walhijabar" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-[#1D1D1D] hover:text-[#256D4A] transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                    <span>@walhijabar</span>
+                                </a>
                             </div>
                         </div>
 
@@ -520,31 +539,70 @@
 
         <!-- Tab Switcher Script -->
         <script>
-            function switchTab(tabId) {
-                // Sembunyikan semua tab content
-                document.querySelectorAll('.tab-content').forEach(function(content) {
-                    content.classList.add('hidden');
-                });
+            function setTentangTab(tabId) {
+                var panels = {
+                    'profil': document.getElementById('tab-content-profil'),
+                    'visi-misi': document.getElementById('tab-content-visi-misi'),
+                    'pengurus': document.getElementById('tab-content-pengurus')
+                };
+                var buttons = {
+                    'profil': document.getElementById('tab-btn-profil'),
+                    'visi-misi': document.getElementById('tab-btn-visi-misi'),
+                    'pengurus': document.getElementById('tab-btn-pengurus')
+                };
 
-                // Tampilkan tab yang dipilih
-                document.getElementById('tab-content-' + tabId).classList.remove('hidden');
+                // Hide all panels & reset buttons
+                for (var key in panels) {
+                    if (panels[key]) {
+                        panels[key].style.display = 'none';
+                    }
+                    if (buttons[key]) {
+                        buttons[key].style.backgroundColor = '#FFFFFF';
+                        buttons[key].style.color = '#1D1D1D';
+                    }
+                }
 
-                // Atur styling tombol aktif/non-aktif
-                document.querySelectorAll('.tab-btn').forEach(function(btn) {
-                    btn.classList.remove('bg-[#256D4A]', 'text-[#F4F1EA]');
-                    btn.classList.add('bg-white', 'text-[#1D1D1D]');
-                });
+                // Show selected panel & activate button
+                if (panels[tabId]) {
+                    panels[tabId].style.display = 'flex';
+                }
+                if (buttons[tabId]) {
+                    buttons[tabId].style.backgroundColor = '#256D4A';
+                    buttons[tabId].style.color = '#F4F1EA';
+                }
 
-                // Set tombol aktif
-                var activeBtn = document.getElementById('btn-' + tabId);
-                activeBtn.classList.remove('bg-white', 'text-[#1D1D1D]');
-                activeBtn.classList.add('bg-[#256D4A]', 'text-[#F4F1EA]');
+                if (window.history.pushState) {
+                    window.history.pushState(null, null, '#' + tabId);
+                }
             }
 
+            // Global alias for compatibility
+            window.switchTab = setTentangTab;
+            window.manualSwitchTab = setTentangTab;
+
             document.addEventListener('DOMContentLoaded', function() {
-                lucide.createIcons();
-                // Set default tab ke profil
-                switchTab('profil');
+                var hash = window.location.hash.replace('#', '');
+                if (hash === 'visi-misi' || hash === 'pengurus' || hash === 'profil') {
+                    setTentangTab(hash);
+                } else if (hash === 'kontak') {
+                    setTentangTab('profil');
+                    var el = document.getElementById('kontak');
+                    if (el) {
+                        setTimeout(function() { el.scrollIntoView({ behavior: 'smooth' }); }, 150);
+                    }
+                } else {
+                    setTentangTab('profil');
+                }
+            });
+
+            window.addEventListener('hashchange', function() {
+                var hash = window.location.hash.replace('#', '');
+                if (hash === 'visi-misi' || hash === 'pengurus' || hash === 'profil') {
+                    setTentangTab(hash);
+                } else if (hash === 'kontak') {
+                    var el = document.getElementById('kontak');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
             });
         </script>
     </body>
