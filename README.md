@@ -8,6 +8,12 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
+<br />
+
+<img src="./docs/images/banner.png" alt="WALHI Jawa Barat Web Platform" width="100%" />
+
+<br />
+
 **Portal Informasi, Advokasi Lingkungan, Publikasi Kebijakan, dan Gerakan Rakyat WALHI Jawa Barat**
 
 [Fitur Utama](#-fitur-utama) • [Panduan Cepat](#-panduan-menjalankan-aplikasi) • [Struktur Sistem](#-arsitektur--struktur-direktori) • [Kolaborasi & Tim](#-panduan-kolaborasi-tim) • [Keamanan](#-keamanan--audit)
