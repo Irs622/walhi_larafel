@@ -22,6 +22,19 @@ class CommentController extends Controller
             );
         }
 
+        if ($request->filled('parent_id')) {
+            $parent = Comment::where('id', $request->input('parent_id'))
+                ->where('content_id', $content->id)
+                ->whereNull('parent_id')
+                ->first();
+
+            if (! $parent) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['parent_id' => 'Komentar induk tidak valid untuk konten ini.']);
+            }
+        }
+
         $comment = new Comment($request->validated());
         $comment->content_id = $content->id;
         $comment->status     = 'pending';

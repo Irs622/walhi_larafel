@@ -84,7 +84,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
             // "Tentang" sub-prefix (sejarah, visi-misi, dewan-nasional, etc.)
-            Route::prefix('tentang')->group(function () {
+            Route::prefix('tentang')->where(['category' => '[a-zA-Z0-9\-]+'])->group(function () {
                 Route::get('/{category}', [ContentController::class, 'index'])->name('content.tentang.index');
                 Route::post('/{category}', [ContentController::class, 'store'])->name('content.tentang.store');
                 Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.tentang.update');
@@ -92,10 +92,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             });
 
             // Root categories
-            Route::get('/{category}', [ContentController::class, 'index'])->name('content.index');
-            Route::post('/{category}', [ContentController::class, 'store'])->name('content.store');
-            Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.update');
-            Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.toggle-status');
+            Route::where(['category' => '[a-zA-Z0-9\-]+'])->group(function () {
+                Route::get('/{category}', [ContentController::class, 'index'])->name('content.index');
+                Route::post('/{category}', [ContentController::class, 'store'])->name('content.store');
+                Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.update');
+                Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.toggle-status');
+            });
 
             // Comment moderation (Approving and marking spam)
             Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
@@ -108,8 +110,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Destructive / Export actions restricted to admin role only
         Route::middleware('role:admin')->group(function () {
-            Route::delete('/tentang/{category}/{content}', [ContentController::class, 'destroy'])->name('content.tentang.destroy');
-            Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->name('content.destroy');
+            Route::delete('/tentang/{category}/{content}', [ContentController::class, 'destroy'])->where(['category' => '[a-zA-Z0-9\-]+'])->name('content.tentang.destroy');
+            Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->where(['category' => '[a-zA-Z0-9\-]+'])->name('content.destroy');
             Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
             Route::get('/subscribers/export', [AdminSubscriberController::class, 'export'])->name('subscribers.export');
             Route::delete('/subscribers/{subscriber}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');

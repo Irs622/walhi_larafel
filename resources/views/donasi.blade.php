@@ -290,7 +290,8 @@
             </div>
         </div>
 
-        <!-- Mock Payment Simulator Modal -->
+        @if(Route::has('donasi.mock-payment-status'))
+        <!-- Mock Payment Simulator Modal (Local & Testing only) -->
         <div id="mock-payment-modal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 1001; backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;">
             <div style="background: white; border: 4px solid #1D1D1D; width: 100%; max-width: 500px; padding: 40px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); box-sizing: border-box;">
                 <div style="width: 80px; height: 80px; background: #8B6B4A; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
@@ -331,6 +332,7 @@
                 </div>
             </div>
         </div>
+        @endif
         
         <script>
             var activeOrderId = '';
@@ -481,7 +483,8 @@
                 });
             }
 
-            // Submit mock payment status
+            @if(Route::has('donasi.mock-payment-status'))
+            // Submit mock payment status (Local & Testing only)
             function submitMockPayment(status) {
                 var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -514,6 +517,7 @@
                     alert('Gagal mengirimkan status simulasi.');
                 });
             }
+            @endif
             
             // Initialize Lucide icons on page load
             document.addEventListener('DOMContentLoaded', function() {
