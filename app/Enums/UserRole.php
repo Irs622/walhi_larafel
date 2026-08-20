@@ -4,8 +4,9 @@ namespace App\Enums;
 
 enum UserRole: string
 {
-    case Admin  = 'admin';
-    case Editor = 'editor';
+    case Admin      = 'admin';
+    case Editor     = 'editor';
+    case Subscriber = 'subscriber';
 
     /**
      * Human-readable label in Indonesian.
@@ -13,8 +14,9 @@ enum UserRole: string
     public function label(): string
     {
         return match ($this) {
-            self::Admin  => 'Administrator',
-            self::Editor => 'Editor',
+            self::Admin      => 'Administrator',
+            self::Editor     => 'Editor',
+            self::Subscriber => 'Pelanggan / Anggota',
         };
     }
 
@@ -31,6 +33,6 @@ enum UserRole: string
      */
     public function canManageContent(): bool
     {
-        return in_array($this, [self::Admin, self::Editor]);
+        return in_array($this, [self::Admin, self::Editor], true);
     }
 }

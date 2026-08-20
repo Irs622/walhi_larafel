@@ -46,7 +46,7 @@ class User extends Authenticatable
      */
     public function getRoleEnumAttribute(): UserRole
     {
-        return UserRole::from($this->role ?? UserRole::Editor->value);
+        return UserRole::tryFrom($this->role ?? '') ?? UserRole::Subscriber;
     }
 
     /**

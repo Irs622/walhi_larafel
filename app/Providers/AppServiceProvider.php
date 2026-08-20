@@ -59,9 +59,12 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(120)->by($request->user()?->id ?: $request->ip());
         });
 
-        // Login attempts — keyed by email + IP to prevent brute-force
+        // Login attempts — keyed by email + IP and globally by IP to prevent brute-force & spraying
         RateLimiter::for('login', function (Request $request) {
-            return Limit::perMinute(5)->by($request->input('email') . '|' . $request->ip());
+            return [
+                Limit::perMinute(5)->by($request->input('email') . '|' . $request->ip()),
+                Limit::perMinute(20)->by($request->ip()),
+            ];
         });
 
         // Search / filter endpoints
