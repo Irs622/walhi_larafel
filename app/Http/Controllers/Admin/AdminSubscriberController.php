@@ -36,7 +36,8 @@ class AdminSubscriberController extends Controller
             Subscriber::orderBy('id')->chunk(500, function ($subscribers) use ($file) {
                 foreach ($subscribers as $subscriber) {
                     $email = $subscriber->email;
-                    if (in_array(substr($email, 0, 1), ['=', '+', '-', '@'], true)) {
+                    $dangerousPrefixes = ['=', '+', '-', '@', "\t", "\r", "\n", '|', '%'];
+                    if (in_array(substr($email, 0, 1), $dangerousPrefixes, true)) {
                         $email = "'" . $email;
                     }
                     fputcsv($file, [

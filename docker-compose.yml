@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: walhi_app
     restart: unless-stopped
+    command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
     ports:
       - "8000:8000"
     environment:
@@ -23,7 +24,7 @@ services:
       - LOG_LEVEL=debug
       - SEED_ON_START=true
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@walhi-jabar.org}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-AdminWalhi2026!}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
     volumes:
       # Only persist the SQLite database — NOT the entire storage/ directory
       # This prevents volume shadowing of storage/framework/* dirs built into the image

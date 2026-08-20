@@ -7,8 +7,8 @@ COPY public ./public
 RUN npm ci || npm install
 RUN npm run build
 
-# ─── Stage 2: PHP Application Container ──────────────────────
-FROM php:8.4-cli-alpine
+# ─── Stage 2: PHP Application Container (PHP-FPM) ─────────────
+FROM php:8.4-fpm-alpine
 
 # Install system dependencies & PHP extensions
 RUN apk add --no-cache \
@@ -26,6 +26,7 @@ RUN apk add --no-cache \
     oniguruma-dev \
     icu-dev \
     sed \
+    su-exec \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
         pdo \
@@ -67,10 +68,11 @@ RUN mkdir -p storage/framework/views \
              bootstrap/cache
 
 # Set permissions for Laravel storage and cache
-RUN chmod -R 775 storage bootstrap/cache
-RUN chmod +x docker-entrypoint.sh
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache \
+    && chmod +x docker-entrypoint.sh
 
-EXPOSE 8000
+EXPOSE 9000
 
 ENTRYPOINT ["/var/www/html/docker-entrypoint.sh"]
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["php-fpm"]

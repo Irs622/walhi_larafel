@@ -17,6 +17,7 @@ mkdir -p storage/framework/views \
 
 # ── 2. Fix permissions ──
 echo "[2/7] Setting permissions..."
+chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
 # ── 3. Generate .env from Docker environment variables ──
@@ -32,7 +33,7 @@ fi
 cat > .env <<ENVFILE
 APP_NAME="${APP_NAME:-WALHI Jawa Barat}"
 APP_ENV=${APP_ENV:-local}
-APP_DEBUG=${APP_DEBUG:-true}
+APP_DEBUG=${APP_DEBUG:-false}
 APP_URL=${APP_URL:-http://localhost:8000}
 APP_KEY=${APP_KEY:-}
 
@@ -60,7 +61,7 @@ SESSION_LIFETIME=${SESSION_LIFETIME:-120}
 SESSION_ENCRYPT=true
 SESSION_PATH=/
 SESSION_DOMAIN=null
-SESSION_SECURE_COOKIE=${SESSION_SECURE_COOKIE:-false}
+SESSION_SECURE_COOKIE=${SESSION_SECURE_COOKIE:-true}
 
 BROADCAST_CONNECTION=log
 FILESYSTEM_DISK=local
@@ -140,15 +141,16 @@ if [ "${APP_ENV:-local}" = "production" ] && [ "${APP_DEBUG:-false}" = "false" ]
 fi
 
 # Final permission fix after all operations
+chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
 echo ""
 echo "═══════════════════════════════════════════════════════════"
-echo "  ✅ WALHI Jabar is starting on http://0.0.0.0:8000"
+echo "  ✅ WALHI Jabar application service is ready"
 echo "  📧 Admin: ${ADMIN_EMAIL:-admin@walhi-jabar.org}"
 echo "  🔑 Password: (set via ADMIN_PASSWORD env var)"
 echo "═══════════════════════════════════════════════════════════"
 echo ""
 
-# Execute the main command (php artisan serve or passed CMD)
+# Execute the main command (php-fpm or passed CMD)
 exec "$@"
