@@ -250,8 +250,8 @@
         gradient.addColorStop(0, 'rgba(37, 109, 74, 0.3)');
         gradient.addColorStop(1, 'rgba(37, 109, 74, 0)');
 
-        const data = {!! json_encode($stats['chart_data']) !!};
-        const labels = {!! json_encode($stats['chart_labels']) !!};
+        const data = @json($stats['chart_data']);
+        const labels = @json($stats['chart_labels']);
 
         new Chart(ctx, {
             type: 'line',
