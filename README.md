@@ -163,5 +163,8 @@ Kami menyambut kontribusi dari seluruh anggota tim dan komunitas! Sebelum mulai 
 
 ## 📄 Lisensi
 
-Proyek ini dilisensikan di bawah [MIT License](LICENSE).
-Hak Cipta © 2026 **WALHI Jawa Barat**.
+Proyek ini dilisensikan di bawah **[Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](LICENSE)**.
+
+> 📢 **Ketentuan Penggunaan:** Boleh digunakan dan diadaptasi untuk keperluan edukasi, sesama organisasi non-pemerintah (NGO/CSO), atau komunitas lingkungan hidup. **DILARANG KERAS digunakan untuk tujuan komersial korporasi atau industri ekstraktif.**
+
+Hak Cipta © 2026 **Wahana Lingkungan Hidup Indonesia — Jawa Barat (WALHI Jawa Barat)**.
