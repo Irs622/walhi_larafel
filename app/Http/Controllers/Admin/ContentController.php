@@ -11,7 +11,7 @@ use App\Services\Content\SlugService;
 use App\Services\AuditLogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
@@ -228,7 +228,7 @@ class ContentController extends Controller
     // ──────────────────────────────────────────────────────────────────────────
 
     /**
-     * Build monthly donation chart data (real data only — no mock fallback).
+     * Build monthly donation chart data (real data only — single consolidated query).
      * Returns [$labels, $data] for the last 12 months.
      *
      * @return array{0: array<string>, 1: array<int>}
@@ -237,14 +237,24 @@ class ContentController extends Controller
     {
         $labels = [];
         $data   = [];
+        $startDate = Carbon::now()->startOfMonth()->subMonths(11);
+
+        $driver = DB::getDriverName();
+        $dateExpr = $driver === 'sqlite'
+            ? "strftime('%Y-%m', created_at) as year_month"
+            : "DATE_FORMAT(created_at, '%Y-%m') as year_month";
+
+        $monthlyTotals = Donation::where('status', 'success')
+            ->where('created_at', '>=', $startDate)
+            ->selectRaw("{$dateExpr}, SUM(amount) as total")
+            ->groupBy('year_month')
+            ->pluck('total', 'year_month');
 
         for ($i = 11; $i >= 0; $i--) {
             $month    = Carbon::now()->startOfMonth()->subMonths($i);
+            $key      = $month->format('Y-m');
             $labels[] = $month->translatedFormat("M 'y");
-            $data[]   = (int) Donation::where('status', 'success')
-                ->whereYear('created_at', $month->year)
-                ->whereMonth('created_at', $month->month)
-                ->sum('amount');
+            $data[]   = (int) ($monthlyTotals[$key] ?? 0);
         }
 
         return [$labels, $data];
