@@ -110,11 +110,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Destructive / Export actions restricted to admin role only
         Route::middleware('role:admin')->group(function () {
-            Route::delete('/tentang/{category}/{content}', [ContentController::class, 'destroy'])->where(['category' => '[a-zA-Z0-9\-]+'])->name('content.tentang.destroy');
-            Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->where(['category' => '[a-zA-Z0-9\-]+'])->name('content.destroy');
             Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
             Route::get('/subscribers/export', [AdminSubscriberController::class, 'export'])->name('subscribers.export');
             Route::delete('/subscribers/{subscriber}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
+            Route::delete('/tentang/{category}/{content}', [ContentController::class, 'destroy'])->where(['category' => '[a-zA-Z0-9\-]+'])->name('content.tentang.destroy');
+            Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->where(['category' => '[a-zA-Z0-9\-]+'])->name('content.destroy');
         });
     });
 });

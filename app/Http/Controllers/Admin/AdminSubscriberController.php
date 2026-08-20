@@ -12,6 +12,8 @@ class AdminSubscriberController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', Subscriber::class);
+
         $subscribers = Subscriber::orderBy('created_at', 'desc')->paginate(20);
 
         return view('admin.subscribers.index', compact('subscribers'));
@@ -19,6 +21,8 @@ class AdminSubscriberController extends Controller
 
     public function export()
     {
+        $this->authorize('export', Subscriber::class);
+
         AuditLogService::log('SUBSCRIBER_EXPORT', 'Subscriber');
 
         $headers = [
@@ -53,6 +57,8 @@ class AdminSubscriberController extends Controller
 
     public function destroy(Subscriber $subscriber)
     {
+        $this->authorize('delete', $subscriber);
+
         AuditLogService::log('SUBSCRIBER_DELETE', 'Subscriber', $subscriber->id);
 
         $subscriber->delete();

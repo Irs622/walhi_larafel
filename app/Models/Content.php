@@ -115,15 +115,28 @@ class Content extends Model
     }
 
     /**
-     * Sanitized HTML body to prevent XSS.
+     * Sanitized HTML body to prevent XSS while safely supporting HTML5 structure.
      */
     public function getSanitizedBodyAttribute(): string
     {
         $config = \HTMLPurifier_Config::createDefault();
-        $config->set('HTML.Allowed', 'p,br,strong,b,em,i,u,ul,ol,li,h2,h3,h4,h5,blockquote,a[href|title|target],img[src|alt|width|height],table,thead,tbody,tr,th,td,figure,figcaption,hr,span,div');
+        $config->set('HTML.DefinitionID', 'walhi-html5-content');
+        $config->set('HTML.DefinitionRev', 1);
+        $config->set('Cache.DefinitionImpl', null);
         $config->set('HTML.TargetBlank', true);
-        $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true]);
-        
+        $config->set('URI.AllowedSchemes', [
+            'http'   => true,
+            'https'  => true,
+            'mailto' => true,
+            'tel'    => true,
+        ]);
+        $config->set('HTML.Allowed', 'p,br,strong,b,em,i,u,ul,ol,li,h2,h3,h4,h5,blockquote,a[href|title|target],img[src|alt|width|height],table,thead,tbody,tr,th,td,figure,figcaption,hr,span,div');
+
+        if ($def = $config->maybeGetRawHTMLDefinition()) {
+            $def->addElement('figure', 'Block', 'Flow', 'Common');
+            $def->addElement('figcaption', 'Inline', 'Flow', 'Common');
+        }
+
         $purifier = new \HTMLPurifier($config);
         return $purifier->purify($this->body ?? '');
     }
