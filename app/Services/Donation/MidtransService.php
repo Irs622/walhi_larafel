@@ -79,6 +79,10 @@ class MidtransService
         string $grossAmount,
         string $incomingSignature
     ): bool {
+        if (! $this->isConfigured() || empty($this->serverKey)) {
+            return false;
+        }
+
         $expected = hash('sha512', $orderId . $statusCode . $grossAmount . $this->serverKey);
 
         return hash_equals($expected, $incomingSignature);

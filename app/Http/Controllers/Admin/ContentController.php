@@ -147,6 +147,8 @@ class ContentController extends Controller
 
     public function update(UpdateContentRequest $request, string $category, Content $content)
     {
+        abort_if($content->category !== $category, 404, 'Kategori tidak sesuai dengan entri konten.');
+
         $this->authorize('update', $content);
 
         $validated = $request->validated();
@@ -187,6 +189,8 @@ class ContentController extends Controller
 
     public function destroy(string $category, Content $content)
     {
+        abort_if($content->category !== $category, 404, 'Kategori tidak sesuai dengan entri konten.');
+
         $this->authorize('delete', $content);
 
         AuditLogService::log('CONTENT_DELETE', 'Content', $content->id, [
@@ -204,6 +208,8 @@ class ContentController extends Controller
 
     public function toggleStatus(string $category, Content $content)
     {
+        abort_if($content->category !== $category, 404, 'Kategori tidak sesuai dengan entri konten.');
+
         $this->authorize('update', $content);
 
         $next = $content->status === 'published' ? 'archived' : 'published';
