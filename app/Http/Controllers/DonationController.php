@@ -58,13 +58,12 @@ class DonationController extends Controller
         // IP Whitelist Check for Midtrans in Production
         if (config('app.env') === 'production') {
             $clientIp = $request->ip();
-            $allowedRanges = [
-                // Midtrans production IP ranges (CIDR notation)
+            $allowedRanges = config('midtrans.ip_whitelist', [
                 '103.208.23.0/24',
                 '103.127.16.0/24',
                 '103.127.17.0/24',
                 '127.0.0.1/32',
-            ];
+            ]);
 
             $isAllowed = false;
             $ipLong = ip2long($clientIp);

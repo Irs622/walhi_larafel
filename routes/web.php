@@ -83,6 +83,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::middleware('role:admin,editor')->group(function () {
             Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
+            // Comment moderation (Approving and marking spam)
+            Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
+            Route::post('/comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
+            Route::post('/comments/{comment}/spam', [AdminCommentController::class, 'spam'])->name('comments.spam');
+
+            // Newsletter subscribers listing
+            Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
+
             // "Tentang" sub-prefix (sejarah, visi-misi, dewan-nasional, etc.)
             Route::prefix('tentang')->where(['category' => '[a-zA-Z0-9\-]+'])->group(function () {
                 Route::get('/{category}', [ContentController::class, 'index'])->name('content.tentang.index');
@@ -98,14 +106,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.update');
                 Route::patch('/{category}/{content}/toggle-status', [ContentController::class, 'toggleStatus'])->name('content.toggle-status');
             });
-
-            // Comment moderation (Approving and marking spam)
-            Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
-            Route::post('/comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
-            Route::post('/comments/{comment}/spam', [AdminCommentController::class, 'spam'])->name('comments.spam');
-
-            // Newsletter subscribers listing
-            Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
         });
 
         // Destructive / Export actions restricted to admin role only

@@ -17,7 +17,7 @@ class AdminTest extends TestCase
         $this->seed(\Database\Seeders\ContentSeeder::class);
         
         // Authenticate user
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
         $this->actingAs($user);
     }
  
@@ -48,6 +48,18 @@ class AdminTest extends TestCase
     public function test_admin_sejarah_loads(): void
     {
         $response = $this->get('/admin/tentang/sejarah');
+        $response->assertStatus(200);
+    }
+
+    public function test_admin_comments_loads(): void
+    {
+        $response = $this->get('/admin/comments');
+        $response->assertStatus(200);
+    }
+
+    public function test_admin_subscribers_loads(): void
+    {
+        $response = $this->get('/admin/subscribers');
         $response->assertStatus(200);
     }
 }
