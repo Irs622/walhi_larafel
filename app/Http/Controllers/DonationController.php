@@ -32,14 +32,21 @@ class DonationController extends Controller
             }
         }
 
-        $result = $this->donationService->initiate($validated);
+        try {
+            $result = $this->donationService->initiate($validated);
 
-        return response()->json([
-            'success'    => true,
-            'snap_token' => $result['snap_token'],
-            'order_id'   => $result['order_id'],
-            'is_mock'    => $result['is_mock'],
-        ]);
+            return response()->json([
+                'success'    => true,
+                'snap_token' => $result['snap_token'],
+                'order_id'   => $result['order_id'],
+                'is_mock'    => $result['is_mock'],
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Layanan gateway pembayaran sedang tidak dapat diakses. Silakan coba beberapa saat lagi.',
+            ], 503);
+        }
     }
 
     /**
@@ -97,6 +104,16 @@ class DonationController extends Controller
         $donation = Donation::where('order_id', $orderId)->first();
         if (! $donation) {
             return response('Donation Not Found', 404);
+        }
+
+        // Defense-in-depth: Verify gross amount matches stored donation record
+        if ((int) floatval($grossAmount) !== (int) $donation->amount) {
+            \Illuminate\Support\Facades\Log::warning('Donation webhook amount mismatch detected', [
+                'order_id'        => $orderId,
+                'database_amount' => $donation->amount,
+                'payload_amount'  => $grossAmount,
+            ]);
+            return response('Amount Mismatch', 400);
         }
 
         $transactionStatus = $payload['transaction_status'] ?? '';

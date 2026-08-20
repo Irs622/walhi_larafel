@@ -87,7 +87,8 @@ VITE_APP_NAME="${APP_NAME:-WALHI Jawa Barat}"
 ADMIN_EMAIL=${ADMIN_EMAIL:-admin@walhi-jabar.org}
 ADMIN_PASSWORD=${ADMIN_PASS_VAL}
 ENVFILE
-chmod 644 .env
+chown www-data:www-data .env 2>/dev/null || true
+chmod 640 .env 2>/dev/null || chmod 600 .env 2>/dev/null || true
 
 # ── 4. Ensure SQLite database file exists ──
 if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
