@@ -15,7 +15,7 @@ class ImportWpCsv extends Command
      * @var string
      */
     protected $signature = 'import:wp-csv 
-                            {--file=/Users/mac/data/data-migasi-bersih.csv : Path to the WordPress export CSV file}
+                            {--file=database/data/data-migasi-bersih.csv : Path to the WordPress export CSV file}
                             {--dry-run : Analyze the CSV file without importing data}
                             {--truncate : Truncate the contents table before importing}';
 

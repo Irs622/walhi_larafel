@@ -38,7 +38,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css'])
-    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" integrity="sha384-ieG+IKD0d/ZPXyCBTMVAbqsQdns8QGJR/e26WMw7M4fkaI/rHcS/YIoi+ah9WGge" crossorigin="anonymous"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -216,13 +216,41 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-2 pl-2 border-l border-[#ddd]">
-                        <div class="w-7 h-7 rounded-full bg-[#256D4A] flex items-center justify-center">
-                            <i data-lucide="user" class="text-white w-3.5 h-3.5"></i>
-                        </div>
-                        <div class="hidden sm:block">
-                            <div class="text-xs font-semibold text-[#1D1D1D]">Admin</div>
-                            <div class="text-[10px] text-[#888]">Super Admin</div>
+                    <!-- User Profile Dropdown -->
+                    <div class="relative" id="user-profile-dropdown">
+                        <button type="button" onclick="toggleUserMenu()" class="flex items-center gap-2 pl-2 border-l border-[#ddd] hover:opacity-85 transition-opacity cursor-pointer text-left">
+                            <div class="w-7 h-7 rounded-full bg-[#256D4A] flex items-center justify-center text-white">
+                                <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                            </div>
+                            <div class="hidden sm:block">
+                                <div class="text-xs font-semibold text-[#1D1D1D]">{{ auth()->user()?->name ?? 'Admin' }}</div>
+                                <div class="text-[10px] text-[#888]">{{ auth()->user()?->isAdmin() ? 'Super Admin' : 'Editor' }}</div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-3 h-3 text-[#888] hidden sm:block"></i>
+                        </button>
+
+                        <div class="absolute right-0 top-10 w-52 bg-white border border-[#ddd] rounded shadow-lg z-50 py-1 text-xs" id="user-menu" style="display: none;">
+                            <div class="px-3 py-2 border-b border-[#f0ede8]">
+                                <p class="font-semibold text-[#1D1D1D] truncate">{{ auth()->user()?->name }}</p>
+                                <p class="text-[11px] text-[#888] truncate">{{ auth()->user()?->email }}</p>
+                            </div>
+                            <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-3 py-2 text-[#555] hover:bg-[#f5f5f0] hover:text-[#1D1D1D] transition-colors">
+                                <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="/" target="_blank" class="flex items-center gap-2 px-3 py-2 text-[#555] hover:bg-[#f5f5f0] hover:text-[#1D1D1D] transition-colors">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                <span>Lihat Website</span>
+                            </a>
+                            <div class="border-t border-[#f0ede8] mt-1 pt-1">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-[#D95C3F] hover:bg-[#fdf0ee] font-semibold transition-colors text-left cursor-pointer">
+                                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                                        <span>Keluar (Logout)</span>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -318,14 +346,40 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
             showNotifs = !showNotifs;
             const menu = document.getElementById('notif-menu');
             menu.style.display = showNotifs ? 'block' : 'none';
+            if (showNotifs) {
+                showUserMenu = false;
+                const uMenu = document.getElementById('user-menu');
+                if (uMenu) uMenu.style.display = 'none';
+            }
         }
 
-        // Click outside notification closes it
-        window.addEventListener('click', function(e) {
-            const dropdown = document.getElementById('notification-dropdown');
-            if (dropdown && !dropdown.contains(e.target)) {
+        // User profile menu toggling
+        let showUserMenu = false;
+        function toggleUserMenu() {
+            showUserMenu = !showUserMenu;
+            const menu = document.getElementById('user-menu');
+            if (menu) menu.style.display = showUserMenu ? 'block' : 'none';
+            if (showUserMenu) {
                 showNotifs = false;
-                document.getElementById('notif-menu').style.display = 'none';
+                const nMenu = document.getElementById('notif-menu');
+                if (nMenu) nMenu.style.display = 'none';
+            }
+        }
+
+        // Click outside closes dropdowns
+        window.addEventListener('click', function(e) {
+            const notifDropdown = document.getElementById('notification-dropdown');
+            if (notifDropdown && !notifDropdown.contains(e.target)) {
+                showNotifs = false;
+                const nMenu = document.getElementById('notif-menu');
+                if (nMenu) nMenu.style.display = 'none';
+            }
+
+            const userDropdown = document.getElementById('user-profile-dropdown');
+            if (userDropdown && !userDropdown.contains(e.target)) {
+                showUserMenu = false;
+                const uMenu = document.getElementById('user-menu');
+                if (uMenu) uMenu.style.display = 'none';
             }
         });
 

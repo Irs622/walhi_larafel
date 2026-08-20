@@ -29,17 +29,21 @@ class SecurityHeaders
         }
 
         // Content Security Policy
-        $response->headers->set('Content-Security-Policy', implode('; ', [
+        $cspDirectives = [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' https://app.midtrans.com https://app.sandbox.midtrans.com https://cdn.jsdelivr.net https://unpkg.com",
-            "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com",
+            "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net",
             "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com data:",
             "img-src 'self' data: https:",
             "connect-src 'self' https://app.midtrans.com https://app.sandbox.midtrans.com https://api.midtrans.com https://api.sandbox.midtrans.com",
             "frame-src 'self' https://app.midtrans.com https://app.sandbox.midtrans.com",
+            "frame-ancestors 'self'",
+            "form-action 'self'",
             "object-src 'none'",
             "base-uri 'self'",
-        ]));
+        ];
+
+        $response->headers->set('Content-Security-Policy', implode('; ', $cspDirectives));
 
         return $response;
     }
