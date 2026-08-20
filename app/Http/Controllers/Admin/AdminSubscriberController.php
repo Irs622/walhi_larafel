@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Subscriber;
 use App\Services\AuditLogService;
+use App\Services\CsvSanitizer;
 use Illuminate\Http\Request;
 
 class AdminSubscriberController extends Controller
@@ -35,14 +36,9 @@ class AdminSubscriberController extends Controller
             // Chunk records to prevent memory exhaustion
             Subscriber::orderBy('id')->chunk(500, function ($subscribers) use ($file) {
                 foreach ($subscribers as $subscriber) {
-                    $email = $subscriber->email;
-                    $dangerousPrefixes = ['=', '+', '-', '@', "\t", "\r", "\n", '|', '%'];
-                    if (in_array(substr($email, 0, 1), $dangerousPrefixes, true)) {
-                        $email = "'" . $email;
-                    }
                     fputcsv($file, [
                         $subscriber->id,
-                        $email,
+                        CsvSanitizer::sanitize($subscriber->email),
                         $subscriber->is_active ? 'Aktif' : 'Tidak Aktif',
                         $subscriber->created_at ? $subscriber->created_at->format('Y-m-d H:i:s') : '',
                     ]);

@@ -11,6 +11,7 @@ use App\Services\Content\SlugService;
 use App\Services\AuditLogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -140,6 +141,8 @@ class ContentController extends Controller
             'category' => $category,
         ]);
 
+        $this->flushGlobalViewCache($category);
+
         return redirect()->back()->with('success', 'Konten berhasil ditambahkan.');
     }
 
@@ -182,6 +185,8 @@ class ContentController extends Controller
             'category' => $category,
         ]);
 
+        $this->flushGlobalViewCache($category);
+
         return redirect()->back()->with('success', 'Konten berhasil diperbarui.');
     }
 
@@ -201,6 +206,8 @@ class ContentController extends Controller
         $this->deleteOldImage($content);
         $content->delete(); // SoftDeletes — record still in DB, deleted_at is set
 
+        $this->flushGlobalViewCache($category);
+
         return redirect()->back()->with('success', 'Konten berhasil dihapus.');
     }
 
@@ -219,6 +226,8 @@ class ContentController extends Controller
             'title' => $content->title,
             'status' => $next,
         ]);
+
+        $this->flushGlobalViewCache($category);
 
         return redirect()->back()->with('success', 'Status konten berhasil diubah.');
     }
@@ -279,6 +288,18 @@ class ContentController extends Controller
         }
 
         return $defaultTags;
+    }
+
+    /**
+     * Flush cached view-composer variables when critical global categories change.
+     */
+    private function flushGlobalViewCache(string $category): void
+    {
+        if ($category === 'kontak') {
+            Cache::forget('global_contact');
+        } elseif ($category === 'kampanye-darurat') {
+            Cache::forget('global_campaign');
+        }
     }
 
     /**
