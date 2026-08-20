@@ -14,8 +14,8 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminEmail = env('ADMIN_EMAIL') ?: 'admin@walhi-jabar.org';
-        $adminPass = env('ADMIN_' . 'PASSWORD') ?: Str::random(16);
+        $adminEmail = config('auth.admin_seed.email') ?: 'admin@walhi-jabar.org';
+        $adminPass = config('auth.admin_seed.password') ?: Str::random(16);
 
         User::updateOrCreate(
             ['email' => $adminEmail],
