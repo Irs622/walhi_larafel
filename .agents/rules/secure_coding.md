@@ -42,7 +42,7 @@ This rule is **Always On** for database-related changes in this workspace.
       return response()->json(['error' => 'A database error occurred. Please try again later.'], 500);
   }
   ```
-* **Note**: Let database exceptions bubble up to the global handler configured in [bootstrap/app.php](file:///Users/mac/clone%20walhi/walhi_larafel/bootstrap/app.php) unless you specifically need to handle them locally, in which case return a generic error message and log the details securely.
+* **Note**: Let database exceptions bubble up to the global handler configured in [bootstrap/app.php](bootstrap/app.php) unless you specifically need to handle them locally, in which case return a generic error message and log the details securely.
 
 ## 3. Environment Integrity
 * **Rule**: Ensure `APP_DEBUG=false` in production env files (`.env`) to prevent default error pages (e.g. Ignition) from exposing database connection names, table structures, and parameters.
