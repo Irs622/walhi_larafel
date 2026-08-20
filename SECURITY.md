@@ -52,7 +52,7 @@ APP_DEBUG=false
 ```
 
 ### B. Penanganan Global Database Exception
-Kami telah mengonfigurasi handler exception global di [bootstrap/app.php](file:///Users/mac/clone%20walhi/walhi_larafel/bootstrap/app.php) untuk menangkap `QueryException` dan `PDOException`. 
+Kami telah mengonfigurasi handler exception global di [bootstrap/app.php](bootstrap/app.php) untuk menangkap `QueryException` dan `PDOException`. 
 
 Jika terjadi error database dan `APP_DEBUG` bernilai `false`:
 1.  Sistem akan mencatat (log) detail error secara lengkap dan aman di `storage/logs/laravel.log` (hanya dapat diakses oleh administrator).

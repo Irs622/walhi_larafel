@@ -114,4 +114,18 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 900),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Default Admin Seed Credentials
+    |--------------------------------------------------------------------------
+    |
+    | Used during database seeding to initialize the primary administrator user.
+    |
+    */
+
+    'admin_seed' => [
+        'email' => env('ADMIN_EMAIL', 'admin@walhi-jabar.org'),
+        'password' => env('ADMIN_PASSWORD'),
+    ],
+
 ];
