@@ -4,6 +4,7 @@ namespace App\Services\Donation;
 
 use App\Enums\DonationStatus;
 use App\Models\Donation;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DonationService
@@ -12,10 +13,11 @@ class DonationService
 
     /**
      * Initiate a donation: persist a pending Donation record, then attempt
-     * to obtain a Midtrans Snap token. Falls back to a mock token if Midtrans
-     * is unconfigured or unreachable (e.g., local development).
+     * to obtain a Midtrans Snap token. Falls back to a mock token only in
+     * local or testing environments if Midtrans is unconfigured or unreachable.
      *
      * @return array{donation: Donation, snap_token: string, is_mock: bool}
+     * @throws \RuntimeException when payment gateway fails in production
      */
     public function initiate(array $validated): array
     {
@@ -49,11 +51,24 @@ class DonationService
                     'is_mock'    => false,
                 ];
             } catch (\RuntimeException $e) {
-                // Fall through to mock
+                Log::error('Midtrans payment transaction initiation failed', [
+                    'order_id' => $orderId,
+                    'amount'   => $validated['amount'],
+                    'error'    => $e->getMessage(),
+                ]);
+
+                if (! app()->environment('local', 'testing')) {
+                    throw $e;
+                }
             }
+        } elseif (! app()->environment('local', 'testing')) {
+            Log::error('Midtrans is not configured on production/staging environment', [
+                'order_id' => $orderId,
+            ]);
+            throw new \RuntimeException('Gateway pembayaran belum dikonfigurasi pada server produksi.');
         }
 
-        // Mock fallback for local dev or when Midtrans is unreachable
+        // Mock fallback strictly for local development and automated testing
         $mockToken = 'MOCK-SNAP-' . Str::upper(Str::random(24));
         $donation->update(['snap_token' => $mockToken]);
 
