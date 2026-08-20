@@ -60,7 +60,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        $exceptions->render(function (PDOException $e, Request $request) {
+        $exceptions->render(function (\PDOException $e, Request $request) {
             if (!config('app.debug')) {
                 Log::error('PDO Exception: ' . $e->getMessage());
 
