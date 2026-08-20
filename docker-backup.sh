@@ -45,4 +45,17 @@ fi
 # 3. Clean up backups older than 30 days
 find "$BACKUP_DIR" -type f -name "walhi_*" -mtime +30 -exec rm {} \;
 echo "🧹 Old backups (>30 days) cleaned up."
+
+# 4. Optional: Sync to off-site cloud storage (AWS S3, Cloudflare R2, or Rclone)
+if [ -n "$OFFSITE_BACKUP_BUCKET" ]; then
+    echo "☁️ Uploading backup to off-site storage: $OFFSITE_BACKUP_BUCKET..."
+    if command -v aws >/dev/null 2>&1; then
+        aws s3 cp "$BACKUP_FILE" "s3://$OFFSITE_BACKUP_BUCKET/" --only-show-errors && echo "✅ Off-site S3 sync completed."
+    elif command -v rclone >/dev/null 2>&1; then
+        rclone copy "$BACKUP_FILE" "$OFFSITE_BACKUP_BUCKET" && echo "✅ Off-site Rclone sync completed."
+    else
+        echo "ℹ️ AWS CLI / Rclone not found on host. Backup remains safely stored locally."
+    fi
+fi
+
 echo "🎉 Backup completed successfully!"
