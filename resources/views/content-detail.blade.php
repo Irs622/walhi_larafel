@@ -428,8 +428,7 @@
                                                                     <div style="background: #F4F1EA; border: 4px solid #1D1D1D; padding: 16px; display: flex; flex-direction: column; gap: 8px;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
                                                                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                                                                             <div style="font-weight: 800; font-size: 15px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif;">
-                                                                                {{ $reply->author_name }} 
-                                                                                <span style="font-size: 10px; background: #256D4A; color: white; padding: 2px 6px; text-transform: uppercase; margin-left: 6px; font-family: Inter, sans-serif; font-weight: 700;">Moderator</span>
+                                                                                {{ $reply->author_name }}
                                                                             </div>
                                                                             <div style="font-size: 11px; color: #666; font-weight: 600;">{{ $reply->created_at->translatedFormat('d M Y - H:i') }}</div>
                                                                         </div>
