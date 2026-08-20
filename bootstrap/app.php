@@ -23,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $middleware->trustHosts(
-            at: ['^(.+\.)?walhi\-jabar\.org$', '^(.+\.)?walhijabar\.or\.id$', '^(.+\.)?walhijabar\.org$', 'localhost', '127\.0\.0\.1'],
+            at: ['^(.+\.)?walhi\-jabar\.org$', '^(.+\.)?walhijabar\.or\.id$', '^(.+\.)?walhijabar\.org$', '^localhost$', '^127\.0\.0\.1$'],
         );
 
         $middleware->validateCsrfTokens(except: [

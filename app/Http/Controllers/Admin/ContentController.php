@@ -308,8 +308,10 @@ class ContentController extends Controller
     private function deleteOldImage(Content $content): void
     {
         if ($content->image_url && str_starts_with($content->image_url, '/storage/uploads/')) {
-            $oldPath = str_replace('/storage/', '', $content->image_url);
-            Storage::disk('public')->delete($oldPath);
+            $filename = basename($content->image_url);
+            if ($filename && ! in_array($filename, ['.', '..'], true)) {
+                Storage::disk('public')->delete('uploads/' . $filename);
+            }
         }
     }
 }
