@@ -1,10 +1,19 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "walhi-jabar/web-platform",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
-    "license": "MIT",
+    "description": "Platform web resmi WALHI Jawa Barat: Portal advokasi keadilan lingkungan hidup, publikasi kebijakan ekologi, direktori organisasi anggota, dan modul donasi gerakan rakyat.",
+    "keywords": [
+        "walhi",
+        "laravel",
+        "laravel-12",
+        "environment",
+        "advocacy",
+        "ngo",
+        "cso",
+        "indonesia"
+    ],
+    "license": "CC-BY-NC-4.0",
     "require": {
         "php": "^8.3",
         "artesaos/seotools": "^1.4",
