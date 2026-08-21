@@ -120,6 +120,12 @@ else
     echo "[6/7] Storage link already exists, skipping..."
 fi
 
+# ── Sync public assets to shared public volume (for Nginx container) ──
+if [ -d "/var/www/html/public_shared" ]; then
+    echo "       Syncing built public assets to shared Nginx volume..."
+    cp -ru /var/www/html/public/. /var/www/html/public_shared/ 2>/dev/null || cp -r /var/www/html/public/. /var/www/html/public_shared/
+fi
+
 # ── 7. Run Database Migrations & Seeding ──
 echo "[7/7] Clearing cache & running database migrations..."
 php artisan config:clear 2>/dev/null || true
