@@ -168,6 +168,7 @@
                                     <i data-lucide="search" style="position: absolute; left: 24px; color: #1D1D1D; width: 20px; height: 20px;"></i>
                                     <input type="text" name="search" value="{{ $search }}" 
                                            placeholder="Cari regulasi berdasarkan judul, nomor, atau kata kunci..." 
+                                           autocomplete="off"
                                            style="width: 100%; height: 100%; border: none; padding-left: 60px; padding-right: 24px; font-size: 16px; font-family: Inter, sans-serif; background: transparent; outline: none; box-sizing: border-box; color: #1D1D1D;" />
                                 </div>
                                 <button type="submit" 

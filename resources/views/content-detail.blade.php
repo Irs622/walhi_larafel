@@ -363,7 +363,7 @@
                                                     Twitter
                                                 </a>
                                                 <a href="https://api.whatsapp.com/send?text={{ urlencode($item->title . ' ' . url()->current()) }}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px; background: #25D366; color: white; border: 2px solid #1D1D1D; text-decoration: none; font-size: 11px; font-weight: 700; text-transform: uppercase;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">
-                                                    <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.95.56 3.77 1.53 5.32L2 22l4.83-1.49C8.32 21.46 10.1 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18.2c-1.67 0-3.23-.48-4.56-1.32l-.33-.2-2.87.89.9-2.78-.22-.35A8.15 8.15 0 0 1 3.8 12c0-4.52 3.68-8.2 8.2-8.2s8.2 3.68 8.2 8.2-3.68 8.2-8.2 8.2z"/><path d="M17.5 14.38c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.18.2-.35.23-.65.08-.3-.15-1.27-.47-2.42-1.49-.9-.8-1.5-1.79-1.68-2.09-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.53.15-.17.2-.3.3-.5.1-.2.05-.38-.03-.53-.08-.15-.68-1.64-.93-2.25-.24-.59-.49-.51-.68-.52h-.58c-.2 0-.53.08-.8.38-.28.3-1.05 1.03-1.05 2.51s1.08 2.92 1.23 3.12c.15.2 2.12 3.24 5.13 4.54.72.31 1.28.5 1.71.64.72.23 1.37.2 1.89.12.58-.09 1.78-.73 2.03-1.43.25-.7.25-1.3.18-1.43-.08-.13-.28-.2-.58-.35z"/></svg>
                                                     WhatsApp
                                                 </a>
                                                 <a href="https://telegram.me/share/url?url={{ urlencode(url()->current()) }}&text={{ urlencode($item->title) }}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px; background: #0088cc; color: white; border: 2px solid #1D1D1D; text-decoration: none; font-size: 11px; font-weight: 700; text-transform: uppercase;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">
@@ -449,8 +449,8 @@
                                                                 <input type="text" name="extra_phone" style="display: none !important;" tabindex="-1" autocomplete="off" />
 
                                                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                                                    <input type="text" name="author_name" placeholder="Nama Anda" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
-                                                                    <input type="email" name="author_email" placeholder="Email Anda" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                                    <input type="text" name="author_name" placeholder="Nama Anda" autocomplete="name" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                                    <input type="email" name="author_email" placeholder="Email Anda" autocomplete="email" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
                                                                 </div>
                                                                 <textarea name="body" rows="3" placeholder="Tulis balasan komentar Anda..." required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif; resize: vertical;"></textarea>
                                                                 <button type="submit" style="align-self: flex-start; height: 44px; padding: 0 20px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 12px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;">Kirim Balasan</button>
@@ -474,11 +474,11 @@
                                                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; width: 100%;">
                                                         <div style="display: flex; flex-direction: column; gap: 6px;">
                                                             <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Nama Lengkap *</label>
-                                                            <input type="text" name="author_name" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                            <input type="text" name="author_name" autocomplete="name" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
                                                         </div>
                                                         <div style="display: flex; flex-direction: column; gap: 6px;">
                                                             <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Email (tidak dipublikasikan) *</label>
-                                                            <input type="email" name="author_email" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                            <input type="email" name="author_email" autocomplete="email" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
                                                         </div>
                                                     </div>
 
@@ -511,8 +511,8 @@
                                             <!-- Honeypot -->
                                             <input type="text" name="extra_name" style="display: none !important;" tabindex="-1" autocomplete="off" />
 
-                                            <input type="text" placeholder="Nama Lengkap" style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
-                                            <input type="email" name="email" placeholder="Email Anda" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                            <input type="text" placeholder="Nama Lengkap" autocomplete="name" style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                            <input type="email" name="email" placeholder="Email Anda" autocomplete="email" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
                                             <button type="submit" style="height: 48px; background: #1D1D1D; color: #F4F1EA; border: 2px solid #1D1D1D; font-weight: 700; font-size: 13px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">Sign Up</button>
                                         </form>
                                     </div>
