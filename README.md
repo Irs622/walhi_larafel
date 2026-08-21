@@ -6,7 +6,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Alpine.js](https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white)](https://alpinejs.dev)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC_BY--NC_4.0-lightgrey.svg?style=for-the-badge)](LICENSE)
 
 <br />
 
@@ -16,7 +16,7 @@
 
 **Portal Informasi, Advokasi Lingkungan, Publikasi Kebijakan, dan Gerakan Rakyat WALHI Jawa Barat**
 
-[Fitur Utama](#-fitur-utama) • [Panduan Cepat](#-panduan-menjalankan-aplikasi) • [Struktur Sistem](#-arsitektur--struktur-direktori) • [Kolaborasi & Tim](#-panduan-kolaborasi-tim) • [Keamanan](#-keamanan--audit)
+[Fitur Utama](#-fitur-utama) • [Panduan Cepat](#-panduan-menjalankan-aplikasi) • [Struktur Sistem](#-arsitektur--struktur-direktori) • [Kolaborasi & Tim](#-panduan-kolaborasi-tim) • [Lisensi](#-lisensi)
 
 </div>
 
@@ -120,14 +120,14 @@ Jika Anda ingin menjalankan langsung di lingkungan host (memerlukan PHP 8.2+, Co
 
 ---
 
-## 🔑 Kredensial Default (Testing Lokal)
+## 🔑 Kredensial Pengujian Lokal (Development Only)
 
-| Role | Email | Password |
+> ⚠️ **Penting:** Kredensial di bawah ini adalah data *dummy* yang **hanya dibuat saat proses seeding di komputer lokal (*development*)**. Pada server produksi (*live*), seluruh akun wajib menggunakan email dan password unik yang dikonfigurasi melalui variabel lingkungan `.env`.
+
+| Role | Email Dummy (Lokal) | Password Default (Lokal) |
 | :--- | :--- | :--- |
 | **Super Admin** | `admin@walhi-jabar.org` | `admin123` |
 | **Staff / Editor** | `editor@walhi-jabar.org` | `editor123` |
-
-*(Kredensial dapat diubah melalui file `.env` atau variabel `ADMIN_PASSWORD` pada Docker).*
 
 ---
 

@@ -1,5 +1,7 @@
 {
     "$schema": "https://www.schemastore.org/package.json",
+    "name": "walhi-jabar-web",
+    "description": "WALHI Jawa Barat Official Web Platform Frontend Assets",
     "private": true,
     "type": "module",
     "scripts": {
