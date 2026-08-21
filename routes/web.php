@@ -24,7 +24,9 @@ Route::get('/dashboard', fn () => redirect()->route('admin.dashboard'))
     ->name('dashboard');
 
 // Blog & Content
-Route::get('/blog', [PublicContentController::class, 'blog'])->name('blog');
+Route::get('/blog', [PublicContentController::class, 'blog'])
+    ->middleware('throttle:search')
+    ->name('blog');
 Route::get('/konten/{slug}', [PublicContentController::class, 'show'])->name('content.show');
 
 // Comments & Newsletter
@@ -119,4 +121,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
