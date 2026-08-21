@@ -29,7 +29,7 @@ class DonationTest extends TestCase
     {
         $payload = [
             'donor_name' => 'Wira Pratama',
-            'donor_email' => 'wira@gmail.com',
+            'donor_email' => 'donatur@example.org',
             'donor_phone' => '08123456789',
             'amount' => 50000
         ];
@@ -44,7 +44,7 @@ class DonationTest extends TestCase
             
         $this->assertDatabaseHas('donations', [
             'donor_name' => 'Wira Pratama',
-            'donor_email' => 'wira@gmail.com',
+            'donor_email' => 'donatur@example.org',
             'amount' => 50000,
             'status' => 'pending'
         ]);

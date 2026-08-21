@@ -1,154 +1,58 @@
-# Kebijakan Keamanan & Pedoman Coding Aman (Security Policy & Secure Coding Guidelines)
+# Kebijakan Keamanan (Security Policy)
 
-Dokumen ini berisi pedoman keamanan untuk pengembangan aplikasi WALHI, termasuk aturan penulisan kueri database, penanganan eror, dan konfigurasi Web Application Firewall (WAF) untuk server produksi.
+Wahana Lingkungan Hidup Indonesia — Jawa Barat (WALHI Jawa Barat) berkomitmen untuk menjaga keamanan dan privasi data anggota, jurnalis, pegiat lingkungan, donatur, serta seluruh pengguna platform web ini.
 
----
-
-## 1. Aturan Penulisan Kueri Database (Database Security & SQL Injection Prevention)
-
-Setiap pengembang (dan sub-agen kecerdasan buatan) wajib mematuhi aturan berikut saat berinteraksi dengan database untuk mencegah kerentanan **SQL Injection (SQLi)**:
-
-### A. Wajib Menggunakan Prepared Statements (Parameter Binding)
-Jangan pernah menggabungkan (concatenate) input pengguna langsung ke dalam string SQL. Gunakan fitur bawaan Laravel Eloquent ORM atau Query Builder yang secara otomatis mengamankan kueri menggunakan Prepared Statements.
-
-*   **❌ SALAH (Rentan SQLi):**
-    ```php
-    $email = $request->input('email');
-    // Rentan terhadap manipulasi SQL via variabel $email
-    $users = DB::select("SELECT * FROM users WHERE email = '" . $email . "'");
-    
-    // Rentan jika menggunakan whereRaw tanpa bindings
-    $posts = Post::whereRaw("title LIKE '%" . $request->search . "%'")->get();
-    ```
-
-*   **✅ BENAR (Menggunakan Parameter Binding):**
-    ```php
-    $email = $request->input('email');
-    
-    // Menggunakan DB::select dengan binding (?)
-    $users = DB::select("SELECT * FROM users WHERE email = ?", [$email]);
-    
-    // Menggunakan Eloquent ORM (Sangat direkomendasikan)
-    $users = User::where('email', $email)->get();
-    
-    // Menggunakan whereRaw dengan bindings
-    $posts = Post::whereRaw("title LIKE ?", ["%" . $request->search . "%"])->get();
-    ```
-
-### B. Hindari Query Mentah (Raw Query) yang Tidak Perlu
-Gunakan Query Builder Laravel seperti `where()`, `join()`, `insert()`, `update()` karena metode ini aman secara default. Jika terpaksa menggunakan `DB::raw()`, pastikan nilai di dalamnya tidak mengandung input mentah dari request.
+Dokumen ini menjelaskan kebijakan pelaporan kerentanan keamanan (*Responsible & Coordinated Vulnerability Disclosure*), versi yang didukung, serta komitmen standar pengamanan sistem kami.
 
 ---
 
-## 2. Penanganan Error Database di Produksi (Preventing Error-Based SQLi)
+## 🛡️ Versi yang Didukung (Supported Versions)
 
-Di lingkungan produksi (production), informasi internal database seperti nama tabel, nama kolom, atau kueri SQL yang gagal **tidak boleh bocor** ke pengguna. Kebocoran ini dapat dimanfaatkan penyerang untuk memetakan database (Error-based SQLi).
+Kami secara aktif memelihara dan memberikan pembaruan keamanan (*security patches*) untuk rilis berikut:
 
-### A. Nonaktifkan Debug Mode di Produksi
-Pastikan file `.env` di server produksi dikonfigurasi sebagai berikut:
-```env
-APP_ENV=production
-APP_DEBUG=false
-```
-
-### B. Penanganan Global Database Exception
-Kami telah mengonfigurasi handler exception global di [bootstrap/app.php](bootstrap/app.php) untuk menangkap `QueryException` dan `PDOException`. 
-
-Jika terjadi error database dan `APP_DEBUG` bernilai `false`:
-1.  Sistem akan mencatat (log) detail error secara lengkap dan aman di `storage/logs/laravel.log` (hanya dapat diakses oleh administrator).
-2.  Sistem akan mengembalikan respon JSON generic `{"message": "Internal Server Error: A database operation failed."}` untuk API request, atau menampilkan halaman error 500 generik untuk request web biasa.
+| Versi | Didukung Pembaruan Keamanan |
+| :--- | :---: |
+| **v1.x (Laravel 12.x / PHP 8.4)** | :white_check_mark: Ya |
+| **< v1.0** | :x: Tidak |
 
 ---
 
-## 3. Rekomendasi Konfigurasi Web Application Firewall (WAF) Sederhana
+## 🚨 Prosedur Pelaporan Kerentanan (Reporting a Vulnerability)
 
-Untuk mengamankan server deployment WALHI dari serangan SQLi, XSS, dan Brute Force secara otomatis sebelum request mencapai aplikasi Laravel, berikut adalah beberapa opsi WAF sederhana yang dapat dipasang:
+Jika Anda menemukan celah keamanan (*vulnerability*) pada aplikasi atau infrastruktur WALHI Jawa Barat, kami sangat menghargai kerja sama Anda untuk melaporkannya secara bertanggung jawab (*Responsible Disclosure*).
 
-### Opsi A: Menggunakan Cloudflare WAF (Paling Mudah & Praktis)
-Jika domain WALHI diarahkan melalui Cloudflare (sebagai reverse proxy):
-1.  Aktifkan status **Proxy (Orange Cloud)** pada DNS records Anda.
-2.  Masuk ke menu **Security > WAF > Firewall Rules** (atau **Custom Rules**).
-3.  Aktifkan Managed Ruleset dasar (OWASP Core Ruleset) bawaan Cloudflare.
-4.  Buat Custom Rule untuk memblokir request yang mengandung pola mencurigakan atau akses ke file sensitif seperti `.env`:
-    *   **Field:** `URI Path`
-    *   **Operator:** `contains`
-    *   **Value:** `/.env`
-    *   **Action:** `Block`
+### 1. Kanal Pelaporan Resmi
+Kirimkan laporan teknis lengkap Anda ke alamat email:
+📧 **kontak@walhijabar.org** *(Cc: **kontak@walhijabar.or.id**)*  
+**Subjek:** `[SECURITY] Laporan Kerentanan - [Komponen Terkait]`
 
----
+### 2. Informasi yang Diperlukan
+Untuk mempercepat proses investigasi dan mitigasi, mohon sertakan:
+- **Deskripsi & Dampak:** Penjelasan mengenai jenis kerentanan dan potensi risiko yang ditimbulkan.
+- **Langkah Reproduksi (PoC):** Langkah-langkah detail agar tim teknis kami dapat mereproduksi celah tersebut.
+- **Tangkapan Layar / Log:** Bukti pengujian (tanpa merusak integritas data sistem yang sedang berjalan).
+- **Saran Perbaikan:** Rekomendasi teknis mitigasi (jika ada).
 
-### Opsi B: Konfigurasi Keamanan Nginx (Jika Menggunakan Nginx Web Server)
-Tambahkan aturan berikut di dalam blok `server` pada file konfigurasi Nginx Anda (misal `/etc/nginx/sites-available/walhi`) untuk memblokir pola SQL Injection dasar:
+### 3. Etika & Ketentuan Pelaporan (*Disclosure Guidelines*)
+- **JANGAN** mempublikasikan detail kerentanan ke ranah publik (GitHub Issues, media sosial, atau blog) sebelum perbaikan resmi dirilis.
+- **JANGAN** mengakses, mengubah, atau menghapus data pengguna nyata tanpa izin.
+- **JANGAN** melakukan serangan *Denial of Service (DoS/DDoS)* atau tindakan yang dapat mengganggu ketersediaan layanan publik.
 
-```nginx
-# 1. Blokir akses langsung ke file sensitif
-location ~ /\.(env|git|htaccess|composer) {
-    deny all;
-    return 404;
-}
-
-# 2. Blokir eksekusi PHP pada folder storage / uploads
-location ~* /storage/.*\.php$ {
-    deny all;
-    return 404;
-}
-
-# 2. Filter SQL Injection dasar pada URI dan Query String
-if ($query_string ~* "union.*select.*\(") {
-    return 403;
-}
-if ($query_string ~* "concat.*\(") {
-    return 403;
-}
-if ($query_string ~* "select.*from") {
-    return 403;
-}
-if ($query_string ~* "insert.*into") {
-    return 403;
-}
-if ($query_string ~* "delete.*from") {
-    return 403;
-}
-if ($query_string ~* "update.*set") {
-    return 403;
-}
-
-# 3. Blokir karakter mencurigakan yang biasa dipakai SQLi
-if ($query_string ~* "['\"].*(or|and).*['\"].*=.*['\"]") {
-    return 403;
-}
-```
-
-Setelah menambahkan konfigurasi di atas, jalankan:
-```bash
-sudo nginx -t
-sudo systemctl reload nginx
-```
+### 4. Komitmen & SLA Penanganan Kami
+- **Konfirmasi Penerimaan:** Tim teknis kami akan merespons dan mengonfirmasi laporan Anda dalam waktu maksimal **48 jam**.
+- **Investigasi & Validasi:** Tim akan menganalisis tingkat keparahan (*Severity Assessment*) dan menguji PoC yang dikirimkan.
+- **Perilisan Patch:** Perbaikan akan segera diterapkan ke branch utama dan server produksi sesegera mungkin.
+- **Penghargaan (Acknowledgement):** Kami sangat mengapresiasi dan akan mencantumkan kontribusi Anda pada catatan rilis (*Release Notes*) jika diinginkan.
 
 ---
 
-### Opsi C: Memasang ModSecurity (WAF Open-Source Tingkat Lanjut)
-Jika Anda menggunakan VPS Linux dan ingin proteksi WAF penuh di tingkat web server:
+## 🔒 Standar Praktik Keamanan Platform
 
-1.  **Instalasi ModSecurity (Ubuntu/Debian):**
-    ```bash
-    sudo apt update
-    sudo apt install libnginx-mod-security2 modsecurity-crs -y
-    ```
-2.  **Konfigurasi ModSecurity:**
-    Salin file konfigurasi bawaan dan aktifkan WAF:
-    ```bash
-    sudo cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
-    # Ubah "SecRuleEngine DetectionOnly" menjadi "SecRuleEngine On" di /etc/modsecurity/modsecurity.conf
-    sudo sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf
-    ```
-3.  **Hubungkan dengan Nginx:**
-    Pastikan ModSecurity aktif pada blok server Nginx Anda:
-    ```nginx
-    server {
-        ...
-        modsecurity on;
-        modsecurity_rules_file /etc/nginx/modsec/main.conf;
-    }
-    ```
-    *(Gunakan OWASP Core Rule Set (CRS) yang terpasang otomatis untuk memblokir SQLi, XSS, LFI/RFI, dan injeksi kode lainnya).*
+Secara arsitektural, platform web ini mengadopsi standar pengamanan berlapis (*Defense-in-Depth*):
+
+1. **Proteksi Injeksi SQL & Input Sanitization:** Seluruh interaksi basis data wajib menggunakan *Prepared Statements* (Eloquent ORM & PDO parameter bindings) serta sanitasi input otomatis via Form Request Validation dan HTMLPurifier.
+2. **Proteksi Sesi & CSRF:** Seluruh permintaan mutasi data (POST/PUT/DELETE) dilindungi oleh *CSRF Token Validation*, cookie sesi terenkripsi (*encrypted sessions*), dan atribut `HttpOnly` serta `SameSite=Lax`.
+3. **HTTP Security Headers:** Penerapan *Content Security Policy (CSP)*, *X-Content-Type-Options: nosniff*, *X-Frame-Options: SAMEORIGIN*, dan *Referrer-Policy* untuk mencegah serangan XSS, Clickjacking, dan MIME-sniffing.
+4. **Isolasi Lingkungan Produksi:** Penonaktifan *Debug Mode* (`APP_DEBUG=false`) secara mutlak pada lingkungan live guna mencegah *Error-based Information Leakage*.
+5. **Autentikasi & Otorisasi Ketat:** Pembatasan hak akses berbasis peran (*Role-Based Access Control*) dan kebijakan otorisasi (*Laravel Policies*) pada seluruh modul administratif.
+
