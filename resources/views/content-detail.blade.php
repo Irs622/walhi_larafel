@@ -323,7 +323,7 @@
                                                     <i data-lucide="message-square" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
                                                     <span>
                                                         @php
-                                                            $approvedCommentsCount = $item->comments()->where('status', 'approved')->count();
+                                                            $approvedCommentsCount = (int) ($item->approved_comments_count ?? 0);
                                                         @endphp
                                                         {{ $approvedCommentsCount === 0 ? 'No Comments' : ($approvedCommentsCount === 1 ? '1 Comment' : $approvedCommentsCount . ' Comments') }}
                                                     </span>

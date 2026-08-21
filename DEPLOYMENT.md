@@ -54,9 +54,19 @@ nano .env
 
 **Konfigurasi Kunci yang Wajib Diisi:**
 - `APP_URL=https://walhijabar.or.id`
-- `DB_PASSWORD` & `DB_ROOT_PASSWORD` (Gunakan password acak 24 karakter)
+- `DB_PASSWORD` & `DB_ROOT_PASSWORD` (Gunakan password acak kuat minimal 24 karakter — **DILARANG** menggunakan string default contoh)
 - `MIDTRANS_SERVER_KEY` & `MIDTRANS_CLIENT_KEY` (Kunci produksi akun Midtrans resmi)
 - `ADMIN_PASSWORD` (Password akun Super Admin)
+
+> [!IMPORTANT]
+> **Checklist Keamanan Kredensial Database:**
+> 1. Pastikan password database `DB_PASSWORD` dan `DB_ROOT_PASSWORD` bukan string contoh historis (`walhi_secret_pass` / `walhi_root_secret`).
+> 2. Generate password baru dengan entropi tinggi: `openssl rand -base64 24`.
+> 3. Jika melakukan rotasi password pada database MySQL yang sedang berjalan:
+>    ```bash
+>    docker exec -it walhi_prod_db mysql -u root -p -e "ALTER USER 'walhi_user'@'%' IDENTIFIED BY 'PASSWORD_BARU_ANDA'; FLUSH PRIVILEGES;"
+>    ```
+>    Lalu perbarui variabel `DB_PASSWORD` di `.env` dan restart container aplikasi (`docker compose -f docker-compose.prod.yml restart app`).
 
 ### 5. Jalankan Stack Produksi
 ```bash
