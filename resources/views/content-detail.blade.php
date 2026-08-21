@@ -6,7 +6,8 @@
         @include('partials.seo-meta', [
             'title' => $item->title . ' - WALHI Jawa Barat',
             'description' => Str::limit(strip_tags($item->body), 155),
-            'image' => $item->image_url
+            'image' => $item->image_url,
+            'type' => 'article'
         ])
  
         <link rel="preconnect" href="https://fonts.googleapis.com">

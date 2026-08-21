@@ -127,9 +127,13 @@ class PageController extends Controller
     {
         $path = public_path('robots.txt');
 
-        $content = file_exists($path)
-            ? file_get_contents($path)
-            : "User-agent: *\nDisallow:";
+        if (file_exists($path)) {
+            $content = file_get_contents($path);
+            $content = str_replace('Sitemap: /sitemap.xml', 'Sitemap: ' . url('sitemap.xml'), $content);
+        } else {
+            $sitemapUrl = url('sitemap.xml');
+            $content = "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /login\nDisallow: /register\nDisallow: /profile\n\nSitemap: {$sitemapUrl}\n";
+        }
 
         return response($content, 200)->header('Content-Type', 'text/plain');
     }

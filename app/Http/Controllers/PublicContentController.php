@@ -4,7 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Enums\ContentCategory;
 use App\Models\Content;
+use Artesaos\SEOTools\Facades\JsonLd;
+use Artesaos\SEOTools\Facades\JsonLdMulti;
+use Artesaos\SEOTools\Facades\OpenGraph;
+use Artesaos\SEOTools\Facades\SEOMeta;
+use Artesaos\SEOTools\Facades\TwitterCard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PublicContentController extends Controller
 {
@@ -82,6 +88,63 @@ class PublicContentController extends Controller
             $item->increment('views');
             session()->put($sessionKey, true);
         }
+
+        // Dynamic SEO Metadata Injection
+        $title = $item->title . ' - WALHI Jawa Barat';
+        $description = $item->excerpt ?: Str::limit(strip_tags($item->body ?? ''), 155);
+        $canonicalUrl = route('content.show', $item->slug);
+        $imageUrl = $item->image_url
+            ? (str_starts_with($item->image_url, 'http') ? $item->image_url : asset($item->image_url))
+            : asset('assets/images/resources/logo-2-walhi.png');
+        $keywords = !empty($item->tags) ? array_map('trim', explode(',', $item->tags)) : ['WALHI', 'Jawa Barat', 'Keadilan Ekologis', 'Lingkungan Hidup'];
+
+        SEOMeta::setTitle($title, false);
+        SEOMeta::setDescription($description);
+        SEOMeta::setCanonical($canonicalUrl);
+        SEOMeta::addKeyword($keywords);
+
+        OpenGraph::setTitle($title);
+        OpenGraph::setDescription($description);
+        OpenGraph::setUrl($canonicalUrl);
+        OpenGraph::addProperty('type', 'article');
+        OpenGraph::addImage($imageUrl, ['height' => 630, 'width' => 1200]);
+        OpenGraph::setArticle([
+            'published_time' => $item->publish_date ? $item->publish_date->toIso8601String() : $item->created_at->toIso8601String(),
+            'modified_time'  => $item->updated_at->toIso8601String(),
+            'author'         => $item->author ?? 'WALHI Jawa Barat',
+            'section'        => $item->category instanceof \BackedEnum ? $item->category->value : (string) $item->category,
+            'tag'            => $keywords,
+        ]);
+
+        TwitterCard::setTitle($title);
+        TwitterCard::setDescription($description);
+        TwitterCard::setImage($imageUrl);
+        TwitterCard::setType('summary_large_image');
+        TwitterCard::setSite('@walhijabar');
+
+        JsonLdMulti::setTitle($title);
+        JsonLdMulti::setDescription($description);
+        JsonLdMulti::setType('NewsArticle');
+        JsonLdMulti::addImage($imageUrl);
+        JsonLdMulti::addValue('datePublished', $item->publish_date ? $item->publish_date->toIso8601String() : $item->created_at->toIso8601String());
+        JsonLdMulti::addValue('dateModified', $item->updated_at->toIso8601String());
+        JsonLdMulti::addValue('headline', $item->title);
+        JsonLdMulti::addValue('mainEntityOfPage', [
+            '@type' => 'WebPage',
+            '@id'   => $canonicalUrl,
+        ]);
+        JsonLdMulti::addValue('author', [
+            '@type' => 'Organization',
+            'name'  => $item->author ?? 'WALHI Jawa Barat',
+        ]);
+        JsonLdMulti::addValue('publisher', [
+            '@type' => 'Organization',
+            'name'  => 'WALHI Jawa Barat',
+            'logo'  => [
+                '@type' => 'ImageObject',
+                'url'   => asset('assets/images/resources/logo-2-walhi.png'),
+            ],
+        ]);
 
         // Read time is now an accessor on the model
         $readTime = $item->read_time;
