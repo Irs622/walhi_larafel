@@ -1,25 +1,35 @@
 @php
-    $seoTitle = $title ?? 'WALHI Jawa Barat - Advokasi Lingkungan & Keadilan Ekologis';
-    $seoDesc = $description ?? 'Organisasi gerakan lingkungan hidup independen terbesar di Jawa Barat. Memperjuangkan keadilan ekologis, pendampingan hukum agraria, dan perlindungan hutan.';
-    $seoImage = isset($image) && $image ? (str_starts_with($image, 'http') ? $image : asset($image)) : asset('assets/images/resources/logo-2-walhi.png');
-    $seoUrl = url()->current();
+    $seoTitle = $title ?? null;
+    $seoDesc = $description ?? null;
+    $seoImage = isset($image) && $image ? (str_starts_with($image, 'http') ? $image : asset($image)) : null;
+    $seoType = $type ?? null;
+
+    if ($seoTitle) {
+        \Artesaos\SEOTools\Facades\SEOMeta::setTitle($seoTitle, false);
+        \Artesaos\SEOTools\Facades\OpenGraph::setTitle($seoTitle);
+        \Artesaos\SEOTools\Facades\TwitterCard::setTitle($seoTitle);
+        \Artesaos\SEOTools\Facades\JsonLd::setTitle($seoTitle);
+    }
+    if ($seoDesc) {
+        \Artesaos\SEOTools\Facades\SEOMeta::setDescription($seoDesc);
+        \Artesaos\SEOTools\Facades\OpenGraph::setDescription($seoDesc);
+        \Artesaos\SEOTools\Facades\TwitterCard::setDescription($seoDesc);
+        \Artesaos\SEOTools\Facades\JsonLd::setDescription($seoDesc);
+    }
+    if ($seoImage) {
+        \Artesaos\SEOTools\Facades\OpenGraph::addImage($seoImage);
+        \Artesaos\SEOTools\Facades\TwitterCard::setImage($seoImage);
+        \Artesaos\SEOTools\Facades\JsonLd::addImage($seoImage);
+    }
+    if ($seoType) {
+        \Artesaos\SEOTools\Facades\OpenGraph::addProperty('type', $seoType);
+    }
 @endphp
- 
-<!-- SEO Meta Tags -->
-<title>{{ $seoTitle }}</title>
-<meta name="description" content="{{ $seoDesc }}">
-<meta name="robots" content="index, follow">
- 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="{{ $seoUrl }}">
-<meta property="og:title" content="{{ $seoTitle }}">
-<meta property="og:description" content="{{ $seoDesc }}">
-<meta property="og:image" content="{{ $seoImage }}">
- 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="{{ $seoUrl }}">
-<meta property="twitter:title" content="{{ $seoTitle }}">
-<meta property="twitter:description" content="{{ $seoDesc }}">
+
+{!! SEO::generate() !!}
+<meta property="twitter:title" content="{{ $seoTitle ?? 'WALHI Jawa Barat' }}">
+<meta property="twitter:description" content="{{ $seoDesc ?? 'Organisasi gerakan lingkungan hidup independen terbesar di Jawa Barat.' }}">
+@if($seoImage)
 <meta property="twitter:image" content="{{ $seoImage }}">
+@endif
+<link rel="canonical" href="{{ url()->current() }}">

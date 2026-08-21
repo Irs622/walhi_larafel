@@ -100,7 +100,7 @@ class Content extends Model
     /**
      * Return a plain-text excerpt (max 155 chars) stripped of HTML.
      */
-    public function getExcerptAttribute(int $length = 155): string
+    public function getExcerptAttribute($value = null, int $length = 155): string
     {
         return Str::limit(strip_tags($this->body ?? ''), $length);
     }
