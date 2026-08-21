@@ -50,6 +50,8 @@
                 <a href="{{ $globalContact->instagram }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">Instagram</a>
                 <span style="color: #256D4A; font-size: 16px; font-family: Inter, sans-serif; user-select: none;">|</span>
                 <a href="{{ $globalContact->youtube }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">YouTube</a>
+                <span style="color: #256D4A; font-size: 16px; font-family: Inter, sans-serif; user-select: none;">|</span>
+                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $globalContact->whatsapp) }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">WhatsApp</a>
             </div>
         </div>
     </div>
@@ -63,7 +65,7 @@
                     <img src="{{ asset('assets/images/resources/logo-2-walhi.png') }}" alt="WALHI Jawa Barat" style="height: 48px; object-fit: contain;" />
                 </a>
             </div>
- 
+
             <!-- Navigation Links (Desktop) -->
             <nav class="desktop-nav" style="display: flex; align-items: center; justify-content: space-between; width: 599.9px; height: 37px; position: relative;">
                 <!-- BERANDA -->
@@ -73,7 +75,7 @@
                         <div style="width: 100%; height: 2px; left: 0; bottom: 0; position: absolute; background: #256D4A;"></div>
                     @endif
                 </div>
- 
+
                 <!-- BLOG -->
                 <div style="position: relative; height: 100%; display: inline-flex; align-items: center;">
                     <a href="{{ route('blog') }}" style="{{ $navLinkStyle($isBlog) }}">BLOG</a>
@@ -81,7 +83,7 @@
                         <div style="width: 100%; height: 2px; left: 0; bottom: 0; position: absolute; background: #256D4A;"></div>
                     @endif
                 </div>
- 
+
                 <!-- REGULASI -->
                 <div style="position: relative; height: 100%; display: inline-flex; align-items: center;">
                     <a href="{{ route('regulasi') }}" style="{{ $navLinkStyle($isRegulasi) }}">REGULASI</a>
@@ -89,7 +91,7 @@
                         <div style="width: 100%; height: 2px; left: 0; bottom: 0; position: absolute; background: #256D4A;"></div>
                     @endif
                 </div>
- 
+
                 <!-- PUBLIKASI (with details/summary dropdown) -->
                 <details class="site-nav-dropdown" style="position: relative; height: 100%; display: inline-flex; align-items: center; cursor: pointer;">
                     <summary style="display: inline-flex; align-items: center; gap: 6px; position: relative !important; color: {{ $isPublikasi ? '#256D4A' : '#1D1D1D' }}; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.70px; list-style: none; outline: none;">
@@ -105,7 +107,7 @@
                         <div style="width: 100%; height: 2px; left: 0; bottom: 0; position: absolute; background: #256D4A;"></div>
                     @endif
                 </details>
- 
+
                 <!-- DUKUNG KAMI -->
                 <div style="position: relative; height: 100%; display: inline-flex; align-items: center;">
                     <a href="{{ route('donasi') }}" style="{{ $navLinkStyle($isDonasi) }}">
@@ -116,7 +118,7 @@
                         <div style="width: 100%; height: 2px; left: 0; bottom: 0; position: absolute; background: #256D4A;"></div>
                     @endif
                 </div>
- 
+
                 <!-- TENTANG KAMI (with details/summary dropdown) -->
                 <details class="site-nav-dropdown" style="position: relative; height: 100%; display: inline-flex; align-items: center; cursor: pointer;">
                     <summary style="display: inline-flex; align-items: center; gap: 6px; position: relative !important; color: {{ $isAbout ? '#256D4A' : '#1D1D1D' }}; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.70px; list-style: none; outline: none;">
@@ -132,7 +134,7 @@
                     @endif
                 </details>
             </nav>
- 
+
             <!-- Icons (Globe, Search) (Desktop) -->
             <div class="desktop-icons" style="display: flex; align-items: center; gap: 20px; color: #1D1D1D; position: relative;">
                 <!-- Language Selector / Globe (ID) -->
@@ -156,7 +158,7 @@
             <div id="desktop-search-bar" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #1D1D1D; border-bottom: 4px solid #256D4A; padding: 16px 32px; box-sizing: border-box; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
                 <div style="max-width: 1280px; margin: 0 auto; display: flex; align-items: center; gap: 16px;">
                     <form action="{{ route('blog') }}" method="GET" style="display: flex; flex: 1; align-items: center; gap: 12px;">
-                        <input type="text" name="search" id="desktop-search-input" placeholder="Ketik kata kunci pencarian berita, advokasi, atau laporan..." style="flex: 1; height: 46px; background: #FFFFFF; border: 2px solid #256D4A; padding: 0 16px; font-family: Inter, sans-serif; font-size: 15px; color: #1D1D1D; outline: none;" />
+                        <input type="text" name="search" id="desktop-search-input" placeholder="Ketik kata kunci pencarian berita, advokasi, atau laporan..." autocomplete="off" style="flex: 1; height: 46px; background: #FFFFFF; border: 2px solid #256D4A; padding: 0 16px; font-family: Inter, sans-serif; font-size: 15px; color: #1D1D1D; outline: none;" />
                         <button type="submit" style="height: 46px; background: #256D4A; color: #F4F1EA; font-weight: 700; font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: 0.5px; border: none; padding: 0 24px; cursor: pointer;">CARI</button>
                     </form>
                     <button type="button" id="desktop-search-close" style="background: transparent; border: none; color: #F4F1EA; font-size: 24px; cursor: pointer; padding: 4px 8px; line-height: 1;">&times;</button>

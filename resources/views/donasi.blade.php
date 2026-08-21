@@ -210,7 +210,7 @@
                                     
                                     <!-- Custom Amount Field -->
                                     <div style="position: relative; width: 100%;">
-                                        <input type="number" id="custom-amount" placeholder="Atau masukkan nominal lain" oninput="handleCustomAmountInput(this)" class="input-field" required />
+                                        <input type="number" id="custom-amount" placeholder="Atau masukkan nominal lain" autocomplete="off" oninput="handleCustomAmountInput(this)" class="input-field" required />
                                     </div>
                                 </div>
                                 
@@ -219,9 +219,9 @@
                                     <label style="color: #1D1D1D; font-family: Inter, sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.35px;">
                                         Informasi Donatur
                                     </label>
-                                    <input type="text" id="donor-name" placeholder="Nama Lengkap" class="input-field" required />
-                                    <input type="email" id="donor-email" placeholder="Email" class="input-field" required />
-                                    <input type="tel" id="donor-phone" placeholder="Nomor Telepon" class="input-field" required />
+                                    <input type="text" id="donor-name" placeholder="Nama Lengkap" autocomplete="name" class="input-field" required />
+                                    <input type="email" id="donor-email" placeholder="Email" autocomplete="email" class="input-field" required />
+                                    <input type="tel" id="donor-phone" placeholder="Nomor Telepon" autocomplete="tel" class="input-field" required />
                                 </div>
                                 
                                 <!-- Transparency Notice -->
