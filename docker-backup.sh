@@ -24,7 +24,7 @@ if docker ps --format '{{.Names}}' | grep -q "^walhi_prod_db$"; then
     MYSQL_DB="${DB_DATABASE:-walhi_prod}"
     
     if [ -n "$DB_PASSWORD" ]; then
-        docker exec walhi_prod_db mysqldump -u "$MYSQL_USER" -p"$DB_PASSWORD" "$MYSQL_DB" | gzip > "$BACKUP_FILE"
+        docker exec -e MYSQL_PWD="$DB_PASSWORD" walhi_prod_db mysqldump -u "$MYSQL_USER" "$MYSQL_DB" | gzip > "$BACKUP_FILE"
     else
         docker exec walhi_prod_db mysqldump -u "$MYSQL_USER" "$MYSQL_DB" | gzip > "$BACKUP_FILE"
     fi

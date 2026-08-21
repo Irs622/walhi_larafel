@@ -44,7 +44,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css'])
-    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" integrity="sha384-ieG+IKD0d/ZPXyCBTMVAbqsQdns8QGJR/e26WMw7M4fkaI/rHcS/YIoi+ah9WGge" crossorigin="anonymous"></script>
+    <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" integrity="sha384-ieG+IKD0d/ZPXyCBTMVAbqsQdns8QGJR/e26WMw7M4fkaI/rHcS/YIoi+ah9WGge" crossorigin="anonymous"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -270,7 +270,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
     </div>
 
     <!-- Scripting for UI Collapsible / Toggles -->
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         // Sidebar collapse logic
         let sidebarCollapsed = false;
         function toggleSidebar() {

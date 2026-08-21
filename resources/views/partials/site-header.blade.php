@@ -199,7 +199,7 @@
         </nav>
     </div>
  
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.addEventListener('DOMContentLoaded', () => {
             // Mobile Menu
             const toggleBtn = document.getElementById('mobile-menu-toggle');

@@ -14,17 +14,17 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
         <!-- Lucide Script for Icons -->
-        <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" integrity="sha384-ieG+IKD0d/ZPXyCBTMVAbqsQdns8QGJR/e26WMw7M4fkaI/rHcS/YIoi+ah9WGge" crossorigin="anonymous"></script>
+        <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" integrity="sha384-ieG+IKD0d/ZPXyCBTMVAbqsQdns8QGJR/e26WMw7M4fkaI/rHcS/YIoi+ah9WGge" crossorigin="anonymous"></script>
 
         <!-- Midtrans Snap -->
         @if(config('midtrans.client_key'))
             @if(config('midtrans.is_production'))
-                <script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+                <script nonce="{{ Vite::cspNonce() }}" src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
             @else
-                <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+                <script nonce="{{ Vite::cspNonce() }}" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
             @endif
         @else
-            <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="dummy-client-key"></script>
+            <script nonce="{{ Vite::cspNonce() }}" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="dummy-client-key"></script>
         @endif
         
         <style>
@@ -334,7 +334,7 @@
         </div>
         @endif
         
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             var activeOrderId = '';
             var activeSnapToken = '';
             var activeIsMock = false;

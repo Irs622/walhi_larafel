@@ -538,7 +538,7 @@
         @include('partials.site-footer')
 
         <!-- Tab Switcher Script -->
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             function setTentangTab(tabId) {
                 var panels = {
                     'profil': document.getElementById('tab-content-profil'),

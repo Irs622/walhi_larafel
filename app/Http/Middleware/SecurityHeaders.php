@@ -37,7 +37,7 @@ class SecurityHeaders
         }
 
         // Prevent search engines from indexing admin, auth, and internal profile pages
-        if ($request->is('admin*') || $request->is('dashboard*') || $request->is('login') || $request->is('register') || $request->is('profile*') || $request->is('password/*')) {
+        if ($request->is('admin*') || $request->is('dashboard*') || $request->is('login') || $request->is('register') || $request->is('profile*') || $request->is('password/*') || $request->is('forgot-password*') || $request->is('reset-password*') || $request->is('verify-email*') || $request->is('confirm-password*')) {
             $response->headers->set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
         }
 
