@@ -12,7 +12,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
         <!-- Lucide Script for Icons -->
-        <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" integrity="sha384-ieG+IKD0d/ZPXyCBTMVAbqsQdns8QGJR/e26WMw7M4fkaI/rHcS/YIoi+ah9WGge" crossorigin="anonymous"></script>
+        <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" integrity="sha384-ieG+IKD0d/ZPXyCBTMVAbqsQdns8QGJR/e26WMw7M4fkaI/rHcS/YIoi+ah9WGge" crossorigin="anonymous"></script>
         
         <style>
             .hover-action-dark-btn:hover {
@@ -240,7 +240,7 @@
             @include('partials.site-footer')
         </div>
         
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             // Initialize Lucide icons safely on page load
             document.addEventListener('DOMContentLoaded', function() {
                 if (typeof lucide !== 'undefined' && lucide.createIcons) {

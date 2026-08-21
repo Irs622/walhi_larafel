@@ -439,6 +439,74 @@ class SecurityTest extends TestCase
         $this->assertStringContainsString("script-src 'self' 'nonce-", $csp);
     }
 
+    public function test_script_tags_contain_valid_csp_nonce_matching_response_header(): void
+    {
+        $response = $this->get('/');
+        $response->assertStatus(200);
+
+        $csp = $response->headers->get('Content-Security-Policy');
+        preg_match("/nonce-([A-Za-z0-9+\\/=_-]+)/", $csp, $matches);
+        $this->assertNotEmpty($matches, 'CSP header does not contain a valid nonce.');
+        $nonce = $matches[1];
+
+        // Ensure rendered script tags include the exact matching nonce
+        $response->assertSee('nonce="' . $nonce . '"', false);
+    }
+
+    public function test_auth_and_password_endpoints_have_noindex_headers(): void
+    {
+        $endpoints = [
+            '/login',
+            '/forgot-password',
+            '/reset-password/sample-token',
+        ];
+
+        foreach ($endpoints as $url) {
+            $response = $this->get($url);
+            $response->assertHeader('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+        }
+    }
+
+    public function test_comment_reply_rejects_cross_content_parent_id(): void
+    {
+        $contentA = Content::create([
+            'title' => 'Article A',
+            'slug' => 'article-a',
+            'category' => 'blog',
+            'status' => 'published',
+            'body' => 'Body A',
+        ]);
+
+        $contentB = Content::create([
+            'title' => 'Article B',
+            'slug' => 'article-b',
+            'category' => 'blog',
+            'status' => 'published',
+            'body' => 'Body B',
+        ]);
+
+        $commentA = Comment::create([
+            'content_id' => $contentA->id,
+            'author_name' => 'User A',
+            'author_email' => 'usera@example.com',
+            'body' => 'Comment on A',
+            'status' => 'approved',
+        ]);
+
+        // Attempting to reply to Comment on A while submitting for Content B must be rejected
+        $response = $this->post("/konten/{$contentB->id}/komentar", [
+            'author_name' => 'Attacker',
+            'author_email' => 'attacker@example.com',
+            'body' => 'Cross-article IDOR reply attempt',
+            'parent_id' => $commentA->id,
+        ]);
+
+        $response->assertSessionHasErrors('parent_id');
+        $this->assertDatabaseMissing('comments', [
+            'author_email' => 'attacker@example.com',
+        ]);
+    }
+
     public function test_blog_and_regulasi_search_endpoints_load_and_are_throttled(): void
     {
         $response = $this->get('/blog?kategori=air');
