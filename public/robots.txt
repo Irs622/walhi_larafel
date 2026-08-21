@@ -1,7 +1,25 @@
 User-agent: *
+Allow: /
+Allow: /assets/
+Allow: /build/
+Allow: /iqon/
+
+# Disallow Administrative and Internal Panel Routes
+Disallow: /admin/
 Disallow: /admin
+Disallow: /dashboard
+
+# Disallow Authentication and Profile Management Routes
 Disallow: /login
 Disallow: /register
-Allow: /
- 
-Sitemap: http://localhost/sitemap.xml
+Disallow: /password/
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /profile
+
+# Disallow Webhook & Background Endpoints
+Disallow: /donasi/webhook
+Disallow: /donasi/mock-payment-status
+
+Sitemap: /sitemap.xml
+
