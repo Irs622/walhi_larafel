@@ -140,9 +140,9 @@ class SecurityTest extends TestCase
         $this->assertFalse($user->isAdmin());
 
         $response = $this->actingAs($user)->patch('/profile', [
-            'name'  => 'Hacked Name',
+            'name' => 'Hacked Name',
             'email' => $user->email,
-            'role'  => 'admin',
+            'role' => 'admin',
         ]);
 
         $response->assertSessionHasNoErrors();
@@ -162,20 +162,20 @@ class SecurityTest extends TestCase
         ]);
 
         $response = $this->post("/konten/{$content->id}/komentar", [
-            'author_name'  => 'Attacker',
+            'author_name' => 'Attacker',
             'author_email' => 'attacker@example.com',
-            'body'         => 'Legitimate looking comment with malicious status attempt.',
-            'status'       => 'approved',
+            'body' => 'Legitimate looking comment with malicious status attempt.',
+            'status' => 'approved',
         ]);
 
         $response->assertSessionHas('comment_success');
         $this->assertDatabaseHas('comments', [
             'author_email' => 'attacker@example.com',
-            'status'       => 'pending',
+            'status' => 'pending',
         ]);
         $this->assertDatabaseMissing('comments', [
             'author_email' => 'attacker@example.com',
-            'status'       => 'approved',
+            'status' => 'approved',
         ]);
     }
 
@@ -186,7 +186,7 @@ class SecurityTest extends TestCase
     public function test_htmlpurifier_renders_html5_figure_and_preserves_safe_html(): void
     {
         $content = new Content([
-            'body' => '<p>Intro paragraph</p><figure class="my-4 text-center"><img src="https://example.com/photo.jpg" alt="Photo" /><figcaption>Image description</figcaption></figure><strong>Bold text</strong>'
+            'body' => '<p>Intro paragraph</p><figure class="my-4 text-center"><img src="https://example.com/photo.jpg" alt="Photo" /><figcaption>Image description</figcaption></figure><strong>Bold text</strong>',
         ]);
 
         $sanitized = $content->sanitized_body;
@@ -245,10 +245,10 @@ class SecurityTest extends TestCase
 
         foreach ($dangerousFiles as $file) {
             $response = $this->actingAs($admin)->post('/admin/blog', [
-                'title'       => 'Test Post',
-                'category'    => 'blog',
-                'status'      => 'published',
-                'image'       => $file,
+                'title' => 'Test Post',
+                'category' => 'blog',
+                'status' => 'published',
+                'image' => $file,
             ]);
 
             $response->assertSessionHasErrors('image');
@@ -269,20 +269,20 @@ class SecurityTest extends TestCase
         config(['midtrans.server_key' => 'SB-Mid-server-TESTKEY123']);
 
         $donation = Donation::create([
-            'order_id'    => 'WALHI-DON-TEST-001',
-            'donor_name'  => 'Ahmad',
+            'order_id' => 'WALHI-DON-TEST-001',
+            'donor_name' => 'Ahmad',
             'donor_email' => 'ahmad@example.com',
             'donor_phone' => '08123456789',
-            'amount'      => 50000,
-            'status'      => 'pending',
+            'amount' => 50000,
+            'status' => 'pending',
         ]);
 
         // Send forged signature
         $response = $this->postJson('/donasi/webhook', [
-            'order_id'           => 'WALHI-DON-TEST-001',
-            'status_code'        => '200',
-            'gross_amount'       => '50000.00',
-            'signature_key'      => 'invalid_forged_hash',
+            'order_id' => 'WALHI-DON-TEST-001',
+            'status_code' => '200',
+            'gross_amount' => '50000.00',
+            'signature_key' => 'invalid_forged_hash',
             'transaction_status' => 'settlement',
         ]);
 
@@ -297,23 +297,23 @@ class SecurityTest extends TestCase
         config(['midtrans.server_key' => $serverKey]);
 
         $donation = Donation::create([
-            'order_id'    => 'WALHI-DON-TEST-002',
-            'donor_name'  => 'Ahmad',
+            'order_id' => 'WALHI-DON-TEST-002',
+            'donor_name' => 'Ahmad',
             'donor_email' => 'ahmad@example.com',
             'donor_phone' => '08123456789',
-            'amount'      => 50000,
-            'status'      => 'pending',
+            'amount' => 50000,
+            'status' => 'pending',
         ]);
 
         // Valid signature for 10000 but donation in DB is 50000
         $forgedAmount = '10000.00';
-        $validSignatureForForgedAmount = hash('sha512', 'WALHI-DON-TEST-002200' . $forgedAmount . $serverKey);
+        $validSignatureForForgedAmount = hash('sha512', 'WALHI-DON-TEST-002200'.$forgedAmount.$serverKey);
 
         $response = $this->postJson('/donasi/webhook', [
-            'order_id'           => 'WALHI-DON-TEST-002',
-            'status_code'        => '200',
-            'gross_amount'       => $forgedAmount,
-            'signature_key'      => $validSignatureForForgedAmount,
+            'order_id' => 'WALHI-DON-TEST-002',
+            'status_code' => '200',
+            'gross_amount' => $forgedAmount,
+            'signature_key' => $validSignatureForForgedAmount,
             'transaction_status' => 'settlement',
         ]);
 
@@ -328,22 +328,22 @@ class SecurityTest extends TestCase
         config(['midtrans.server_key' => $serverKey]);
 
         $donation = Donation::create([
-            'order_id'    => 'WALHI-DON-TEST-003',
-            'donor_name'  => 'Ahmad',
+            'order_id' => 'WALHI-DON-TEST-003',
+            'donor_name' => 'Ahmad',
             'donor_email' => 'ahmad@example.com',
             'donor_phone' => '08123456789',
-            'amount'      => 50000,
-            'status'      => 'success',
+            'amount' => 50000,
+            'status' => 'success',
         ]);
 
         $grossAmount = '50000.00';
-        $signature = hash('sha512', 'WALHI-DON-TEST-003200' . $grossAmount . $serverKey);
+        $signature = hash('sha512', 'WALHI-DON-TEST-003200'.$grossAmount.$serverKey);
 
         $response = $this->postJson('/donasi/webhook', [
-            'order_id'           => 'WALHI-DON-TEST-003',
-            'status_code'        => '200',
-            'gross_amount'       => $grossAmount,
-            'signature_key'      => $signature,
+            'order_id' => 'WALHI-DON-TEST-003',
+            'status_code' => '200',
+            'gross_amount' => $grossAmount,
+            'signature_key' => $signature,
             'transaction_status' => 'expire',
         ]);
 
@@ -358,24 +358,24 @@ class SecurityTest extends TestCase
         config(['midtrans.server_key' => $serverKey]);
 
         $donation = Donation::create([
-            'order_id'    => 'WALHI-DON-TEST-004',
-            'donor_name'  => 'Ahmad',
+            'order_id' => 'WALHI-DON-TEST-004',
+            'donor_name' => 'Ahmad',
             'donor_email' => 'ahmad@example.com',
             'donor_phone' => '08123456789',
-            'amount'      => 75000,
-            'status'      => 'pending',
+            'amount' => 75000,
+            'status' => 'pending',
         ]);
 
         $grossAmount = '75000.00';
-        $signature = hash('sha512', 'WALHI-DON-TEST-004200' . $grossAmount . $serverKey);
+        $signature = hash('sha512', 'WALHI-DON-TEST-004200'.$grossAmount.$serverKey);
 
         $payload = [
-            'order_id'           => 'WALHI-DON-TEST-004',
-            'status_code'        => '200',
-            'gross_amount'       => $grossAmount,
-            'signature_key'      => $signature,
+            'order_id' => 'WALHI-DON-TEST-004',
+            'status_code' => '200',
+            'gross_amount' => $grossAmount,
+            'signature_key' => $signature,
             'transaction_status' => 'settlement',
-            'payment_type'       => 'qris',
+            'payment_type' => 'qris',
         ];
 
         // First webhook call: transitions from pending to success
@@ -401,12 +401,12 @@ class SecurityTest extends TestCase
     {
         $maliciousInputs = [
             '=cmd|"/C calc"!A0' => "'=cmd|\"/C calc\"!A0",
-            '+1234567890'       => "'+1234567890",
-            '-5+5'              => "'-5+5",
-            '@SUM(1,2)'         => "'@SUM(1,2)",
-            "\tTAB_INJECT"      => "'\tTAB_INJECT",
-            "|PIPE_INJECT"      => "'|PIPE_INJECT",
-            "%PERCENT_INJECT"   => "'%PERCENT_INJECT",
+            '+1234567890' => "'+1234567890",
+            '-5+5' => "'-5+5",
+            '@SUM(1,2)' => "'@SUM(1,2)",
+            "\tTAB_INJECT" => "'\tTAB_INJECT",
+            '|PIPE_INJECT' => "'|PIPE_INJECT",
+            '%PERCENT_INJECT' => "'%PERCENT_INJECT",
         ];
 
         foreach ($maliciousInputs as $raw => $expected) {
@@ -433,5 +433,18 @@ class SecurityTest extends TestCase
         $response->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
         $response->assertHeader('X-XSS-Protection', '1; mode=block');
         $this->assertTrue($response->headers->has('Content-Security-Policy'));
+
+        $csp = $response->headers->get('Content-Security-Policy');
+        $this->assertStringContainsString('nonce-', $csp);
+        $this->assertStringContainsString("script-src 'self' 'nonce-", $csp);
+    }
+
+    public function test_blog_and_regulasi_search_endpoints_load_and_are_throttled(): void
+    {
+        $response = $this->get('/blog?kategori=air');
+        $response->assertStatus(200);
+
+        $responseRegulasi = $this->get('/regulasi?search=lingkungan');
+        $responseRegulasi->assertStatus(200);
     }
 }
