@@ -107,7 +107,7 @@ Tambahkan baris berikut untuk backup otomatis setiap jam 02.00 dini hari:
 
 ### Melakukan Restore Database dari File Backup:
 ```bash
-gunzip < storage/backups/walhi_prod_mysql_YYYYMMDD_HHMMSS.sql.gz | docker exec -i walhi_prod_db mysql -u walhi_user -pwalhi_secret_pass walhi_prod
+gunzip < storage/backups/walhi_prod_mysql_YYYYMMDD_HHMMSS.sql.gz | docker exec -i walhi_prod_db mysql -u <DB_USERNAME> -p<DB_PASSWORD> <DB_DATABASE>
 ```
 
 ---

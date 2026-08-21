@@ -15,7 +15,13 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         $adminEmail = config('auth.admin_seed.email') ?: 'admin@walhi-jabar.org';
-        $adminPass = config('auth.admin_seed.password') ?: Str::random(16);
+        $isGenerated = false;
+        
+        $adminPass = config('auth.admin_seed.password');
+        if (empty($adminPass)) {
+            $adminPass = Str::random(16);
+            $isGenerated = true;
+        }
 
         User::updateOrCreate(
             ['email' => $adminEmail],
@@ -27,6 +33,11 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
-        $this->command->info("Admin user {$adminEmail} berhasil dibuat/diperbarui.");
+        if ($this->command) {
+            $this->command->info("Admin user {$adminEmail} berhasil dibuat/diperbarui.");
+            if ($isGenerated && app()->environment('local')) {
+                $this->command->warn("Password acak dibuat: {$adminPass}");
+            }
+        }
     }
 }

@@ -31,3 +31,9 @@ Thumbs.db
 /database/*.sqlite
 /database/*.sqlite-shm
 /database/*.sqlite-wal
+
+# Database backups & dumps
+/storage/backups/
+*.sql
+*.sql.gz
+*.sqlite.gz
