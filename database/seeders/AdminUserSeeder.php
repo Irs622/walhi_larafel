@@ -14,7 +14,8 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminEmail = config('auth.admin_seed.email') ?: 'admin@walhi-jabar.org';
+        // ── Admin User ──
+        $adminEmail = config('auth.admin_seed.email') ?: 'admin@walhijabar.or.id';
         $isGenerated = false;
         
         $adminPass = config('auth.admin_seed.password');
@@ -33,10 +34,25 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
+        // ── Editor User ──
+        $editorEmail = config('auth.editor_seed.email', 'editor@walhijabar.or.id');
+        $editorPass = config('auth.editor_seed.password', 'WalhiEditor2026!');
+
+        User::updateOrCreate(
+            ['email' => $editorEmail],
+            [
+                'name' => 'Editor WALHI Jabar',
+                'password' => Hash::make($editorPass),
+                'email_verified_at' => now(),
+                'role' => 'editor',
+            ]
+        );
+
         if ($this->command) {
             $this->command->info("Admin user {$adminEmail} berhasil dibuat/diperbarui.");
+            $this->command->info("Editor user {$editorEmail} berhasil dibuat/diperbarui.");
             if ($isGenerated && app()->environment('local')) {
-                $this->command->warn("Password acak dibuat: {$adminPass}");
+                $this->command->warn("Password acak Admin dibuat: {$adminPass}");
             }
         }
     }
