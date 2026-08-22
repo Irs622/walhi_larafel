@@ -242,15 +242,15 @@
             </div>
             @endif
 
-            @if($category !== 'kampanye-darurat')
             <div>
                 <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">
                     @if($category === 'laporan-tahunan' || $category === 'regulasi')
                         Berkas / Dokumen Lampiran (PDF / Excel / Image)
                     @else
-                        Gambar Utama
+                        Gambar Utama / Cover
                     @endif
                 </label>
+                <input type="hidden" id="form-remove-image" name="remove_image" value="0" />
                 <div class="flex items-center gap-3 mb-2 text-xs">
                     <button type="button" onclick="setImageInputMode('upload')" id="btn-mode-upload" class="px-2.5 py-1 rounded bg-[#256D4A] text-white font-medium transition-colors">Unggah File</button>
                     <button type="button" onclick="setImageInputMode('url')" id="btn-mode-url" class="px-2.5 py-1 rounded bg-[#f0ede8] text-[#666] font-medium transition-colors">Teks URL</button>
@@ -259,7 +259,7 @@
                 <!-- Upload File Container -->
                 <div id="container-mode-upload" class="space-y-2">
                     <input type="file" id="form-upload" name="image" @if($category === 'laporan-tahunan' || $category === 'regulasi') accept=".pdf,.xls,.xlsx,.doc,.docx,image/*" @else accept="image/*" @endif onchange="previewSelectedImage(this)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#256D4A]/10 file:text-[#256D4A] hover:file:bg-[#256D4A]/20" />
-                    <span class="text-[11px] text-gray-500 block">Maksimal ukuran file: <strong>2 MB</strong> (Rekomendasi format: JPG, PNG, WebP).</span>
+                    <span class="text-[11px] text-gray-500 block">Maksimal ukuran file: <strong>2 MB</strong> (Format: JPG, PNG, WebP@if($category === 'laporan-tahunan' || $category === 'regulasi'), PDF, Dokumen Office@endif).</span>
                 </div>
 
                 <!-- URL Container -->
@@ -276,7 +276,6 @@
                     </div>
                 </div>
             </div>
-            @endif
 
             @if($category === 'kampanye-darurat')
             <div>
@@ -520,8 +519,12 @@
     }
 
     function clearImagePreview() {
-        document.getElementById('form-upload').value = '';
-        document.getElementById('form-image').value = '';
+        const uploadInput = document.getElementById('form-upload');
+        const imageInput = document.getElementById('form-image');
+        const removeInput = document.getElementById('form-remove-image');
+        if (uploadInput) uploadInput.value = '';
+        if (imageInput) imageInput.value = '';
+        if (removeInput) removeInput.value = '1';
         hidePreview();
     }
 
@@ -541,6 +544,7 @@
         document.getElementById('form-date').value = new Date().toISOString().slice(0, 10);
         if(document.getElementById('form-upload')) document.getElementById('form-upload').value = '';
         if(document.getElementById('form-image')) document.getElementById('form-image').value = '';
+        if(document.getElementById('form-remove-image')) document.getElementById('form-remove-image').value = '0';
         if(document.getElementById('form-tags')) document.getElementById('form-tags').value = '';
         if(document.getElementById('form-body')) document.getElementById('form-body').value = '';
         if(quillEditor) quillEditor.root.innerHTML = '';
@@ -584,6 +588,7 @@
         
         if(document.getElementById('form-upload')) document.getElementById('form-upload').value = '';
         if(document.getElementById('form-image')) document.getElementById('form-image').value = item.image_url || '';
+        if(document.getElementById('form-remove-image')) document.getElementById('form-remove-image').value = '0';
         if(document.getElementById('form-tags')) document.getElementById('form-tags').value = item.tags || '';
         if(document.getElementById('form-body')) document.getElementById('form-body').value = item.body || '';
         if(quillEditor) quillEditor.root.innerHTML = item.body || '';

@@ -125,10 +125,14 @@ class ContentController extends Controller
         $rawSlug = ! empty($validated['slug']) ? $validated['slug'] : $validated['title'];
         $validated['slug'] = $this->slugService->makeUnique(Str::slug($rawSlug));
 
-        // Image upload
+        // Image upload / URL
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('uploads', 'public');
             $validated['image_url'] = '/storage/' . $path;
+        } elseif (! empty($validated['image_url'])) {
+            $validated['image_url'] = trim($validated['image_url']);
+        } else {
+            $validated['image_url'] = null;
         }
 
         // Category-specific tag encoding
@@ -164,16 +168,24 @@ class ContentController extends Controller
             $content->id
         );
 
-        // Image upload / removal
+        // Image upload / removal / retention
         if ($request->hasFile('image')) {
             $this->deleteOldImage($content);
             $path = $request->file('image')->store('uploads', 'public');
             $validated['image_url'] = '/storage/' . $path;
-        } elseif (
-            array_key_exists('image_url', $validated) &&
-            $validated['image_url'] !== $content->image_url
-        ) {
+        } elseif ($request->filled('image_url')) {
+            $newUrl = trim($validated['image_url']);
+            $oldRaw = (string) $content->getRawOriginal('image_url');
+            if ($oldRaw !== '' && $oldRaw !== $newUrl && $content->image_url !== $newUrl) {
+                $this->deleteOldImage($content);
+            }
+            $validated['image_url'] = $newUrl;
+        } elseif ($request->input('remove_image') === '1') {
             $this->deleteOldImage($content);
+            $validated['image_url'] = null;
+        } else {
+            // Retain the existing image if no new file was uploaded and not explicitly cleared
+            $validated['image_url'] = $content->getRawOriginal('image_url');
         }
 
         // Category-specific tag encoding
@@ -308,8 +320,15 @@ class ContentController extends Controller
      */
     private function deleteOldImage(Content $content): void
     {
-        if ($content->image_url && str_starts_with($content->image_url, '/storage/uploads/')) {
-            $filename = basename($content->image_url);
+        $raw = (string) $content->getRawOriginal('image_url');
+        if ($raw !== '') {
+            $filename = null;
+            if (str_starts_with($raw, '/storage/uploads/')) {
+                $filename = substr($raw, strlen('/storage/uploads/'));
+            } elseif (str_starts_with($raw, 'uploads/')) {
+                $filename = substr($raw, strlen('uploads/'));
+            }
+
             if ($filename && ! in_array($filename, ['.', '..'], true)) {
                 Storage::disk('public')->delete('uploads/' . $filename);
             }
