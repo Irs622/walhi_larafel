@@ -31,6 +31,43 @@
             .btn-back:hover {
                 background: #e9e5d9 !important;
             }
+            .post-content img {
+                max-width: 100% !important;
+                height: auto !important;
+                border: 3px solid #1D1D1D;
+                margin: 24px auto;
+                display: block;
+                box-shadow: 4px 4px 0px 0px #1D1D1D;
+            }
+            .post-content p {
+                margin-bottom: 1.25em;
+            }
+            .post-content h2, .post-content h3, .post-content h4 {
+                font-family: 'Bebas Neue', sans-serif;
+                margin-top: 1.5em;
+                margin-bottom: 0.5em;
+                color: #1D1D1D;
+                letter-spacing: 0.5px;
+            }
+            .post-content h2 { font-size: 28px; }
+            .post-content h3 { font-size: 24px; }
+            .post-content h4 { font-size: 20px; }
+            .post-content ul, .post-content ol {
+                margin: 1em 0 1.25em 1.5em;
+            }
+            .post-content li {
+                margin-bottom: 0.5em;
+            }
+            .post-content blockquote {
+                border-left: 4px solid #256D4A;
+                margin: 1.5em 0;
+                font-style: italic;
+                background: #FFFFFF;
+                border: 2px solid #1D1D1D;
+                border-left: 6px solid #256D4A;
+                padding: 16px 20px;
+                box-shadow: 2px 2px 0px 0px #1D1D1D;
+            }
         </style>
     </head>
     <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Inter, sans-serif;">
@@ -346,7 +383,7 @@
                                         <!-- Article Body -->
                                         {{-- Security: body is sanitized server-side using HTMLPurifier.
                                              Raw {!! !!} without sanitization is an XSS vulnerability. --}}
-                                        <div style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Inter, sans-serif; white-space: pre-line; max-width: 820px; width: 100%;">
+                                        <div class="post-content" style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Inter, sans-serif; max-width: 820px; width: 100%;">
                                             {!! $item->sanitized_body !!}
                                         </div>
 

@@ -98,6 +98,38 @@ class Content extends Model
     // ──────────────────────────────────────────────────────────────────────────
 
     /**
+     * Get the properly formatted full image/file URL.
+     */
+    public function getImageUrlAttribute(?string $value): ?string
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+
+        if (str_starts_with($value, '/storage/') || str_starts_with($value, 'storage/')) {
+            return asset(ltrim($value, '/'));
+        }
+
+        if (str_starts_with($value, 'uploads/')) {
+            return asset('storage/' . $value);
+        }
+
+        if (str_starts_with($value, 'assets/') || str_starts_with($value, '/assets/')) {
+            return asset(ltrim($value, '/'));
+        }
+
+        if (str_starts_with($value, '/')) {
+            return asset(ltrim($value, '/'));
+        }
+
+        return asset('storage/' . $value);
+    }
+
+    /**
      * Return a plain-text excerpt (max 155 chars) stripped of HTML.
      */
     public function getExcerptAttribute($value = null, int $length = 155): string
@@ -121,7 +153,7 @@ class Content extends Model
     {
         $config = \HTMLPurifier_Config::createDefault();
         $config->set('HTML.DefinitionID', 'walhi-html5-content');
-        $config->set('HTML.DefinitionRev', 1);
+        $config->set('HTML.DefinitionRev', 2);
         $config->set('Cache.DefinitionImpl', null);
         $config->set('HTML.TargetBlank', true);
         $config->set('URI.AllowedSchemes', [
@@ -129,8 +161,9 @@ class Content extends Model
             'https'  => true,
             'mailto' => true,
             'tel'    => true,
+            'data'   => true,
         ]);
-        $config->set('HTML.Allowed', 'p,br,strong,b,em,i,u,ul,ol,li,h2,h3,h4,h5,blockquote,a[href|title|target],img[src|alt|width|height],table,thead,tbody,tr,th,td,figure,figcaption,hr,span,div');
+        $config->set('HTML.Allowed', 'p,br,strong,b,em,i,u,ul,ol,li,h2,h3,h4,h5,blockquote,a[href|title|target],img[src|alt|width|height|style|class],table,thead,tbody,tr,th,td,figure,figcaption,hr,span,div');
 
         if ($def = $config->maybeGetRawHTMLDefinition()) {
             $def->addElement('figure', 'Block', 'Flow', 'Common');

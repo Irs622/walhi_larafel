@@ -24,7 +24,7 @@ class UpdateContentRequest extends FormRequest
                 'nullable',
                 'file',
                 'mimes:jpeg,png,jpg,webp,gif,pdf,xls,xlsx,doc,docx',
-                'max:10240',
+                'max:2048',
                 function (string $attribute, mixed $value, \Closure $fail) {
                     if ($value instanceof \Illuminate\Http\UploadedFile) {
                         $ext = strtolower($value->getClientOriginalExtension());
@@ -63,7 +63,7 @@ class UpdateContentRequest extends FormRequest
             'status.required' => 'Status konten wajib dipilih.',
             'status.in'       => 'Status tidak valid.',
             'image.mimes'     => 'File yang diunggah harus berupa gambar (JPEG, PNG, WebP, GIF), PDF, atau dokumen Office.',
-            'image.max'       => 'Ukuran file maksimal 10 MB.',
+            'image.max'       => 'Ukuran file maksimal 2 MB agar server tetap cepat dan hemat penyimpanan.',
         ];
     }
 }
