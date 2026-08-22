@@ -332,10 +332,61 @@
 
             quillEditor = new Quill('#editor-container', {
                 modules: {
-                    toolbar: toolbarOptions
+                    toolbar: {
+                        container: toolbarOptions,
+                        handlers: {
+                            image: imageHandler
+                        }
+                    }
                 },
                 theme: 'snow'
             });
+
+            function imageHandler() {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
+                input.click();
+
+                input.onchange = async () => {
+                    const file = input.files[0];
+                    if (!file) return;
+
+                    if (file.size > 2 * 1024 * 1024) {
+                        const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+                        alert(`Ukuran gambar (${sizeMb} MB) melebihi batas maksimal 2 MB. Silakan kompres gambar terlebih dahulu.`);
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
+
+                    try {
+                        const response = await fetch('{{ route('admin.upload-image') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json'
+                            },
+                            body: formData
+                        });
+
+                        const result = await response.json();
+                        if (response.ok && result.url) {
+                            const range = quillEditor.getSelection(true);
+                            quillEditor.insertEmbed(range.index, 'image', result.url);
+                            quillEditor.setSelection(range.index + 1);
+                        } else {
+                            alert(result.message || 'Gagal mengunggah gambar ke server.');
+                        }
+                    } catch (error) {
+                        console.error('Error uploading image:', error);
+                        alert('Terjadi kesalahan saat mengunggah gambar ke server.');
+                    }
+                };
+            }
 
             // Keep form-body in sync before submission
             const form = document.getElementById('modal-form');

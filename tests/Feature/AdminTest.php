@@ -110,4 +110,36 @@ class AdminTest extends TestCase
 
         $response->assertSessionHasErrors('image');
     }
+
+    public function test_editor_image_upload_under_2mb_returns_json_url(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $file = \Illuminate\Http\UploadedFile::fake()->image('editor_photo.jpg', 600, 400)->size(1200); // 1.2 MB
+
+        $response = $this->postJson('/admin/upload-image', [
+            'image' => $file,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'success',
+            'url',
+        ]);
+        $this->assertTrue(str_contains($response->json('url'), '/storage/uploads/'));
+    }
+
+    public function test_editor_image_upload_over_2mb_is_rejected(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $largeFile = \Illuminate\Http\UploadedFile::fake()->image('huge_photo.jpg', 3000, 3000)->size(3500); // 3.5 MB
+
+        $response = $this->postJson('/admin/upload-image', [
+            'image' => $largeFile,
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('image');
+    }
 }

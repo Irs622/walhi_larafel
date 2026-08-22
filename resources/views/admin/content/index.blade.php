@@ -256,18 +256,15 @@
                     <button type="button" onclick="setImageInputMode('url')" id="btn-mode-url" class="px-2.5 py-1 rounded bg-[#f0ede8] text-[#666] font-medium transition-colors">Teks URL</button>
                 </div>
                 
-                <!-- Upload File Container -->
                 <div id="container-mode-upload" class="space-y-2">
                     <input type="file" id="form-upload" name="image" @if($category === 'laporan-tahunan' || $category === 'regulasi') accept=".pdf,.xls,.xlsx,.doc,.docx,image/*" @else accept="image/*" @endif onchange="previewSelectedImage(this)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#256D4A]/10 file:text-[#256D4A] hover:file:bg-[#256D4A]/20" />
-                    <span class="text-[11px] text-gray-500 block">Maksimal ukuran file: <strong>2 MB</strong> (Format: JPG, PNG, WebP@if($category === 'laporan-tahunan' || $category === 'regulasi'), PDF, Dokumen Office@endif).</span>
+                    <span class="text-[11px] text-gray-500 block">Ukuran berkas maksimal <strong>2 MB</strong> (Format yang didukung: JPG, PNG, WebP, PDF).</span>
                 </div>
 
-                <!-- URL Container -->
                 <div id="container-mode-url" class="hidden">
                     <input type="text" id="form-image" name="image_url" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="https://..." />
                 </div>
 
-                <!-- Image Preview -->
                 <div id="image-preview-wrapper" class="hidden mt-3 p-2 border border-[#eee] rounded bg-gray-50 flex items-center gap-3">
                     <img id="image-preview-el" src="" class="h-16 w-24 object-cover border border-[#ddd] rounded" />
                     <div class="text-xs">
@@ -285,66 +282,76 @@
             @elseif($category === 'isu-kritis')
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Pilih Ikon Isu</label>
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Ikon Isu</label>
                     <select id="form-isu-icon" name="isu_icon" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white">
-                        @for($i = 1; $i <= 27; $i++)
-                            <option value="Icon-{{ $i }}.svg">Ikon {{ $i }}</option>
-                        @endfor
+                        <option value="Icon-4.svg">Pohon / Hutan</option>
+                        <option value="Icon-5.svg">Air / Sungai</option>
+                        <option value="Icon-6.svg">Gunung / Tambang</option>
+                        <option value="Icon-7.svg">Pesisir / Laut</option>
+                        <option value="Icon-8.svg">Udara / Emisi</option>
+                        <option value="Icon-9.svg">Satwa / Hayati</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Teks Badge / Statistik *</label>
-                    <input type="text" id="form-isu-badge" name="isu_badge" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="Contoh: 200+ Titik" />
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Label Badge *</label>
+                    <input type="text" id="form-isu-badge" name="isu_badge" required class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="Contoh: Hutan & Iklim" />
                 </div>
             </div>
             @elseif($category === 'statistik')
             <div>
-                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Pilih Ikon Statistik</label>
+                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Pilihan Ikon Statistik</label>
                 <select id="form-isu-icon" name="isu_icon" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white">
-                    @for($i = 1; $i <= 27; $i++)
-                        <option value="Icon-{{ $i }}.svg">Ikon {{ $i }}</option>
-                    @endfor
+                    <option value="Icon-10.svg">Anggota / Komunitas</option>
+                    <option value="Icon-11.svg">Hutan Terselamatkan</option>
+                    <option value="Icon-12.svg">Advokasi Kasus</option>
+                    <option value="Icon-13.svg">Riset & Kajian</option>
                 </select>
             </div>
             @elseif($category === 'regulasi')
             <div class="grid grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Kategori</label>
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Kategori Regulasi</label>
                     <select id="form-reg-category" name="reg_category" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white">
                         <option value="undang-undang">Undang-Undang</option>
-                        <option value="peraturan pemerintah">Peraturan Pemerintah</option>
-                        <option value="peraturan daerah">Peraturan Daerah</option>
-                        <option value="peraturan menteri">Peraturan / Keputusan Menteri</option>
+                        <option value="peraturan-pemerintah">Peraturan Pemerintah</option>
+                        <option value="peraturan-daerah">Peraturan Daerah</option>
+                        <option value="peraturan-menteri">Peraturan Menteri</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Lembaga Penerbit *</label>
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Instansi Penerbit</label>
                     <input type="text" id="form-reg-issuer" name="reg_issuer" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="Contoh: Pemerintah RI" />
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Status</label>
+                    <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Status Berlaku</label>
                     <select id="form-reg-status" name="reg_status" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white">
                         <option value="berlaku">Berlaku</option>
-                        <option value="tidak berlaku">Tidak Berlaku</option>
+                        <option value="tidak-berlaku">Tidak Berlaku</option>
                     </select>
                 </div>
             </div>
             @else
             <div>
-                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Tag (pisah dengan koma)</label>
-                <input type="text" id="form-tags" name="tags" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="lingkungan, air, hutan" />
+                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Tag Konten</label>
+                <input type="text" id="form-tags" name="tags" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="lingkungan, advokasi, bandung" />
             </div>
             @endif
 
-            @if($category !== 'kampanye-darurat')
             <div>
-                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Konten / Deskripsi</label>
+                <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">
+                    @if($category === 'kampanye-darurat')
+                        Deskripsi Singkat Aksi
+                    @elseif($category === 'regulasi')
+                        Ringkasan / Abstrak Regulasi
+                    @else
+                        Isi Konten / Deskripsi Artikel
+                    @endif
+                </label>
                 <input type="hidden" id="form-body" name="body" />
                 <div id="editor-wrapper" class="border border-[#ddd] rounded overflow-hidden">
-                    <div id="editor-container" style="height: 320px; background: white;" class="text-sm"></div>
+                    <div id="editor-container" style="min-height: 280px; background: white;" class="text-sm"></div>
                 </div>
             </div>
-            @endif
 
             <div class="flex justify-end gap-3 pt-2">
                 <button type="button" onclick="closeModal()" class="px-4 py-2 text-sm border border-[#ddd] rounded hover:bg-[#f0ede8] transition-colors">
@@ -360,18 +367,16 @@
 @endsection
 
 @push('scripts')
-<!-- Quill CSS and JS -->
-<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" integrity="sha384-VvSC4PGxeMkOaAmyuDGZECjY2dkqdO/IdBYBUK+BCYNc3WIvRxHLUzQ5OSgUaMA7" crossorigin="anonymous" />
-<script nonce="{{ Vite::cspNonce() }}" src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js" integrity="sha384-hcxmSutM10NL6iGBAA0LStIhy+kWJxfrhqWVMRuABZH5Vqztexq2nBz/Xnfllly9" crossorigin="anonymous"></script>
-
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <script nonce="{{ Vite::cspNonce() }}">
-    // Register style attributors to produce inline CSS (e.g. style="text-align: justify")
     var Align = Quill.import('attributors/style/align');
     Quill.register(Align, true);
     var Size = Quill.import('attributors/style/size');
     Quill.register(Size, true);
 
-    let quillEditor = null;
+    let quillEditor;
+
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('editor-container');
         if (container) {
@@ -389,12 +394,62 @@
 
             quillEditor = new Quill('#editor-container', {
                 modules: {
-                    toolbar: toolbarOptions
+                    toolbar: {
+                        container: toolbarOptions,
+                        handlers: {
+                            image: imageHandler
+                        }
+                    }
                 },
                 theme: 'snow'
             });
 
-            // Keep form-body in sync before submission
+            function imageHandler() {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
+                input.click();
+
+                input.onchange = async () => {
+                    const file = input.files[0];
+                    if (!file) return;
+
+                    if (file.size > 2 * 1024 * 1024) {
+                        const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+                        alert(`Ukuran gambar (${sizeMb} MB) melebihi batas maksimal 2 MB. Silakan kompres gambar terlebih dahulu.`);
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
+
+                    try {
+                        const response = await fetch('{{ route('admin.upload-image') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json'
+                            },
+                            body: formData
+                        });
+
+                        const result = await response.json();
+                        if (response.ok && result.url) {
+                            const range = quillEditor.getSelection(true);
+                            quillEditor.insertEmbed(range.index, 'image', result.url);
+                            quillEditor.setSelection(range.index + 1);
+                        } else {
+                            alert(result.message || 'Gagal mengunggah gambar ke server.');
+                        }
+                    } catch (error) {
+                        console.error('Error uploading image:', error);
+                        alert('Terjadi kesalahan saat mengunggah gambar ke server.');
+                    }
+                };
+            }
+
             const form = document.getElementById('modal-form');
             if (form) {
                 form.addEventListener('submit', function() {

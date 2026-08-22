@@ -16,7 +16,7 @@ class StoreContentRequest extends FormRequest
         return [
             'title'      => ['required', 'string', 'max:255'],
             'slug'       => ['nullable', 'string', 'max:255'],
-            'body'       => ['nullable', 'string', 'max:100000'],
+            'body'       => ['nullable', 'string', 'max:5000000'],
             'tags'       => ['nullable', 'string', 'max:500'],
             'status'     => ['required', 'in:published,draft,archived'],
             'image_url'  => ['nullable', 'string', 'max:500'],

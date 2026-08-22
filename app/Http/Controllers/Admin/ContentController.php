@@ -238,11 +238,43 @@ class ContentController extends Controller
         AuditLogService::log('CONTENT_TOGGLE_STATUS', 'Content', $content->id, [
             'title' => $content->title,
             'status' => $next,
+            'category' => $category,
         ]);
 
         $this->flushGlobalViewCache($category);
 
-        return redirect()->back()->with('success', 'Status konten berhasil diubah.');
+        return redirect()->back()->with('success', "Status berhasil diubah ke {$next}.");
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Handle AJAX image upload from Quill WYSIWYG editor.
+     */
+    public function uploadEditorImage(Request $request)
+    {
+        $request->validate([
+            'image' => [
+                'required',
+                'file',
+                'image',
+                'mimes:jpeg,png,jpg,webp,gif',
+                'max:2048',
+            ],
+        ], [
+            'image.required' => 'File gambar wajib dipilih.',
+            'image.image'    => 'File harus berupa gambar valid.',
+            'image.mimes'    => 'Format gambar harus JPEG, PNG, WebP, atau GIF.',
+            'image.max'      => 'Ukuran gambar maksimal 2 MB agar server tetap cepat dan ringan.',
+        ]);
+
+        $path = $request->file('image')->store('uploads', 'public');
+        $url = '/storage/' . $path;
+
+        return response()->json([
+            'success' => true,
+            'url'     => $url,
+        ]);
     }
 
     // ──────────────────────────────────────────────────────────────────────────
