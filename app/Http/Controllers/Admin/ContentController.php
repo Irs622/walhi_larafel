@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ContentController extends Controller
 {
@@ -250,14 +251,14 @@ class ContentController extends Controller
 
         $driver = DB::getDriverName();
         $dateExpr = $driver === 'sqlite'
-            ? "strftime('%Y-%m', created_at) as year_month"
-            : "DATE_FORMAT(created_at, '%Y-%m') as year_month";
+            ? "strftime('%Y-%m', created_at) as period_key"
+            : "DATE_FORMAT(created_at, '%Y-%m') as period_key";
 
         $monthlyTotals = Donation::where('status', 'success')
             ->where('created_at', '>=', $startDate)
             ->selectRaw("{$dateExpr}, SUM(amount) as total")
-            ->groupBy('year_month')
-            ->pluck('total', 'year_month');
+            ->groupBy('period_key')
+            ->pluck('total', 'period_key');
 
         for ($i = 11; $i >= 0; $i--) {
             $month    = Carbon::now()->startOfMonth()->subMonths($i);
