@@ -124,8 +124,13 @@ return [
     */
 
     'admin_seed' => [
-        'email' => env('ADMIN_EMAIL', 'admin@walhi-jabar.org'),
+        'email' => env('ADMIN_EMAIL', 'admin@walhijabar.or.id'),
         'password' => env('ADMIN_PASSWORD'),
+    ],
+
+    'editor_seed' => [
+        'email' => env('EDITOR_EMAIL', 'editor@walhijabar.or.id'),
+        'password' => env('EDITOR_PASSWORD', 'WalhiEditor2026!'),
     ],
 
 ];
