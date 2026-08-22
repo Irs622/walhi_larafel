@@ -93,6 +93,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             // Newsletter subscribers listing
             Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
 
+            // WYSIWYG Editor image upload (Quill)
+            Route::post('/upload-image', [ContentController::class, 'uploadEditorImage'])->name('upload-image');
+
             // "Tentang" sub-prefix (sejarah, visi-misi, dewan-nasional, etc.)
             Route::prefix('tentang')->where(['category' => '[a-zA-Z0-9\-]+'])->group(function () {
                 Route::get('/{category}', [ContentController::class, 'index'])->name('content.tentang.index');

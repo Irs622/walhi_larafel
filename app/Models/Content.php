@@ -157,13 +157,31 @@ class Content extends Model
     }
 
     /**
-     * Sanitized HTML body to prevent XSS while safely supporting HTML5 structure.
+     * Sanitized HTML body to prevent XSS while safely supporting HTML5 structure and clean plain-text fallback.
      */
     public function getSanitizedBodyAttribute(): string
     {
+        $raw = trim($this->body ?? '');
+        if ($raw === '') {
+            return '';
+        }
+
+        // If body has no HTML tags at all, format plain text with paragraphs and line breaks
+        if (strip_tags($raw) === $raw) {
+            $paragraphs = preg_split('/(\r\n|\n|\r){2,}/', $raw);
+            $formatted = '';
+            foreach ($paragraphs as $p) {
+                $p = trim($p);
+                if ($p !== '') {
+                    $formatted .= '<p>' . nl2br(htmlspecialchars($p, ENT_QUOTES, 'UTF-8')) . '</p>';
+                }
+            }
+            $raw = $formatted ?: '<p>' . nl2br(htmlspecialchars($raw, ENT_QUOTES, 'UTF-8')) . '</p>';
+        }
+
         $config = \HTMLPurifier_Config::createDefault();
         $config->set('HTML.DefinitionID', 'walhi-html5-content');
-        $config->set('HTML.DefinitionRev', 2);
+        $config->set('HTML.DefinitionRev', 3);
         $config->set('Cache.DefinitionImpl', null);
         $config->set('HTML.TargetBlank', true);
         $config->set('URI.AllowedSchemes', [
@@ -181,6 +199,6 @@ class Content extends Model
         }
 
         $purifier = new \HTMLPurifier($config);
-        return $purifier->purify($this->body ?? '');
+        return $purifier->purify($raw);
     }
 }
