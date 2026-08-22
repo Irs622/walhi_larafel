@@ -259,6 +259,7 @@
                 <!-- Upload File Container -->
                 <div id="container-mode-upload" class="space-y-2">
                     <input type="file" id="form-upload" name="image" @if($category === 'laporan-tahunan' || $category === 'regulasi') accept=".pdf,.xls,.xlsx,.doc,.docx,image/*" @else accept="image/*" @endif onchange="previewSelectedImage(this)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#256D4A]/10 file:text-[#256D4A] hover:file:bg-[#256D4A]/20" />
+                    <span class="text-[11px] text-gray-500 block">Maksimal ukuran file: <strong>2 MB</strong> (Rekomendasi format: JPG, PNG, WebP).</span>
                 </div>
 
                 <!-- URL Container -->
@@ -501,11 +502,20 @@
 
     function previewSelectedImage(input) {
         if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const maxBytes = 2 * 1024 * 1024; // 2 MB
+            if (file.size > maxBytes) {
+                const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+                alert(`Ukuran berkas (${sizeMb} MB) melebihi batas maksimal 2 MB. Silakan kompres atau pilih berkas yang lebih kecil agar server tetap cepat.`);
+                input.value = '';
+                hidePreview();
+                return;
+            }
             const reader = new FileReader();
             reader.onload = function(e) {
                 showPreview(e.target.result);
             }
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
         }
     }
 

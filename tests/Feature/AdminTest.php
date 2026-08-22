@@ -62,4 +62,52 @@ class AdminTest extends TestCase
         $response = $this->get('/admin/subscribers');
         $response->assertStatus(200);
     }
+
+    public function test_content_image_upload_under_2mb_succeeds(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $file = \Illuminate\Http\UploadedFile::fake()->image('cover.jpg', 800, 600)->size(1500); // 1.5 MB
+
+        $response = $this->post('/admin/blog', [
+            'title'        => 'Artikel Uji Gambar',
+            'slug'         => 'artikel-uji-gambar',
+            'status'       => 'published',
+            'body'         => '<p>Isi artikel dengan gambar.</p>',
+            'image'        => $file,
+            'publish_date' => '2026-08-22',
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('contents', [
+            'slug' => 'artikel-uji-gambar',
+        ]);
+
+        $content = \App\Models\Content::where('slug', 'artikel-uji-gambar')->first();
+        $this->assertNotNull($content->image_url);
+        $this->assertTrue(str_contains($content->image_url, '/storage/uploads/'));
+
+        // Verify post detail page renders the image properly
+        $publicRes = $this->get('/konten/artikel-uji-gambar');
+        $publicRes->assertStatus(200);
+        $publicRes->assertSee($content->image_url);
+    }
+
+    public function test_content_image_upload_over_2mb_is_rejected(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $largeFile = \Illuminate\Http\UploadedFile::fake()->image('huge.jpg', 2000, 2000)->size(3000); // 3 MB (exceeds 2MB)
+
+        $response = $this->post('/admin/blog', [
+            'title'        => 'Artikel Gambar Terlalu Besar',
+            'slug'         => 'artikel-gambar-besar',
+            'status'       => 'published',
+            'body'         => '<p>Test</p>',
+            'image'        => $largeFile,
+            'publish_date' => '2026-08-22',
+        ]);
+
+        $response->assertSessionHasErrors('image');
+    }
 }
