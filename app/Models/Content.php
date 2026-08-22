@@ -98,7 +98,7 @@ class Content extends Model
     // ──────────────────────────────────────────────────────────────────────────
 
     /**
-     * Get the properly formatted full image/file URL.
+     * Get the properly formatted image/file URL.
      */
     public function getImageUrlAttribute(?string $value): ?string
     {
@@ -106,27 +106,37 @@ class Content extends Model
             return null;
         }
 
-        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+        $value = trim($value);
+
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://') || str_starts_with($value, 'data:')) {
             return $value;
         }
 
-        if (str_starts_with($value, '/storage/') || str_starts_with($value, 'storage/')) {
-            return asset(ltrim($value, '/'));
+        if (str_starts_with($value, '/storage/')) {
+            return $value;
+        }
+
+        if (str_starts_with($value, 'storage/')) {
+            return '/' . $value;
         }
 
         if (str_starts_with($value, 'uploads/')) {
-            return asset('storage/' . $value);
+            return '/storage/' . $value;
         }
 
-        if (str_starts_with($value, 'assets/') || str_starts_with($value, '/assets/')) {
-            return asset(ltrim($value, '/'));
+        if (str_starts_with($value, '/assets/')) {
+            return $value;
+        }
+
+        if (str_starts_with($value, 'assets/')) {
+            return '/' . $value;
         }
 
         if (str_starts_with($value, '/')) {
-            return asset(ltrim($value, '/'));
+            return $value;
         }
 
-        return asset('storage/' . $value);
+        return '/storage/' . $value;
     }
 
     /**
