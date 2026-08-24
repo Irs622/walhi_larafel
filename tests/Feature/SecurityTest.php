@@ -510,4 +510,30 @@ class SecurityTest extends TestCase
         $responseRegulasi = $this->get('/regulasi?search=lingkungan');
         $responseRegulasi->assertStatus(200);
     }
+
+    public function test_user_model_allows_role_mass_assignment_and_seeder_persists_admin(): void
+    {
+        $user = new User([
+            'name'     => 'Seeded Admin',
+            'email'    => 'custom_admin@example.com',
+            'password' => 'secret123',
+            'role'     => 'admin',
+        ]);
+        $user->save();
+
+        $this->assertEquals('admin', $user->fresh()->role);
+        $this->assertTrue($user->fresh()->isAdmin());
+
+        $editor = new User([
+            'name'     => 'Seeded Editor',
+            'email'    => 'custom_editor@example.com',
+            'password' => 'secret123',
+            'role'     => 'editor',
+        ]);
+        $editor->save();
+
+        $this->assertEquals('editor', $editor->fresh()->role);
+        $this->assertTrue($editor->fresh()->canManageContent());
+        $this->assertFalse($editor->fresh()->canDelete());
+    }
 }
