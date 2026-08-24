@@ -1,8 +1,9 @@
 *.log
 .DS_Store
 .env
-.env.backup
-.env.production
+.env.*
+!.env.example
+!.env.production.example
 .phpactor.json
 .phpunit.result.cache
 /.codex
@@ -32,8 +33,9 @@ Thumbs.db
 /database/*.sqlite-shm
 /database/*.sqlite-wal
 
-# Database backups & dumps
+# Database backups & dumps & deploy archives
 /storage/backups/
 *.sql
 *.sql.gz
 *.sqlite.gz
+*.zip

@@ -23,7 +23,24 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $middleware->trustHosts(
-            at: ['^(.+\.)?walhi\-jabar\.org$', '^(.+\.)?walhijabar\.or\.id$', '^(.+\.)?walhijabar\.org$', '^localhost$', '^127\.0\.0\.1$'],
+            at: function () {
+                $hosts = [
+                    '^(.+\.)?walhi\-jabar\.org$',
+                    '^(.+\.)?walhijabar\.or\.id$',
+                    '^(.+\.)?walhijabar\.org$',
+                    '^localhost$',
+                    '^127\.0\.0\.1$',
+                ];
+
+                $appHost = parse_url(config('app.url'), PHP_URL_HOST);
+                if ($appHost && ! in_array($appHost, ['localhost', '127.0.0.1'])) {
+                    $escapedHost = preg_quote($appHost, '/');
+                    $hosts[] = '^(.+\.)?' . $escapedHost . '$';
+                    $hosts[] = '^' . $escapedHost . '$';
+                }
+
+                return array_values(array_unique($hosts));
+            },
         );
 
         $middleware->validateCsrfTokens(except: [
