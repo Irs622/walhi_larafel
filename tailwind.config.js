@@ -12,10 +12,10 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
-                heading: ['Anton', 'sans-serif'],
-                label: ['"Bebas Neue"', 'sans-serif'],
-                oswald: ['Oswald', 'sans-serif'],
+                sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+                heading: ['Aspekta', 'sans-serif'],
+                label: ['Aspekta', 'sans-serif'],
+                oswald: ['Aspekta', 'Oswald', 'sans-serif'],
             },
             colors: {
                 brand: {

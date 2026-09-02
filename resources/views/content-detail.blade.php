@@ -12,7 +12,8 @@
  
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('assets/fonts/webfonts/font-face.css') }}">
  
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
@@ -24,29 +25,29 @@
                 transition: all 0.2s ease;
             }
             .btn-action:hover {
-                background: #256D4A !important;
-                border-color: #256D4A !important;
-                color: #F4F1EA !important;
-            }
-            .btn-back:hover {
-                background: #e9e5d9 !important;
-            }
-            .post-content img {
-                max-width: 100% !important;
-                height: auto !important;
-                border: 3px solid #1D1D1D;
-                margin: 24px auto;
-                display: block;
+                transform: translateY(-2px);
                 box-shadow: 4px 4px 0px 0px #1D1D1D;
             }
-            .post-content p {
-                margin-bottom: 1.25em;
+            .share-btn:hover {
+                background-color: #256D4A !important;
+                color: #FFFFFF !important;
+                border-color: #256D4A !important;
             }
-            .post-content h2, .post-content h3, .post-content h4 {
-                font-family: 'Bebas Neue', sans-serif;
-                margin-top: 1.5em;
-                margin-bottom: 0.5em;
+            .post-content {
+                font-family: Montserrat, sans-serif;
+                font-size: 18px;
+                line-height: 1.8;
+                color: #2D3748;
+            }
+            .post-content p {
+                margin-bottom: 1.5em;
+            }
+            .post-content h1, .post-content h2, .post-content h3, .post-content h4 {
                 color: #1D1D1D;
+                font-family: Aspekta, sans-serif;
+                font-weight: 700;
+                margin-top: 1.75em;
+                margin-bottom: 0.75em;
                 letter-spacing: 0.5px;
             }
             .post-content h2 { font-size: 28px; }
@@ -70,7 +71,7 @@
             }
         </style>
     </head>
-    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Inter, sans-serif;">
+    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Montserrat, sans-serif;">
         <div style="position: relative; width: 100%; overflow-x: clip; background: #F4F1EA;">
             @include('partials.site-header')
  
@@ -87,6 +88,9 @@
                                 elseif($item->category === 'regulasi') $backUrl = route('regulasi');
                                 elseif($item->category === 'siaran-pers') $backUrl = route('siaran-pers');
                                 elseif($item->category === 'laporan-tahunan') $backUrl = route('laporan-tahunan');
+                                elseif($item->category === 'infografis') $backUrl = route('infografis');
+                                elseif($item->category === 'kertas-posisi') $backUrl = route('kertas-posisi');
+                                elseif($item->category === 'catatan-kritis') $backUrl = route('catatan-kritis');
                             @endphp
                             <a href="{{ $backUrl }}" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; text-decoration: none; font-size: 14px; font-weight: 700; text-transform: uppercase;" class="btn-back">
                                 <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
@@ -94,7 +98,7 @@
                             </a>
                             
                             <!-- Breadcrumbs -->
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: Montserrat, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">
                                 <a href="{{ route('home') }}" style="color: #1D1D1D; text-decoration: none; opacity: 0.8;">Beranda</a>
                                 <span style="color: #256D4A; font-weight: 400; font-size: 16px;">/</span>
                                 <span style="color: #1D1D1D; opacity: 0.8; text-transform: uppercase;">{{ str_replace('-', ' ', $item->category) }}</span>
@@ -143,7 +147,7 @@
                             <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 40px; display: flex; flex-direction: column; gap: 32px;" class="w-full max-w-4xl mx-auto">
                                 <!-- Title & Metadata -->
                                 <div style="display: flex; flex-direction: column; gap: 16px; border-bottom: 2px solid #f0ede8; padding-bottom: 20px;">
-                                    <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(28px, 4.5vw, 54px); font-family: Anton, sans-serif; font-weight: 400; line-height: 1.1; letter-spacing: 0.5px; text-transform: uppercase;">
+                                    <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(26px, 4vw, 44px); font-family: Aspekta, sans-serif; font-weight: 800; line-height: 1.15; letter-spacing: 0.5px; text-transform: uppercase;">
                                         {{ $item->title }}
                                     </h1>
                                     
@@ -177,10 +181,10 @@
 
                                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1D1D1D; padding-bottom: 20px; flex-wrap: wrap; gap: 16px;">
                                     <div style="display: flex; align-items: center; gap: 12px;">
-                                        <span style="background: #256D4A; color: white; padding: 4px 12px; font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ $cardCategory }}</span>
-                                        <span style="font-family: Bebas Neue, sans-serif; font-size: 24px; color: #1D1D1D;">Tahun {{ $year }}</span>
+                                        <span style="background: #256D4A; color: white; padding: 4px 12px; font-size: 12px; font-weight: 700; text-transform: uppercase; font-family: Montserrat, sans-serif;">{{ $cardCategory }}</span>
+                                        <span style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 20px; color: #1D1D1D;">Tahun {{ $year }}</span>
                                     </div>
-                                    <span style="background: {{ $statusText === 'Berlaku' ? '#256D4A' : '#888' }}; color: white; padding: 4px 12px; font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ $statusText }}</span>
+                                    <span style="background: {{ $statusText === 'Berlaku' ? '#256D4A' : '#888' }}; color: white; padding: 4px 12px; font-size: 12px; font-weight: 700; text-transform: uppercase; font-family: Montserrat, sans-serif;">{{ $statusText }}</span>
                                 </div>
  
                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; background: #F4F1EA; padding: 24px; border-left: 4px solid #256D4A;">
@@ -195,7 +199,7 @@
                                 </div>
  
                                 <div>
-                                    <h3 style="font-family: Bebas Neue, sans-serif; font-size: 28px; margin: 0 0 12px;">Ringkasan / Isi Regulasi</h3>
+                                    <h3 style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 24px; margin: 0 0 12px; text-transform: uppercase;">Ringkasan / Isi Regulasi</h3>
                                     <div style="font-size: 16px; line-height: 1.8; color: #333; white-space: pre-line;">{{ $item->body }}</div>
                                 </div>
  
@@ -244,7 +248,7 @@
                             <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 40px; display: flex; flex-direction: column; gap: 32px;" class="w-full max-w-4xl mx-auto">
                                 <!-- Title & Metadata -->
                                 <div style="display: flex; flex-direction: column; gap: 16px; border-bottom: 2px solid #f0ede8; padding-bottom: 20px;">
-                                    <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(28px, 4.5vw, 54px); font-family: Anton, sans-serif; font-weight: 400; line-height: 1.1; letter-spacing: 0.5px; text-transform: uppercase;">
+                                    <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(26px, 4vw, 44px); font-family: Aspekta, sans-serif; font-weight: 800; line-height: 1.15; letter-spacing: 0.5px; text-transform: uppercase;">
                                         {{ $item->title }}
                                     </h1>
                                     
@@ -277,25 +281,25 @@
                                 </div>
 
                                 <div style="display: flex; gap: 24px; align-items: center; border-bottom: 2px solid #1D1D1D; padding-bottom: 20px;">
-                                    <div style="width: 80px; height: 80px; background: #256D4A; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; font-family: Anton, sans-serif; font-size: 24px;">
+                                    <div style="width: 80px; height: 80px; background: #256D4A; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; font-family: Aspekta, sans-serif; font-weight: 800; font-size: 24px;">
                                         {{ $year }}
                                     </div>
                                     <div>
-                                        <h2 style="font-family: Bebas Neue, sans-serif; font-size: 32px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">{{ $item->title }}</h2>
+                                        <h2 style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 26px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">{{ $item->title }}</h2>
                                         @if($subtitle)
-                                            <p style="margin: 4px 0 0; color: #5C8D59; font-weight: 600; font-size: 16px;">{{ $subtitle }}</p>
+                                            <p style="margin: 4px 0 0; color: #5C8D59; font-weight: 600; font-size: 16px; font-family: Montserrat, sans-serif;">{{ $subtitle }}</p>
                                         @endif
                                     </div>
                                 </div>
 
                                 <div>
-                                    <h3 style="font-family: Bebas Neue, sans-serif; font-size: 24px; margin: 0 0 12px; text-transform: uppercase;">Deskripsi Laporan</h3>
-                                    <div style="font-size: 16px; line-height: 1.8; color: #333; white-space: pre-line;">{{ $reportDesc }}</div>
+                                    <h3 style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 22px; margin: 0 0 12px; text-transform: uppercase;">Deskripsi Laporan</h3>
+                                    <div style="font-size: 16px; line-height: 1.8; color: #333; white-space: pre-line; font-family: Montserrat, sans-serif;">{{ $reportDesc }}</div>
                                 </div>
 
                                 @if(count($stats) > 0)
                                     <div>
-                                        <h3 style="font-family: Bebas Neue, sans-serif; font-size: 24px; margin: 0 0 16px; text-transform: uppercase;">Poin Utama Laporan</h3>
+                                        <h3 style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 22px; margin: 0 0 16px; text-transform: uppercase;">Poin Utama Laporan</h3>
                                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
                                             @foreach($stats as $stat)
                                                 <div style="background: #F4F1EA; border-left: 4px solid #256D4A; padding: 16px; display: flex; align-items: flex-start; gap: 12px;">
@@ -341,7 +345,7 @@
                                     <article style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px;" class="p-5 md:p-8 lg:p-10 flex flex-col gap-5 md:gap-6">
                                         <!-- Title & Metadata -->
                                         <div style="display: flex; flex-direction: column; gap: 16px; border-bottom: 2px solid #f0ede8; padding-bottom: 20px; margin-bottom: 10px;">
-                                            <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(28px, 4.5vw, 54px); font-family: Anton, sans-serif; font-weight: 400; line-height: 1.1; letter-spacing: 0.5px; text-transform: uppercase;">
+                                            <h1 style="margin: 0; color: #1D1D1D; font-size: clamp(26px, 4vw, 44px); font-family: Aspekta, sans-serif; font-weight: 800; line-height: 1.15; letter-spacing: 0.5px; text-transform: uppercase;">
                                                 {{ $item->title }}
                                             </h1>
                                             
@@ -383,7 +387,7 @@
                                         <!-- Article Body -->
                                         {{-- Security: body is sanitized server-side using HTMLPurifier.
                                              Raw {!! !!} without sanitization is an XSS vulnerability. --}}
-                                        <div class="post-content" style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Inter, sans-serif; max-width: 820px; width: 100%;">
+                                        <div class="post-content" style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Montserrat, sans-serif; max-width: 820px; width: 100%;">
                                             {!! $item->sanitized_body !!}
                                         </div>
 
@@ -407,7 +411,7 @@
                                                     <i data-lucide="send" style="width: 14px; height: 14px;"></i>
                                                     Telegram
                                                 </a>
-                                                <button onclick="copyToClipboard('{{ url()->current() }}')" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px; background: #ffffff; color: #1D1D1D; border: 2px solid #1D1D1D; cursor: pointer; font-size: 11px; font-weight: 700; text-transform: uppercase; font-family: Inter, sans-serif;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">
+                                                <button onclick="copyToClipboard('{{ url()->current() }}')" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px; background: #ffffff; color: #1D1D1D; border: 2px solid #1D1D1D; cursor: pointer; font-size: 11px; font-weight: 700; text-transform: uppercase; font-family: Aspekta, sans-serif;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">
                                                     <i data-lucide="link" style="width: 14px; height: 14px;"></i>
                                                     Salin Link
                                                 </button>
@@ -430,7 +434,7 @@
                                     <!-- Comments Section -->
                                     @if($item->category === 'blog' || $item->category === 'siaran-pers' || $item->category === 'infografis')
                                         <div style="border-top: 4px solid #1D1D1D; margin-top: 48px; padding-top: 48px; display: flex; flex-direction: column; gap: 32px;">
-                                            <h3 style="font-family: Bebas Neue, sans-serif; font-size: 36px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
+                                            <h3 style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 32px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
                                                 {{-- Use withCount value from controller (no extra query) --}}
                                                 Komentar ({{ $item->approved_comments_count ?? 0 }})
                                             </h3>
@@ -449,28 +453,28 @@
                                                 @forelse($approvedComments as $comment)
                                                     <div style="background: white; border: 4px solid #1D1D1D; display: flex; flex-direction: column; gap: 16px;" class="p-4 md:p-5 shadow-[4px_4px_0px_0px_#1D1D1D]">
                                                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-                                                            <div style="font-weight: 800; font-size: 18px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif; tracking: 0.5px;">{{ $comment->author_name }}</div>
-                                                            <div style="font-size: 12px; color: #666; font-weight: 600;">{{ $comment->created_at->translatedFormat('d M Y - H:i') }}</div>
+                                                            <div style="font-weight: 800; font-size: 18px; color: #1D1D1D; text-transform: uppercase; font-family: Aspekta, sans-serif;">{{ $comment->author_name }}</div>
+                                                            <div style="font-size: 12px; color: #666; font-weight: 600; font-family: Montserrat, sans-serif;">{{ $comment->created_at->translatedFormat('d M Y - H:i') }}</div>
                                                         </div>
-                                                        <p style="font-size: 16px; line-height: 1.6; color: #333; margin: 0; white-space: pre-wrap; font-family: Inter, sans-serif;">{{ $comment->body }}</p>
+                                                        <p style="font-size: 16px; line-height: 1.6; color: #333; margin: 0; white-space: pre-wrap; font-family: Montserrat, sans-serif;">{{ $comment->body }}</p>
                                                         
                                                         <!-- Reply Button -->
                                                         <div style="display: flex; justify-content: flex-end;">
-                                                            <button onclick="document.getElementById('reply-form-{{ $comment->id }}').style.display = document.getElementById('reply-form-{{ $comment->id }}').style.display === 'none' ? 'block' : 'none'" style="background: transparent; border: none; font-size: 12px; font-weight: 700; color: #256D4A; cursor: pointer; text-transform: uppercase; padding: 0; font-family: Inter, sans-serif; letter-spacing: 0.5px;">Balas Komentar</button>
+                                                            <button onclick="document.getElementById('reply-form-{{ $comment->id }}').style.display = document.getElementById('reply-form-{{ $comment->id }}').style.display === 'none' ? 'block' : 'none'" style="background: transparent; border: none; font-size: 12px; font-weight: 700; color: #256D4A; cursor: pointer; text-transform: uppercase; padding: 0; font-family: Aspekta, sans-serif; letter-spacing: 0.5px;">Balas Komentar</button>
                                                         </div>
 
                                                         <!-- Replies nested list (already eager-loaded, zero extra queries) -->
                                                         @if($comment->replies->count() > 0)
-                                                            <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 16px; border-left: 4px solid #256D4A; padding-left: 20px;">
+                                                             <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 16px; border-left: 4px solid #256D4A; padding-left: 20px;">
                                                                 @foreach($comment->replies as $reply)
                                                                     <div style="background: #F4F1EA; border: 4px solid #1D1D1D; padding: 16px; display: flex; flex-direction: column; gap: 8px;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
                                                                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                                                                            <div style="font-weight: 800; font-size: 15px; color: #1D1D1D; text-transform: uppercase; font-family: Bebas Neue, sans-serif;">
+                                                                            <div style="font-weight: 800; font-size: 15px; color: #1D1D1D; text-transform: uppercase; font-family: Aspekta, sans-serif;">
                                                                                 {{ $reply->author_name }}
                                                                             </div>
-                                                                            <div style="font-size: 11px; color: #666; font-weight: 600;">{{ $reply->created_at->translatedFormat('d M Y - H:i') }}</div>
+                                                                            <div style="font-size: 11px; color: #666; font-weight: 600; font-family: Montserrat, sans-serif;">{{ $reply->created_at->translatedFormat('d M Y - H:i') }}</div>
                                                                         </div>
-                                                                        <p style="font-size: 14px; line-height: 1.5; color: #333; margin: 0; white-space: pre-wrap; font-family: Inter, sans-serif;">{{ $reply->body }}</p>
+                                                                        <p style="font-size: 14px; line-height: 1.5; color: #333; margin: 0; white-space: pre-wrap; font-family: Montserrat, sans-serif;">{{ $reply->body }}</p>
                                                                     </div>
                                                                 @endforeach
                                                             </div>
@@ -486,22 +490,22 @@
                                                                 <input type="text" name="extra_phone" style="display: none !important;" tabindex="-1" autocomplete="off" />
 
                                                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                                                    <input type="text" name="author_name" placeholder="Nama Anda" autocomplete="name" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
-                                                                    <input type="email" name="author_email" placeholder="Email Anda" autocomplete="email" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                                    <input type="text" name="author_name" placeholder="Nama Anda" autocomplete="name" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Montserrat, sans-serif;" />
+                                                                    <input type="email" name="author_email" placeholder="Email Anda" autocomplete="email" required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Montserrat, sans-serif;" />
                                                                 </div>
-                                                                <textarea name="body" rows="3" placeholder="Tulis balasan komentar Anda..." required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif; resize: vertical;"></textarea>
-                                                                <button type="submit" style="align-self: flex-start; height: 44px; padding: 0 20px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 12px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;">Kirim Balasan</button>
+                                                                <textarea name="body" rows="3" placeholder="Tulis balasan komentar Anda..." required style="border: 2px solid #1D1D1D; padding: 10px; font-size: 14px; outline: none; background: white; font-family: Montserrat, sans-serif; resize: vertical;"></textarea>
+                                                                <button type="submit" style="align-self: flex-start; height: 44px; padding: 0 20px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 12px; text-transform: uppercase; cursor: pointer; font-family: Aspekta, sans-serif;">Kirim Balasan</button>
                                                             </form>
                                                         </div>
                                                     </div>
                                                 @empty
-                                                    <div style="font-style: italic; color: #666; font-size: 16px; font-family: Inter, sans-serif;">Belum ada komentar. Jadilah yang pertama memberikan tanggapan!</div>
+                                                    <div style="font-style: italic; color: #666; font-size: 16px; font-family: Montserrat, sans-serif;">Belum ada komentar. Jadilah yang pertama memberikan tanggapan!</div>
                                                 @endforelse
                                             </div>
 
                                             <!-- Add Comment Form -->
                                             <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px;" class="p-5 md:p-6 lg:p-8 shadow-[8px_8px_0px_0px_#1D1D1D]">
-                                                <h4 style="font-family: Bebas Neue, sans-serif; font-size: 28px; text-transform: uppercase; margin: 0 0 20px; color: #1D1D1D; letter-spacing: 0.5px;">Tulis Komentar Anda</h4>
+                                                <h4 style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 26px; text-transform: uppercase; margin: 0 0 20px; color: #1D1D1D; letter-spacing: 0.5px;">Tulis Komentar Anda</h4>
                                                 <form action="{{ route('comments.store', $item->id) }}" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
                                                     @csrf
                                                     
@@ -510,21 +514,21 @@
 
                                                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; width: 100%;">
                                                         <div style="display: flex; flex-direction: column; gap: 6px;">
-                                                            <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Nama Lengkap *</label>
-                                                            <input type="text" name="author_name" autocomplete="name" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                            <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Montserrat, sans-serif;">Nama Lengkap *</label>
+                                                            <input type="text" name="author_name" autocomplete="name" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Montserrat, sans-serif;" />
                                                         </div>
                                                         <div style="display: flex; flex-direction: column; gap: 6px;">
-                                                            <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Email (tidak dipublikasikan) *</label>
-                                                            <input type="email" name="author_email" autocomplete="email" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif;" />
+                                                            <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Montserrat, sans-serif;">Email (tidak dipublikasikan) *</label>
+                                                            <input type="email" name="author_email" autocomplete="email" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Montserrat, sans-serif;" />
                                                         </div>
                                                     </div>
 
                                                     <div style="display: flex; flex-direction: column; gap: 6px;">
-                                                        <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Inter, sans-serif;">Isi Komentar *</label>
-                                                        <textarea name="body" rows="5" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Inter, sans-serif; resize: vertical;"></textarea>
+                                                        <label style="font-weight: 700; font-size: 12px; text-transform: uppercase; color: #1D1D1D; font-family: Montserrat, sans-serif;">Isi Komentar *</label>
+                                                        <textarea name="body" rows="5" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 15px; outline: none; background: white; font-family: Montserrat, sans-serif; resize: vertical;"></textarea>
                                                     </div>
 
-                                                    <button type="submit" style="align-self: flex-start; height: 52px; padding: 0 32px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;" class="btn-action">Kirim Komentar</button>
+                                                    <button type="submit" style="align-self: flex-start; height: 52px; padding: 0 32px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer; font-family: Aspekta, sans-serif;" class="btn-action">Kirim Komentar</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -535,7 +539,7 @@
                                 <div class="lg:col-span-3 flex flex-col gap-8 lg:sticky lg:top-6">
                                     <!-- Subscription Box -->
                                     <div style="background: linear-gradient(135deg, #256D4A 0%, #8B6B4A 100%); border: 4px solid #1D1D1D;" class="p-4 md:p-5 shadow-[4px_4px_0px_0px_#1D1D1D]">
-                                        <h4 style="font-family: Bebas Neue, sans-serif; font-size: 20px; color: white; text-transform: uppercase; margin: 0 0 16px; line-height: 1.25; letter-spacing: 0.5px;">Langganan buletin WALHI Jabar untuk menerima notifikasi update kami</h4>
+                                        <h4 style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 18px; color: white; text-transform: uppercase; margin: 0 0 16px; line-height: 1.3; letter-spacing: 0.5px;">Langganan Nawala WALHI Jabar untuk menerima notifikasi update kami</h4>
                                         
                                         @if(session('subscribe_success'))
                                             <div style="background: white; border: 2px solid #1D1D1D; color: #256D4A; padding: 12px; font-weight: 700; font-size: 13px; margin-bottom: 12px;">
@@ -548,16 +552,16 @@
                                             <!-- Honeypot -->
                                             <input type="text" name="extra_name" style="display: none !important;" tabindex="-1" autocomplete="off" />
 
-                                            <input type="text" placeholder="Nama Lengkap" autocomplete="name" style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
-                                            <input type="email" name="email" placeholder="Email Anda" autocomplete="email" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: Inter, sans-serif;" />
-                                            <button type="submit" style="height: 48px; background: #1D1D1D; color: #F4F1EA; border: 2px solid #1D1D1D; font-weight: 700; font-size: 13px; text-transform: uppercase; cursor: pointer; font-family: Inter, sans-serif;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">Sign Up</button>
+                                            <input type="text" placeholder="Nama Lengkap" autocomplete="name" style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: Montserrat, sans-serif;" />
+                                            <input type="email" name="email" placeholder="Email Anda" autocomplete="email" required style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: Montserrat, sans-serif;" />
+                                            <button type="submit" style="height: 48px; background: #1D1D1D; color: #F4F1EA; border: 2px solid #1D1D1D; font-weight: 700; font-size: 13px; text-transform: uppercase; cursor: pointer; font-family: Aspekta, sans-serif;" class="btn-action shadow-[2px_2px_0px_0px_#1D1D1D]">Berlangganan</button>
                                         </form>
                                     </div>
 
                                     <!-- Latest/Trending News Box -->
                                     <div style="background: white; border: 4px solid #1D1D1D;" class="shadow-[4px_4px_0px_0px_#1D1D1D]">
                                         <div style="background: linear-gradient(135deg, #256D4A 0%, #5C8D59 100%); border-bottom: 4px solid #1D1D1D; padding: 12px 16px;">
-                                            <h4 style="font-family: Bebas Neue, sans-serif; font-size: 20px; color: white; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">Berita Terbaru</h4>
+                                            <h4 style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 18px; color: white; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">Berita Terbaru</h4>
                                         </div>
                                         <div style="display: flex; flex-direction: column; gap: 16px;" class="p-4 md:p-5">
                                             @forelse($sidebarNews as $sideItem)
@@ -566,16 +570,16 @@
                                                         <img src="{{ $sideItem->image_url ?: asset('assets/images/blog/news-4-1.jpg') }}" alt="{{ $sideItem->title }}" style="width: 100%; height: 100%; object-fit: cover;" />
                                                     </a>
                                                     <div style="display: flex; flex-direction: column; gap: 4px; min-w: 0; flex: 1;">
-                                                        <a href="{{ route('content.show', $sideItem->slug) }}" style="font-family: Inter, sans-serif; font-size: 13px; font-weight: 700; color: #1D1D1D; text-decoration: none; line-height: 1.3;" class="hover:text-[#256D4A] line-clamp-2">
+                                                        <a href="{{ route('content.show', $sideItem->slug) }}" style="font-family: Aspekta, sans-serif; font-size: 14px; font-weight: 700; color: #1D1D1D; text-decoration: none; line-height: 1.3;" class="hover:text-[#256D4A] line-clamp-2">
                                                             {{ $sideItem->title }}
                                                         </a>
-                                                        <span style="font-size: 11px; color: #888; font-weight: 600;">
+                                                        <span style="font-size: 11px; color: #888; font-weight: 600; font-family: Montserrat, sans-serif;">
                                                             {{ $sideItem->publish_date ? \Carbon\Carbon::parse($sideItem->publish_date)->translatedFormat('d M Y') : $sideItem->created_at->translatedFormat('d M Y') }}
                                                         </span>
                                                     </div>
                                                 </div>
                                             @empty
-                                                <div style="font-style: italic; color: #666; font-size: 13px;">Tidak ada berita terbaru.</div>
+                                                <div style="font-style: italic; color: #666; font-size: 13px; font-family: Montserrat, sans-serif;">Tidak ada berita terbaru.</div>
                                             @endforelse
                                         </div>
                                     </div>
@@ -584,7 +588,7 @@
 
                             <!-- Related / Recommended News Section (at the bottom) -->
                             <div style="border-top: 4px solid #1D1D1D; margin-top: 56px; padding-top: 48px; display: flex; flex-direction: column; gap: 32px;" class="w-full max-w-5xl mx-auto">
-                                <h3 style="font-family: Bebas Neue, sans-serif; font-size: 32px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
+                                <h3 style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 28px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #1D1D1D;">
                                     Rekomendasi Berita Lainnya
                                 </h3>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -599,10 +603,10 @@
                                         <div style="background: white; border: 4px solid #1D1D1D; display: flex; flex-direction: column; gap: 16px;" class="shadow-[4px_4px_0px_0px_#256D4A] hover:translate-x-1 hover:translate-y-1 transition-all">
                                             <div style="width: 100%; height: 180px; overflow: hidden; border-bottom: 4px solid #1D1D1D; position: relative; background: #eee;">
                                                 <img src="{{ $relImage }}" alt="{{ $rel->title }}" style="width: 100%; height: 100%; object-fit: cover;" />
-                                                <span style="position: absolute; left: 12px; top: 12px; background: #D95C3F; color: white; padding: 4px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase;">{{ $relTag }}</span>
+                                                <span style="position: absolute; left: 12px; top: 12px; background: #D95C3F; color: white; padding: 4px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; font-family: Montserrat, sans-serif;">{{ $relTag }}</span>
                                             </div>
                                             <div style="display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; gap: 16px;" class="p-4 md:p-5">
-                                                <a href="{{ route('content.show', $rel->slug) }}" style="font-family: Anton, sans-serif; font-size: 18px; color: #1D1D1D; text-decoration: none; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.3px;" class="hover:text-[#256D4A] line-clamp-2">
+                                                <a href="{{ route('content.show', $rel->slug) }}" style="font-family: Aspekta, sans-serif; font-weight: 700; font-size: 16px; color: #1D1D1D; text-decoration: none; text-transform: uppercase; line-height: 1.3; letter-spacing: 0.3px;" class="hover:text-[#256D4A] line-clamp-2">
                                                     {{ $rel->title }}
                                                 </a>
                                                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #5C8D59; font-weight: 600; border-top: 2px solid #f0ede8; padding-top: 12px;">

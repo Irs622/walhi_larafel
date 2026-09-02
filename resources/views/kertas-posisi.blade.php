@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        @include('partials.seo-meta', ['title' => 'Siaran Pers - WALHI Jawa Barat'])
+        @include('partials.seo-meta', ['title' => 'Kertas Posisi - WALHI Jawa Barat'])
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,6 @@
                 box-shadow: 0 12px 32px rgba(29, 29, 29, 0.12);
             }
             
-            /* Responsive layout for mobile devices */
             @media (max-width: 640px) {
                 .card-header-bar {
                     flex-direction: column !important;
@@ -67,15 +66,15 @@
                                 <span style="color: #256D4A; font-weight: 400; font-size: 16px;">/</span>
                                 <span style="color: #F4F1EA; opacity: 0.8;">Publikasi</span>
                                 <span style="color: #256D4A; font-weight: 400; font-size: 16px;">/</span>
-                                <span style="color: #5C8D59;">Siaran Pers</span>
+                                <span style="color: #5C8D59;">Kertas Posisi</span>
                             </div>
                             
                             <h1 style="margin: 0; color: #F4F1EA; font-size: clamp(48px, 6vw, 76px); font-family: Aspekta, sans-serif; font-weight: 800; line-height: 1; letter-spacing: 1.6px; text-transform: uppercase;">
-                                SIARAN PERS
+                                KERTAS POSISI
                             </h1>
                             <div style="width: 128px; height: 8px; background: #D95C3F;"></div>
                             <p style="margin: 0; color: #5C8D59; font-size: 20px; line-height: 32px; font-family: Montserrat, sans-serif;">
-                                Pernyataan Resmi dan Posisi WALHI Jawa Barat
+                                Kertas Kebijakan, Rekomendasi, dan Sikap Kritis WALHI Jawa Barat
                             </p>
                         </div>
                     </div>
@@ -92,15 +91,15 @@
                                     '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
                                     '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
                                 ];
-                                $dateObj = \Carbon\Carbon::parse($item->publish_date);
+                                $dateObj = \Carbon\Carbon::parse($item->publish_date ?? $item->created_at);
                                 $formattedDate = $dateObj->format('d') . ' ' . $months[$dateObj->format('m')] . ' ' . $dateObj->format('Y');
                             @endphp
 
                             <!-- Card item -->
                             <article style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 32px; display: flex; flex-direction: column; gap: 16px;" class="press-release-card">
                                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;" class="card-header-bar">
-                                    <div style="background: #D95C3F; color: #F4F1EA; padding: 4px 16px; font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;">
-                                        Siaran Pers
+                                    <div style="background: #8B6B4A; color: #F4F1EA; padding: 4px 16px; font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;">
+                                        Kertas Posisi
                                     </div>
                                     <div style="display: flex; align-items: center; gap: 8px; color: #5C8D59; font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 600;">
                                         <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
@@ -131,47 +130,23 @@
                                 
                                 <div style="border-top: 2px solid #1D1D1D; padding-top: 24px; display: flex; gap: 12px; align-items: center;" class="card-actions-bar">
                                     <a href="{{ route('content.show', $item->slug) }}"
-                                       style="height: 48px; padding: 0 24px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s;"
+                                       style="height: 48px; padding: 0 24px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s;"
                                        class="hover-action-dark-btn">
                                         <i data-lucide="book-open" style="width: 16px; height: 16px;"></i>
                                         Baca Lengkap
                                     </a>
-                                    
-                                    @if($item->image_url)
-                                        <a href="{{ $item->image_url }}" target="_blank"
-                                           style="height: 48px; padding: 0 24px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
-                                           class="hover-action-light-btn">
-                                            <i data-lucide="download" style="width: 16px; height: 16px;"></i>
-                                            Download PDF
-                                        </a>
-                                    @else
-                                        <button disabled
-                                                style="height: 48px; padding: 0 24px; background: white; color: #aaa; border: 2px solid #ddd; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box; opacity: 0.6;">
-                                            <i data-lucide="download" style="width: 16px; height: 16px; color: #aaa;"></i>
-                                            Download PDF
-                                        </button>
-                                    @endif
                                 </div>
                             </article>
                         @empty
-                            <div style="background: white; border: 4px solid #1D1D1D; padding: 48px; text-align: center; font-size: 18px; font-family: Montserrat, sans-serif; color: #888;">
-                                <i data-lucide="alert-circle" style="width: 48px; height: 48px; margin: 0 auto 16px; color: #8B6B4A; display: block;"></i>
-                                Belum ada siaran pers yang diterbitkan.
+                            <div style="background: white; border: 4px solid #1D1D1D; padding: 48px; text-align: center;">
+                                <p style="font-size: 18px; color: #666; margin: 0; font-family: Montserrat, sans-serif;">Belum ada dokumen kertas posisi yang diterbitkan.</p>
                             </div>
                         @endforelse
 
-                        <!-- Neobrutalist Pagination -->
+                        <!-- Pagination -->
                         @if($items->hasPages())
-                            <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 48px;">
-                                <a href="{{ $items->previousPageUrl() }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ $items->onFirstPage() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
-                                    ‹
-                                </a>
-                                <span style="font-weight: 700; font-size: 16px; color: #1D1D1D; font-family: Montserrat, sans-serif;">
-                                    Halaman {{ $items->currentPage() }} dari {{ $items->lastPage() }}
-                                </span>
-                                <a href="{{ $items->nextPageUrl() }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ !$items->hasMorePages() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
-                                    ›
-                                </a>
+                            <div class="mt-8 flex justify-center">
+                                {{ $items->links() }}
                             </div>
                         @endif
 
@@ -183,9 +158,8 @@
         </div>
 
         <script nonce="{{ Vite::cspNonce() }}">
-            // Initialize Lucide icons on page load
-            document.addEventListener('DOMContentLoaded', function() {
-                if (typeof lucide !== 'undefined' && lucide.createIcons) {
+            document.addEventListener('DOMContentLoaded', () => {
+                if (typeof lucide !== 'undefined') {
                     lucide.createIcons();
                 }
             });

@@ -7,11 +7,12 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('assets/fonts/webfonts/font-face.css') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Inter, sans-serif;">
+    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Montserrat, sans-serif;">
         @php
             $blogCategories = ['Semua', 'Investigasi', 'Advokasi', 'Laporan', 'Kampanye', 'Pendidikan', 'Opini'];
             $featuredNews = ($items->currentPage() === 1) ? $items->first() : null;
@@ -29,7 +30,7 @@
                             <div style="display: inline-flex; width: fit-content; padding: 4px 16px; background: #256D4A; color: #F4F1EA; font-size: 12px; font-weight: 700; line-height: 18px; letter-spacing: 0.7px; text-transform: uppercase;">
                                 Blog
                             </div>
-                            <h1 style="margin: 0; max-width: 760px; color: #F4F1EA; font-size: clamp(52px, 7vw, 80px); font-family: Anton, sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 1.6px; text-transform: uppercase;">
+                            <h1 style="margin: 0; max-width: 760px; color: #F4F1EA; font-size: clamp(48px, 6.5vw, 76px); font-family: Aspekta, sans-serif; font-weight: 800; line-height: 1.05; letter-spacing: 1px; text-transform: uppercase;">
                                 Liputan, Advokasi,<br>
                                 dan Catatan Lapangan
                             </h1>
@@ -70,7 +71,7 @@
                             </div>
                             <div style="flex: 1 1 420px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px;">
                                 <div style="display: flex; flex-direction: column; gap: 16px;">
-                                    <h2 style="margin: 0; color: #1D1D1D; font-size: 32px; font-family: Bebas Neue, sans-serif; font-weight: 400; line-height: 35.2px; letter-spacing: 1.6px; text-transform: uppercase;">
+                                    <h2 style="margin: 0; color: #1D1D1D; font-size: 28px; font-family: Aspekta, sans-serif; font-weight: 800; line-height: 1.25; letter-spacing: 0.5px; text-transform: uppercase;">
                                         {{ $featuredNews->title }}
                                     </h2>
                                     @php
@@ -121,7 +122,7 @@
                                     </div>
                                     <div style="display: flex; flex: 1 1 0%; flex-direction: column; justify-content: space-between; padding: 24px; gap: 24px;">
                                         <div style="display: flex; flex-direction: column; gap: 16px;">
-                                            <h3 style="margin: 0; color: #1D1D1D; font-size: 20px; font-family: Bebas Neue, sans-serif; font-weight: 400; line-height: 24px; letter-spacing: 1px; text-transform: uppercase;">
+                                            <h3 style="margin: 0; color: #1D1D1D; font-size: 19px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 1.3; letter-spacing: 0.3px; text-transform: uppercase;">
                                                 <a href="{{ route('content.show', $news->slug) }}" style="color: #1D1D1D; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
                                                     {{ $news->title }}
                                                 </a>

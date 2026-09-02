@@ -9,6 +9,7 @@ enum ContentCategory: string
     case SiaranPers    = 'siaran-pers';
     case Infografis    = 'infografis';
     case KertasPosisi  = 'kertas-posisi';
+    case CatatanKritis = 'catatan-kritis';
 
     // ── Dokumen Resmi ─────────────────────────────────────────────
     case Regulasi      = 'regulasi';
@@ -46,9 +47,10 @@ enum ContentCategory: string
             self::SiaranPers       => 'Siaran Pers',
             self::Infografis       => 'Infografis',
             self::KertasPosisi     => 'Kertas Posisi',
+            self::CatatanKritis    => 'Catatan Kritis',
             self::Regulasi         => 'Regulasi',
             self::LaporanTahunan   => 'Laporan Tahunan',
-            self::Newsletter       => 'E-Newsletter',
+            self::Newsletter       => 'Nawala',
             self::BuletinBumi      => 'Buletin Bumi',
             self::Jurnal           => 'Jurnal Tanah Air',
             self::Sejarah          => 'Sejarah',
@@ -79,6 +81,7 @@ enum ContentCategory: string
             self::SiaranPers,
             self::Infografis,
             self::KertasPosisi,
+            self::CatatanKritis,
             self::Regulasi,
             self::LaporanTahunan,
             self::Newsletter,

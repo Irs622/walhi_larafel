@@ -26,11 +26,11 @@
         $isBlog = request()->routeIs('blog');
         $isAbout = request()->routeIs('about');
         $isRegulasi = request()->routeIs('regulasi');
-        $isPublikasi = request()->routeIs('siaran-pers') || request()->routeIs('infografis') || request()->routeIs('laporan-tahunan');
+        $isPublikasi = request()->routeIs('siaran-pers') || request()->routeIs('infografis') || request()->routeIs('laporan-tahunan') || request()->routeIs('kertas-posisi') || request()->routeIs('catatan-kritis');
         $isDonasi = request()->routeIs('donasi');
  
         $navLinkStyle = function (bool $active): string {
-            return 'color: '.($active ? '#256D4A' : '#1D1D1D').'; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.70px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;';
+            return 'color: '.($active ? '#256D4A' : '#1D1D1D').'; font-size: 14px; font-family: Aspekta, sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.70px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;';
         };
     @endphp
  
@@ -38,20 +38,26 @@
     <div style="width: 100%; height: 41px; background: #1D1D1D; border-bottom: 1px #256D4A solid; display: flex; justify-content: center;">
         <div style="width: 100%; max-width: 1280px; height: 100%; padding: 0 32px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;">
             <!-- Left Side -->
-            <div style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; font-weight: 500;">
+            <div style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; font-weight: 500; display: flex; align-items: center; gap: 12px;">
                 <a href="{{ $globalCampaign->url }}" style="color: #F4F1EA; text-decoration: none;" class="hover:text-[#5C8D59] transition-colors">
                     {{ $globalCampaign->title }}
                 </a>
+                <span style="color: #256D4A; font-size: 14px; user-select: none;">•</span>
+                <a href="{{ route('home') }}#pengaduan" style="color: #D95C3F; text-decoration: none; font-weight: 700;" class="hover:text-white transition-colors">
+                    📢 Pengaduan Kasus
+                </a>
             </div>
             <!-- Right Side -->
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="{{ $globalContact->facebook }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">Facebook</a>
-                <span style="color: #256D4A; font-size: 16px; font-family: Inter, sans-serif; user-select: none;">|</span>
-                <a href="{{ $globalContact->instagram }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">Instagram</a>
-                <span style="color: #256D4A; font-size: 16px; font-family: Inter, sans-serif; user-select: none;">|</span>
-                <a href="{{ $globalContact->youtube }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">YouTube</a>
-                <span style="color: #256D4A; font-size: 16px; font-family: Inter, sans-serif; user-select: none;">|</span>
-                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $globalContact->whatsapp) }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Inter, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">WhatsApp</a>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <a href="https://x.com/walhijabar" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">X (@walhijabar)</a>
+                <span style="color: #256D4A; font-size: 16px; font-family: Montserrat, sans-serif; user-select: none;">|</span>
+                <a href="{{ $globalContact->facebook }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">Facebook</a>
+                <span style="color: #256D4A; font-size: 16px; font-family: Montserrat, sans-serif; user-select: none;">|</span>
+                <a href="{{ $globalContact->instagram }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">Instagram</a>
+                <span style="color: #256D4A; font-size: 16px; font-family: Montserrat, sans-serif; user-select: none;">|</span>
+                <a href="{{ $globalContact->youtube }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">YouTube</a>
+                <span style="color: #256D4A; font-size: 16px; font-family: Montserrat, sans-serif; user-select: none;">|</span>
+                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $globalContact->whatsapp) }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">WA: +62-82-1982-1159</a>
             </div>
         </div>
     </div>
@@ -67,7 +73,7 @@
             </div>
 
             <!-- Navigation Links (Desktop) -->
-            <nav class="desktop-nav" style="display: flex; align-items: center; justify-content: space-between; width: 599.9px; height: 37px; position: relative;">
+            <nav class="desktop-nav" style="display: flex; align-items: center; justify-content: space-between; width: 620px; height: 37px; position: relative;">
                 <!-- BERANDA -->
                 <div style="position: relative; height: 100%; display: inline-flex; align-items: center;">
                     <a href="{{ route('home') }}" style="{{ $navLinkStyle($isHome) }}">BERANDA</a>
@@ -94,14 +100,16 @@
 
                 <!-- PUBLIKASI (with details/summary dropdown) -->
                 <details class="site-nav-dropdown" style="position: relative; height: 100%; display: inline-flex; align-items: center; cursor: pointer;">
-                    <summary style="display: inline-flex; align-items: center; gap: 6px; position: relative !important; color: {{ $isPublikasi ? '#256D4A' : '#1D1D1D' }}; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.70px; list-style: none; outline: none;">
+                    <summary style="display: inline-flex; align-items: center; gap: 6px; position: relative !important; color: {{ $isPublikasi ? '#256D4A' : '#1D1D1D' }}; font-size: 14px; font-family: Aspekta, sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.70px; list-style: none; outline: none;">
                         <span>PUBLIKASI</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 1px;"><path d="m6 9 6 6 6-6"/></svg>
                     </summary>
-                    <div class="site-nav-dropdown-panel" style="width: 492px; left: -160px; top: 37px; position: absolute; background: #F4F1EA; border-top: 4px solid #256D4A; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14); z-index: 30;">
-                        <a href="{{ route('siaran-pers') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('siaran-pers') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('siaran-pers') ? '#FFFFFF' : '#F4F1EA' }}'">Siaran Pers</a>
-                        <a href="{{ route('infografis') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('infografis') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('infografis') ? '#FFFFFF' : '#F4F1EA' }}'">Infografis</a>
-                        <a href="{{ route('laporan-tahunan') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; background: {{ request()->routeIs('laporan-tahunan') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('laporan-tahunan') ? '#FFFFFF' : '#F4F1EA' }}'">Laporan Tahunan</a>
+                    <div class="site-nav-dropdown-panel" style="width: 440px; left: -140px; top: 37px; position: absolute; background: #F4F1EA; border-top: 4px solid #256D4A; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14); z-index: 30;">
+                        <a href="{{ route('siaran-pers') }}" style="display: flex; align-items: center; min-height: 56px; padding: 0 24px; color: #1D1D1D; font-size: 18px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 24px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('siaran-pers') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('siaran-pers') ? '#FFFFFF' : '#F4F1EA' }}'">Siaran Pers</a>
+                        <a href="{{ route('laporan-tahunan') }}" style="display: flex; align-items: center; min-height: 56px; padding: 0 24px; color: #1D1D1D; font-size: 18px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 24px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('laporan-tahunan') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('laporan-tahunan') ? '#FFFFFF' : '#F4F1EA' }}'">Laporan Tahunan</a>
+                        <a href="{{ route('infografis') }}" style="display: flex; align-items: center; min-height: 56px; padding: 0 24px; color: #1D1D1D; font-size: 18px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 24px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('infografis') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('infografis') ? '#FFFFFF' : '#F4F1EA' }}'">Infografis</a>
+                        <a href="{{ route('kertas-posisi') }}" style="display: flex; align-items: center; min-height: 56px; padding: 0 24px; color: #1D1D1D; font-size: 18px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 24px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('kertas-posisi') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('kertas-posisi') ? '#FFFFFF' : '#F4F1EA' }}'">Kertas Posisi</a>
+                        <a href="{{ route('catatan-kritis') }}" style="display: flex; align-items: center; min-height: 56px; padding: 0 24px; color: #1D1D1D; font-size: 18px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 24px; text-decoration: none; background: {{ request()->routeIs('catatan-kritis') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('catatan-kritis') ? '#FFFFFF' : '#F4F1EA' }}'">Catatan Kritis</a>
                     </div>
                     @if ($isPublikasi)
                         <div style="width: 100%; height: 2px; left: 0; bottom: 0; position: absolute; background: #256D4A;"></div>
@@ -112,7 +120,6 @@
                 <div style="position: relative; height: 100%; display: inline-flex; align-items: center;">
                     <a href="{{ route('donasi') }}" style="{{ $navLinkStyle($isDonasi) }}">
                         <span>DUKUNG KAMI</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 1px;"><path d="m6 9 6 6 6-6"/></svg>
                     </a>
                     @if ($isDonasi)
                         <div style="width: 100%; height: 2px; left: 0; bottom: 0; position: absolute; background: #256D4A;"></div>
@@ -121,13 +128,13 @@
 
                 <!-- TENTANG KAMI (with details/summary dropdown) -->
                 <details class="site-nav-dropdown" style="position: relative; height: 100%; display: inline-flex; align-items: center; cursor: pointer;">
-                    <summary style="display: inline-flex; align-items: center; gap: 6px; position: relative !important; color: {{ $isAbout ? '#256D4A' : '#1D1D1D' }}; font-size: 14px; font-family: Oswald, sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.70px; list-style: none; outline: none;">
+                    <summary style="display: inline-flex; align-items: center; gap: 6px; position: relative !important; color: {{ $isAbout ? '#256D4A' : '#1D1D1D' }}; font-size: 14px; font-family: Aspekta, sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.70px; list-style: none; outline: none;">
                         <span>TENTANG KAMI</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 1px;"><path d="m6 9 6 6 6-6"/></svg>
                     </summary>
                     <div class="site-nav-dropdown-panel" style="width: 492px; left: -340px; top: 37px; position: absolute; background: #F4F1EA; border-top: 4px solid #256D4A; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14); z-index: 30;">
-                        <a href="{{ route('about') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('about') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('about') ? '#FFFFFF' : '#F4F1EA' }}'">Profil & Sejarah</a>
-                        <a href="{{ route('about') }}#kontak" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Inter, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; background: #F4F1EA; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='#F4F1EA'">Kontak Kami</a>
+                        <a href="{{ route('about') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('about') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('about') ? '#FFFFFF' : '#F4F1EA' }}'">Profil & Sejarah</a>
+                        <a href="{{ route('about') }}#kontak" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; background: #F4F1EA; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='#F4F1EA'">Kontak Kami</a>
                     </div>
                     @if ($isAbout)
                         <div style="width: 100%; height: 2px; left: 0; bottom: 0; position: absolute; background: #256D4A;"></div>
@@ -143,8 +150,8 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                     </button>
                     <div id="lang-dropdown" style="display: none; position: absolute; right: 0; top: 32px; background: #FFFFFF; border: 2px solid #1D1D1D; box-shadow: 4px 4px 0px 0px #1D1D1D; z-index: 50; width: 140px; flex-direction: column;">
-                        <span style="display: block; padding: 10px 16px; font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: #256D4A; background: #F4F1EA; border-bottom: 1px solid #1D1D1D;">🇮🇩 Indonesia</span>
-                        <span style="display: block; padding: 10px 16px; font-size: 13px; font-weight: 600; font-family: Inter, sans-serif; color: #888;">🇬🇧 English (Soon)</span>
+                        <span style="display: block; padding: 10px 16px; font-size: 13px; font-weight: 700; font-family: Montserrat, sans-serif; color: #256D4A; background: #F4F1EA; border-bottom: 1px solid #1D1D1D;">🇮🇩 Indonesia</span>
+                        <span style="display: block; padding: 10px 16px; font-size: 13px; font-weight: 600; font-family: Montserrat, sans-serif; color: #888;">🇬🇧 English (Soon)</span>
                     </div>
                 </div>
 
@@ -158,8 +165,8 @@
             <div id="desktop-search-bar" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #1D1D1D; border-bottom: 4px solid #256D4A; padding: 16px 32px; box-sizing: border-box; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
                 <div style="max-width: 1280px; margin: 0 auto; display: flex; align-items: center; gap: 16px;">
                     <form action="{{ route('blog') }}" method="GET" style="display: flex; flex: 1; align-items: center; gap: 12px;">
-                        <input type="text" name="search" id="desktop-search-input" placeholder="Ketik kata kunci pencarian berita, advokasi, atau laporan..." autocomplete="off" style="flex: 1; height: 46px; background: #FFFFFF; border: 2px solid #256D4A; padding: 0 16px; font-family: Inter, sans-serif; font-size: 15px; color: #1D1D1D; outline: none;" />
-                        <button type="submit" style="height: 46px; background: #256D4A; color: #F4F1EA; font-weight: 700; font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: 0.5px; border: none; padding: 0 24px; cursor: pointer;">CARI</button>
+                        <input type="text" name="search" id="desktop-search-input" placeholder="Ketik kata kunci pencarian berita, advokasi, atau laporan..." autocomplete="off" style="flex: 1; height: 46px; background: #FFFFFF; border: 2px solid #256D4A; padding: 0 16px; font-family: Montserrat, sans-serif; font-size: 15px; color: #1D1D1D; outline: none;" />
+                        <button type="submit" style="height: 46px; background: #256D4A; color: #F4F1EA; font-weight: 700; font-family: Aspekta, sans-serif; text-transform: uppercase; letter-spacing: 0.5px; border: none; padding: 0 24px; cursor: pointer;">CARI</button>
                     </form>
                     <button type="button" id="desktop-search-close" style="background: transparent; border: none; color: #F4F1EA; font-size: 24px; cursor: pointer; padding: 4px 8px; line-height: 1;">&times;</button>
                 </div>
@@ -180,21 +187,24 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
-        <nav style="display: flex; flex-direction: column; gap: 20px; font-family: Oswald, sans-serif; font-size: 20px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;">
+        <nav style="display: flex; flex-direction: column; gap: 20px; font-family: Aspekta, sans-serif; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
             <a href="{{ route('home') }}" class="mobile-nav-link" style="color: {{ $isHome ? '#256D4A' : '#1D1D1D' }}; text-decoration: none;">BERANDA</a>
             <a href="{{ route('blog') }}" class="mobile-nav-link" style="color: {{ $isBlog ? '#256D4A' : '#1D1D1D' }}; text-decoration: none;">BLOG</a>
             <a href="{{ route('regulasi') }}" class="mobile-nav-link" style="color: {{ $isRegulasi ? '#256D4A' : '#1D1D1D' }}; text-decoration: none;">REGULASI</a>
             
             <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px;">
-                <span style="font-size: 13px; color: #666; font-family: Inter, sans-serif; font-weight: 700; letter-spacing: 0.5px;">PUBLIKASI</span>
+                <span style="font-size: 13px; color: #666; font-family: Montserrat, sans-serif; font-weight: 700; letter-spacing: 0.5px;">PUBLIKASI</span>
                 <a href="{{ route('siaran-pers') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('siaran-pers') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Siaran Pers</a>
-                <a href="{{ route('infografis') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('infografis') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Infografis</a>
                 <a href="{{ route('laporan-tahunan') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('laporan-tahunan') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Laporan Tahunan</a>
+                <a href="{{ route('infografis') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('infografis') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Infografis</a>
+                <a href="{{ route('kertas-posisi') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('kertas-posisi') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Kertas Posisi</a>
+                <a href="{{ route('catatan-kritis') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('catatan-kritis') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Catatan Kritis</a>
             </div>
  
             <a href="{{ route('donasi') }}" class="mobile-nav-link" style="color: {{ $isDonasi ? '#256D4A' : '#D95C3F' }}; text-decoration: none; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; font-weight: 700;">DUKUNG KAMI</a>
+            <a href="{{ route('home') }}#pengaduan" class="mobile-nav-link" style="color: #D95C3F; text-decoration: none; font-weight: 700;">📢 PENGADUAN KASUS</a>
             <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px;">
-                <span style="font-size: 13px; color: #666; font-family: Inter, sans-serif; font-weight: 700; letter-spacing: 0.5px;">TENTANG KAMI</span>
+                <span style="font-size: 13px; color: #666; font-family: Montserrat, sans-serif; font-weight: 700; letter-spacing: 0.5px;">TENTANG KAMI</span>
                 <a href="{{ route('about') }}" class="mobile-nav-link" style="color: {{ $isAbout ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Profil & Sejarah</a>
                 <a href="{{ route('about') }}#kontak" class="mobile-nav-link" style="color: #1D1D1D; text-decoration: none; padding-left: 12px; font-size: 18px;">Kontak Kami</a>
             </div>

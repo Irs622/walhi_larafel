@@ -10,7 +10,8 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('assets/fonts/webfonts/font-face.css') }}">
 
         <!-- Tailwind Vite -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -43,8 +44,8 @@
 
             <!-- Card Box Neo-Brutalist -->
             <div style="background: white; border: 4px solid #1D1D1D; outline: 4px solid #1D1D1D; outline-offset: -4px; width: 100%; max-width: 440px;" class="p-8 md:p-10 shadow-[8px_8px_0px_0px_#1D1D1D]">
-                <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; text-align: center; text-transform: uppercase; color: #1D1D1D; letter-spacing: 1px; margin: 0 0 4px; line-height: 1.2;">DASHBOARD LOGIN</h2>
-                <p style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; text-align: center; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 28px;">WALHI JAWA BARAT</p>
+                <h2 style="font-family: Aspekta, sans-serif; font-weight: 800; font-size: 28px; text-align: center; text-transform: uppercase; color: #1D1D1D; letter-spacing: 0.5px; margin: 0 0 6px; line-height: 1.2;">DASHBOARD LOGIN</h2>
+                <p style="font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 700; text-align: center; color: #888; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 28px;">WALHI JAWA BARAT</p>
                 
                 <!-- Session Status -->
                 @if(session('status'))

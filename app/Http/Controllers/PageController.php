@@ -106,6 +106,28 @@ class PageController extends Controller
         return view('laporan-tahunan', compact('items'));
     }
 
+    public function kertasPosisi()
+    {
+        $items = Content::ofCategory(ContentCategory::KertasPosisi)
+            ->published()
+            ->orderBy('publish_date', 'desc')
+            ->paginate(9)
+            ->withQueryString();
+
+        return view('kertas-posisi', compact('items'));
+    }
+
+    public function catatanKritis()
+    {
+        $items = Content::ofCategory(ContentCategory::CatatanKritis)
+            ->published()
+            ->orderBy('publish_date', 'desc')
+            ->paginate(9)
+            ->withQueryString();
+
+        return view('catatan-kritis', compact('items'));
+    }
+
     public function donasi()
     {
         return view('donasi');
