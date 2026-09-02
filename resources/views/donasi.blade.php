@@ -7,7 +7,8 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('assets/fonts/webfonts/font-face.css') }}">
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -57,7 +58,7 @@
                 height: 60px;
                 padding: 16px 24px;
                 border: 2px solid #1D1D1D;
-                font-family: Inter, sans-serif;
+                font-family: Montserrat, sans-serif;
                 font-size: 16px;
                 background: white;
                 box-sizing: border-box;
@@ -104,7 +105,7 @@
             }
         </style>
     </head>
-    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Inter, sans-serif;">
+    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Montserrat, sans-serif;">
         <div style="position: relative; width: 100%; overflow-x: clip; background: #F4F1EA;">
             @include('partials.site-header')
 
@@ -115,7 +116,7 @@
                     <div class="w-full max-w-5xl mx-auto px-4 sm:px-8">
                         <div style="display: flex; flex-direction: column; gap: 24px; max-width: 860px; width: 100%;">
                             <!-- Breadcrumbs -->
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: Montserrat, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">
                                 <a href="{{ route('home') }}" style="color: #F4F1EA; text-decoration: none; opacity: 0.8;">Beranda</a>
                                 <span style="color: #256D4A; font-weight: 400; font-size: 16px;">/</span>
                                 <span style="color: #F4F1EA; opacity: 0.8;">Dukung Kami</span>
@@ -123,11 +124,11 @@
                                 <span style="color: #5C8D59;">Donasi Publik</span>
                             </div>
                             
-                            <h1 style="margin: 0; color: #F4F1EA; font-size: clamp(52px, 7vw, 80px); font-family: Anton, sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 1.6px; text-transform: uppercase;">
+                            <h1 style="margin: 0; color: #F4F1EA; font-size: clamp(48px, 7vw, 76px); font-family: Aspekta, sans-serif; font-weight: 800; line-height: 1.05; letter-spacing: 1px; text-transform: uppercase;">
                                 DONASI PUBLIK
                             </h1>
                             <div style="width: 128px; height: 8px; background: #D95C3F;"></div>
-                            <p style="margin: 0; color: #5C8D59; font-size: 20px; line-height: 32px; font-family: Inter, sans-serif;">
+                            <p style="margin: 0; color: #5C8D59; font-size: 20px; line-height: 32px; font-family: Montserrat, sans-serif; font-weight: 500;">
                                 Dukung Perjuangan Keadilan Ekologis
                             </p>
                         </div>
@@ -141,10 +142,10 @@
                         <!-- Green Callout Block -->
                         <div style="background: #256D4A; border: 4px solid #256D4A; outline: 4px #256D4A solid; outline-offset: -4px; padding: 52px; display: flex; flex-direction: column; align-items: center; gap: 36px; box-sizing: border-box; color: #F4F1EA;" class="why-donate-section">
                             <div style="text-align: center; max-width: 720px; display: flex; flex-direction: column; gap: 16px;">
-                                <h2 style="margin: 0; font-family: Anton, sans-serif; font-size: clamp(36px, 5vw, 48px); font-weight: 400; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2;">
+                                <h2 style="margin: 0; font-family: Aspekta, sans-serif; font-size: clamp(32px, 5vw, 44px); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2;">
                                     MENGAPA DONASI KE WALHI?
                                 </h2>
-                                <p style="margin: 0; font-family: Inter, sans-serif; font-size: 18px; line-height: 1.7; opacity: 0.95;">
+                                <p style="margin: 0; font-family: Montserrat, sans-serif; font-size: 18px; line-height: 1.7; opacity: 0.95;">
                                     WALHI Jawa Barat adalah organisasi independen yang tidak menerima dana dari korporasi atau pemerintah. Kami 100% didanai oleh masyarakat. Setiap rupiah yang Anda berikan langsung mendukung perjuangan keadilan ekologis.
                                 </p>
                             </div>
@@ -156,8 +157,8 @@
                                     <div style="width: 72px; height: 72px; background: #1D1D1D; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #256D4A;">
                                         <i data-lucide="shield-alert" style="width: 32px; height: 32px;"></i>
                                     </div>
-                                    <h3 style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1.2px; text-transform: uppercase;">Pendampingan Rakyat</h3>
-                                    <p style="margin: 0; font-family: Inter, sans-serif; font-size: 14px; line-height: 1.6; color: #555;">
+                                    <h3 style="margin: 0; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: 0.5px; text-transform: uppercase;">Pendampingan Rakyat</h3>
+                                    <p style="margin: 0; font-family: Montserrat, sans-serif; font-size: 14px; line-height: 1.6; color: #555;">
                                         Donasi membantu kami mendampingi komunitas yang terdampak kerusakan lingkungan, memberikan bantuan hukum dan advokasi.
                                     </p>
                                 </div>
@@ -167,8 +168,8 @@
                                     <div style="width: 72px; height: 72px; background: #1D1D1D; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #5C8D59;">
                                         <i data-lucide="bar-chart-3" style="width: 32px; height: 32px;"></i>
                                     </div>
-                                    <h3 style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1.2px; text-transform: uppercase;">Investigasi & Riset</h3>
-                                    <p style="margin: 0; font-family: Inter, sans-serif; font-size: 14px; line-height: 1.6; color: #555;">
+                                    <h3 style="margin: 0; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: 0.5px; text-transform: uppercase;">Investigasi & Riset</h3>
+                                    <p style="margin: 0; font-family: Montserrat, sans-serif; font-size: 14px; line-height: 1.6; color: #555;">
                                         Dana untuk investigasi mendalam kerusakan lingkungan, pengumpulan data, dan produksi laporan berkualitas.
                                     </p>
                                 </div>
@@ -178,8 +179,8 @@
                                     <div style="width: 72px; height: 72px; background: #1D1D1D; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #8B6B4A;">
                                         <i data-lucide="megaphone" style="width: 32px; height: 32px;"></i>
                                     </div>
-                                    <h3 style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1.2px; text-transform: uppercase;">Kampanye Publik</h3>
-                                    <p style="margin: 0; font-family: Inter, sans-serif; font-size: 14px; line-height: 1.6; color: #555;">
+                                    <h3 style="margin: 0; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: 0.5px; text-transform: uppercase;">Kampanye Publik</h3>
+                                    <p style="margin: 0; font-family: Montserrat, sans-serif; font-size: 14px; line-height: 1.6; color: #555;">
                                         Membiayai kampanye kesadaran lingkungan, aksi lapangan, dan gerakan massa untuk perubahan kebijakan.
                                     </p>
                                 </div>
@@ -187,25 +188,41 @@
                         </div>
 
                         <!-- Donation Form Block -->
+                        <!-- Donation Form Block -->
                         <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 52px 96px; display: flex; flex-direction: column; gap: 32px; box-sizing: border-box;" class="form-outer-container">
-                            <h2 style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 40px; letter-spacing: 2px; text-transform: uppercase; text-align: center; color: #1D1D1D;">
-                                Form Donasi
+                            
+                            <!-- WhatsApp Narrative Card -->
+                            <div style="background: #256D4A; border: 3px solid #1D1D1D; padding: 24px; color: #F4F1EA; display: flex; flex-direction: column; gap: 12px; text-align: center; box-shadow: 4px 4px 0px 0px #1D1D1D;">
+                                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #1D1D1D; background: #F4F1EA; display: inline-block; padding: 4px 12px; margin: 0 auto;">Layanan Donasi Langsung</div>
+                                <p style="margin: 0; font-size: 17px; font-weight: 600; line-height: 1.6; font-family: Montserrat, sans-serif;">
+                                    “Ingin berdonasi untuk lingkungan hidup? Hubungi WA dibawah ini untuk mengetahui manfaat apa saja yang akan kamu terima :)”
+                                </p>
+                                <div style="margin-top: 6px;">
+                                    <a href="https://wa.me/6282119821159?text=Halo%20WALHI%20Jawa%20Barat,%20saya%20ingin%20berdonasi%20untuk%20lingkungan%20hidup.%20Mohon%20informasi%20manfaat%20apa%20saja%20yang%20akan%20saya%20terima%20:)" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #D95C3F; color: #FFFFFF; padding: 12px 24px; font-weight: 700; font-size: 14px; text-transform: uppercase; text-decoration: none; border: 2px solid #FFFFFF; transition: background 0.2s;" onmouseover="this.style.background='#c44e32'" onmouseout="this.style.background='#D95C3F'">
+                                        <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
+                                        <span>Hubungi WA WALHI Jabar (+62-82-1982-1159)</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <h2 style="margin: 0; font-family: Aspekta, sans-serif; font-weight: 800; font-size: 32px; letter-spacing: 1px; text-transform: uppercase; text-align: center; color: #1D1D1D;">
+                                FORMULIR DONASI
                             </h2>
                             
                             <form id="donation-form" onsubmit="handleDonationSubmit(event)" style="display: flex; flex-direction: column; gap: 32px; width: 100%;">
                                 <!-- Select Amount Presets -->
                                 <div style="display: flex; flex-direction: column; gap: 16px;">
-                                    <label style="color: #1D1D1D; font-family: Inter, sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.35px;">
+                                    <label style="color: #1D1D1D; font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.35px;">
                                         Pilih Jumlah Donasi
                                     </label>
                                     
                                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%;" class="amount-grid">
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(100000, this)" style="height: 60px; font-family: Inter, sans-serif; font-weight: 700; font-size: 16px;">Rp 100.000</button>
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(250000, this)" style="height: 60px; font-family: Inter, sans-serif; font-weight: 700; font-size: 16px;">Rp 250.000</button>
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(500000, this)" style="height: 60px; font-family: Inter, sans-serif; font-weight: 700; font-size: 16px;">Rp 500.000</button>
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(1000000, this)" style="height: 60px; font-family: Inter, sans-serif; font-weight: 700; font-size: 16px;">Rp 1.000.000</button>
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(2500000, this)" style="height: 60px; font-family: Inter, sans-serif; font-weight: 700; font-size: 16px;">Rp 2.500.000</button>
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(5000000, this)" style="height: 60px; font-family: Inter, sans-serif; font-weight: 700; font-size: 16px;">Rp 5.000.000</button>
+                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(10000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 10.000</button>
+                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(25000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 25000</button>
+                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(30000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 30.000</button>
+                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(50000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 50.000</button>
+                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(100000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 100.000</button>
+                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(150000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 150.000</button>
                                     </div>
                                     
                                     <!-- Custom Amount Field -->
@@ -216,32 +233,38 @@
                                 
                                 <!-- Personal Info Form -->
                                 <div style="display: flex; flex-direction: column; gap: 16px;">
-                                    <label style="color: #1D1D1D; font-family: Inter, sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.35px;">
+                                    <label style="color: #1D1D1D; font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.35px;">
                                         Informasi Donatur
                                     </label>
                                     <input type="text" id="donor-name" placeholder="Nama Lengkap" autocomplete="name" class="input-field" required />
                                     <input type="email" id="donor-email" placeholder="Email" autocomplete="email" class="input-field" required />
-                                    <input type="tel" id="donor-phone" placeholder="Nomor Telepon" autocomplete="tel" class="input-field" required />
+                                    <input type="tel" id="donor-phone" placeholder="Nomor Telepon / WhatsApp" autocomplete="tel" class="input-field" required />
                                 </div>
                                 
                                 <!-- Transparency Notice -->
                                 <div style="background: #F4F1EA; border-left: 4px solid #256D4A; padding: 24px; display: flex; gap: 16px; box-sizing: border-box; align-items: flex-start;">
                                     <i data-lucide="shield-check" style="width: 24px; height: 24px; color: #256D4A; flex-shrink: 0;"></i>
                                     <div style="display: flex; flex-direction: column; gap: 8px;">
-                                        <h4 style="margin: 0; color: #1D1D1D; font-family: Inter, sans-serif; font-size: 16px; font-weight: 700; line-height: 1.2;">
+                                        <h4 style="margin: 0; color: #1D1D1D; font-family: Montserrat, sans-serif; font-size: 16px; font-weight: 700; line-height: 1.2;">
                                             Transparansi Penggunaan Dana
                                         </h4>
-                                        <p style="margin: 0; color: #1D1D1D; font-family: Inter, sans-serif; font-size: 15px; line-height: 1.6;">
+                                        <p style="margin: 0; color: #1D1D1D; font-family: Montserrat, sans-serif; font-size: 15px; line-height: 1.6;">
                                             Kami berkomitmen pada transparansi penuh. Laporan keuangan tahunan dipublikasikan dan dapat diakses oleh publik. Setiap donatur akan menerima laporan penggunaan dana secara berkala.
                                         </p>
                                     </div>
                                 </div>
                                 
-                                <!-- Submit Trigger Button -->
-                                <button type="submit" style="height: 60px; font-family: Inter, sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.45px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px;" class="submit-btn">
-                                    <i data-lucide="credit-card" style="width: 20px; height: 20px;"></i>
-                                    Lanjutkan ke Pembayaran
-                                </button>
+                                <!-- Action Buttons: Online Gateway & Direct WhatsApp -->
+                                <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                                    <button type="submit" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.45px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px;" class="submit-btn">
+                                        <i data-lucide="credit-card" style="width: 20px; height: 20px;"></i>
+                                        Lanjutkan ke Pembayaran
+                                    </button>
+                                    <button type="button" onclick="donateViaWhatsApp()" style="height: 52px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 0.45px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#1f5a3d'" onmouseout="this.style.background='#256D4A'">
+                                        <i data-lucide="message-circle" style="width: 20px; height: 20px;"></i>
+                                        Konfirmasi Donasi via WhatsApp
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -259,16 +282,16 @@
                 </div>
                 
                 <div>
-                    <h3 style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1px; color: #1D1D1D;">
+                    <h3 style="margin: 0; font-family: Aspekta, sans-serif; font-weight: 800; font-size: 26px; letter-spacing: 0.5px; color: #1D1D1D; text-transform: uppercase;">
                         Konfirmasi Pembayaran
                     </h3>
-                    <p style="margin: 8px 0 0; font-family: Inter, sans-serif; font-size: 15px; color: #555; line-height: 1.6;">
+                    <p style="margin: 8px 0 0; font-family: Montserrat, sans-serif; font-size: 15px; color: #555; line-height: 1.6;">
                         Terima kasih, <strong id="summary-name">Donatur</strong>! Klik Lanjutkan untuk membuka gerbang pembayaran aman kami.
                     </p>
                 </div>
                 
                 <!-- Summary Detail Box -->
-                <div style="background: #F4F1EA; border: 2px solid #1D1D1D; width: 100%; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; text-align: left; font-family: Inter, sans-serif; font-size: 14px;">
+                <div style="background: #F4F1EA; border: 2px solid #1D1D1D; width: 100%; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; text-align: left; font-family: Montserrat, sans-serif; font-size: 14px;">
                     <div style="display: flex; justify-content: space-between;">
                         <span style="color: #666;">Nominal:</span>
                         <strong style="color: #256D4A;" id="summary-amount">Rp 0</strong>
@@ -280,10 +303,10 @@
                 </div>
                 
                 <div style="display: flex; gap: 12px; width: 100%;">
-                    <button onclick="closePaymentModal()" style="flex: 1; height: 48px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
+                    <button onclick="closePaymentModal()" style="flex: 1; height: 48px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
                         Batal
                     </button>
-                    <button id="confirm-btn" onclick="confirmRedirection()" style="flex: 1; height: 48px; background: #D95C3F; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
+                    <button id="confirm-btn" onclick="confirmRedirection()" style="flex: 1; height: 48px; background: #D95C3F; color: #F4F1EA; border: none; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
                         Lanjutkan
                     </button>
                 </div>
@@ -298,14 +321,14 @@
                     <i data-lucide="cpu" style="width: 40px; height: 40px;"></i>
                 </div>
                 <div>
-                    <h3 style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1px; color: #1D1D1D; text-transform: uppercase;">
+                    <h3 style="margin: 0; font-family: Aspekta, sans-serif; font-weight: 800; font-size: 26px; letter-spacing: 0.5px; color: #1D1D1D; text-transform: uppercase;">
                         Simulasi Pembayaran (Mock)
                     </h3>
-                    <p style="margin: 8px 0 0; font-family: Inter, sans-serif; font-size: 15px; color: #555; line-height: 1.6;">
+                    <p style="margin: 8px 0 0; font-family: Montserrat, sans-serif; font-size: 15px; color: #555; line-height: 1.6;">
                         Sistem mendeteksi server berjalan tanpa API key Midtrans. Pilih status pembayaran untuk disimulasikan:
                     </p>
                 </div>
-                <div style="background: #F4F1EA; border: 2px solid #1D1D1D; width: 100%; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; text-align: left; font-family: Inter, sans-serif; font-size: 14px;">
+                <div style="background: #F4F1EA; border: 2px solid #1D1D1D; width: 100%; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; text-align: left; font-family: Montserrat, sans-serif; font-size: 14px;">
                     <div style="display: flex; justify-content: space-between;">
                         <span style="color: #666;">ID Order:</span>
                         <strong id="mock-summary-id" style="color: #1D1D1D;">WALHI-DON-XXX</strong>
@@ -320,13 +343,13 @@
                     </div>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-                    <button onclick="submitMockPayment('success')" style="width: 100%; height: 48px; background: #256D4A; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
+                    <button onclick="submitMockPayment('success')" style="width: 100%; height: 48px; background: #256D4A; color: #F4F1EA; border: none; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
                         Simulasikan Sukses
                     </button>
-                    <button onclick="submitMockPayment('failed')" style="width: 100%; height: 48px; background: #D95C3F; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
+                    <button onclick="submitMockPayment('failed')" style="width: 100%; height: 48px; background: #D95C3F; color: #F4F1EA; border: none; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
                         Simulasikan Gagal
                     </button>
-                    <button onclick="closeMockPaymentModal()" style="width: 100%; height: 48px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
+                    <button onclick="closeMockPaymentModal()" style="width: 100%; height: 48px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer;">
                         Batal
                     </button>
                 </div>
@@ -374,6 +397,23 @@
             // Format Currency
             function formatRupiah(amount) {
                 return 'Rp ' + parseInt(amount).toLocaleString('id-ID');
+            }
+            
+            // Direct WhatsApp Donation Handler
+            function donateViaWhatsApp() {
+                var nameInput = document.getElementById('donor-name');
+                var amountInput = document.getElementById('custom-amount');
+                var phoneInput = document.getElementById('donor-phone');
+                
+                var name = (nameInput && nameInput.value) ? nameInput.value.trim() : 'Sahabat WALHI';
+                var amount = (amountInput && amountInput.value) ? amountInput.value.trim() : '';
+                var phone = (phoneInput && phoneInput.value) ? phoneInput.value.trim() : '';
+                
+                var nominalText = amount ? formatRupiah(amount) : 'sukarela';
+                var message = "Halo WALHI Jawa Barat,\n\nSaya " + name + (phone ? " (" + phone + ")" : "") + " ingin berdonasi sebesar " + nominalText + " untuk gerakan lingkungan hidup di Jawa Barat.\n\nMohon informasi rekening resmi WALHI Jawa Barat dan manfaat apa saja yang akan saya terima. Terima kasih :)";
+                
+                var url = "https://wa.me/6282119821159?text=" + encodeURIComponent(message);
+                window.open(url, '_blank');
             }
             
             // Handle Submit Form

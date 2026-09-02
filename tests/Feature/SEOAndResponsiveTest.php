@@ -95,4 +95,45 @@ class SEOAndResponsiveTest extends TestCase
             ->assertSee('<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">', false)
             ->assertSee('<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">', false);
     }
+
+    /**
+     * Test newly added publication routes render successfully.
+     */
+    public function test_publication_routes_render(): void
+    {
+        $responseKertas = $this->get(route('kertas-posisi'));
+        $responseKertas->assertStatus(200)
+            ->assertSee('KERTAS POSISI');
+
+        $responseCatatan = $this->get(route('catatan-kritis'));
+        $responseCatatan->assertStatus(200)
+            ->assertSee('CATATAN KRITIS');
+    }
+
+    /**
+     * Test donation page contains updated presets and WhatsApp direct narrative.
+     */
+    public function test_donation_page_contains_wa_narrative_and_presets(): void
+    {
+        $response = $this->get(route('donasi'));
+        $response->assertStatus(200)
+            ->assertSee('Ingin berdonasi untuk lingkungan hidup?')
+            ->assertSee('6282119821159')
+            ->assertSee('Rp 10.000')
+            ->assertSee('Rp 150.000');
+    }
+
+    /**
+     * Test tentang kami page contains updated vision and leadership.
+     */
+    public function test_tentang_kami_page_content(): void
+    {
+        $response = $this->get(route('about'));
+        $response->assertStatus(200)
+            ->assertSee('Wahyudin')
+            ->assertSee('Dedy Kurniawan')
+            ->assertSee('Jl. Simponi No.29')
+            ->assertSee('walhijabar@gmail.com')
+            ->assertDontSee('walhijabar@walhijabar.id');
+    }
 }

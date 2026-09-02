@@ -4,17 +4,21 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
             <!-- Kolom Brand -->
             <div class="md:col-span-6 flex flex-col gap-6">
-                <h3 class="text-3xl font-label tracking-widest text-[#F4F1EA] uppercase">WALHI Jawa Barat</h3>
+                <h3 class="text-2xl sm:text-3xl font-heading font-extrabold tracking-wider text-[#F4F1EA] uppercase">WALHI Jawa Barat</h3>
                 <p class="text-sm md:text-base leading-relaxed text-[#F4F1EA]/80 max-w-xl">
                     Wahana Lingkungan Hidup Indonesia (WALHI) Jawa Barat adalah organisasi lingkungan hidup independen yang memperjuangkan keadilan ekologis dan kedaulatan rakyat atas sumber daya alam.
                 </p>
                 <div class="text-xs text-[#F4F1EA]/70 flex flex-col gap-1.5 font-sans">
                     <span class="font-bold uppercase tracking-wider text-[#5C8D59]">Alamat Kantor:</span>
-                    <span>{{ $globalContact->address }}</span>
-                    <span>Email: {{ $globalContact->email }} | WA: {{ $globalContact->whatsapp }}</span>
+                    <span>Jl. Simponi No.29, Turangga, Kec. Lengkong, Kota Bandung, Jawa Barat 40264</span>
+                    <span>Email: walhijabar@gmail.com | WA: +62-82-1982-1159</span>
                 </div>
                 <!-- Icons Media Sosial -->
-                <div class="flex gap-4">
+                <div class="flex flex-wrap gap-4">
+                    <!-- X / Twitter -->
+                    <a href="https://x.com/walhijabar" target="_blank" class="w-12 h-12 bg-[#256D4A] hover:bg-[#5C8D59] transition-colors flex items-center justify-center text-[#F4F1EA] border-2 border-transparent hover:border-[#1D1D1D]" aria-label="X (Twitter)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </a>
                     <!-- Facebook -->
                     <a href="{{ $globalContact->facebook }}" target="_blank" class="w-12 h-12 bg-[#256D4A] hover:bg-[#5C8D59] transition-colors flex items-center justify-center text-[#F4F1EA] border-2 border-transparent hover:border-[#1D1D1D]" aria-label="Facebook">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
@@ -37,38 +41,36 @@
             <!-- Kolom Navigasi -->
             <div class="md:col-span-3 flex flex-col gap-4">
                 <div class="pb-2 border-[#256D4A] border-b-2">
-                    <h4 class="text-xl font-label tracking-wider text-[#5C8D59] uppercase">Navigasi</h4>
+                    <h4 class="text-lg sm:text-xl font-heading font-bold tracking-wider text-[#5C8D59] uppercase">Navigasi</h4>
                 </div>
                 <ul class="flex flex-col gap-3 text-sm md:text-base text-[#F4F1EA]/80 font-sans">
                     <li><a href="{{ route('about') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Tentang Kami</a></li>
                     <li><a href="{{ route('home') }}#isu" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Isu Lingkungan</a></li>
-                    <li><a href="{{ route('home') }}#kabar" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Kampanye</a></li>
+                    <li><a href="{{ route('home') }}#kabar" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Siaran Pers & Investigasi</a></li>
                     <li><a href="{{ route('blog') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Berita & Artikel</a></li>
-                    <li><a href="{{ route('laporan-tahunan') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Laporan</a></li>
-                    <li><a href="{{ route('home') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Kontak</a></li>
+                    <li><a href="{{ route('laporan-tahunan') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Laporan Tahunan</a></li>
+                    <li><a href="{{ route('kertas-posisi') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Kertas Posisi</a></li>
+                    <li><a href="{{ route('home') }}#pengaduan" class="hover:text-[#5C8D59] transition-colors text-decoration-none font-bold text-[#D95C3F]">Pengaduan Kasus</a></li>
                 </ul>
             </div>
 
             <!-- Kolom Jaringan -->
             <div class="md:col-span-3 flex flex-col gap-4">
                 <div class="pb-2 border-[#256D4A] border-b-2">
-                    <h4 class="text-xl font-label tracking-wider text-[#5C8D59] uppercase">Jaringan</h4>
+                    <h4 class="text-lg sm:text-xl font-heading font-bold tracking-wider text-[#5C8D59] uppercase">Jaringan</h4>
                 </div>
                 <ul class="flex flex-col gap-3 text-sm md:text-base text-[#F4F1EA]/80 font-sans">
                     <li><a href="https://www.walhi.or.id" target="_blank" class="hover:text-[#5C8D59] transition-colors text-decoration-none">WALHI Nasional</a></li>
-                    <li><a href="https://www.foei.org" target="_blank" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Friends of the Earth</a></li>
-                    <li><a href="https://www.greenpeace.org/indonesia" target="_blank" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Greenpeace Indonesia</a></li>
-                    <li><a href="https://kpa.or.id" target="_blank" class="hover:text-[#5C8D59] transition-colors text-decoration-none">KPA (Konsorsium Pembaruan Agraria)</a></li>
-                    <li><a href="https://www.jatam.org" target="_blank" class="hover:text-[#5C8D59] transition-colors text-decoration-none">JATAM (Jaringan Advokasi Tambang)</a></li>
+                    <li><a href="https://www.foei.org" target="_blank" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Friends of The Earth (FoE)</a></li>
                 </ul>
             </div>
         </div>
 
-        <!-- Middle Section: Langganan Newsletter -->
+        <!-- Middle Section: Langganan Nawala -->
         <div class="bg-[#256D4A] p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 border-4 border-[#1D1D1D] shadow-[8px_8px_0px_0px_#F4F1EA]">
             <div class="flex flex-col gap-2 max-w-2xl w-full">
-                <h4 class="text-2xl md:text-3xl font-label uppercase tracking-wider text-[#F4F1EA]">Berlangganan Newsletter</h4>
-                <p class="text-sm md:text-base text-[#F4F1EA]/90">Dapatkan update terbaru tentang isu lingkungan, kampanye, dan aksi-aksi WALHI Jawa Barat.</p>
+                <h4 class="text-2xl md:text-3xl font-heading font-extrabold uppercase tracking-wide text-[#F4F1EA]">Berlangganan Nawala</h4>
+                <p class="text-sm md:text-base text-[#F4F1EA]/90 font-sans">Dapatkan update berkala tentang isu lingkungan hidup, investigasi, kampanye, dan aksi-aksi WALHI Jawa Barat.</p>
                 @if(session('subscribe_success'))
                     <div class="text-xs font-semibold text-[#1D1D1D] bg-[#F4F1EA] py-1.5 px-3 border border-[#1D1D1D] inline-block mt-2 self-start w-fit">
                         {{ session('subscribe_success') }}
@@ -84,7 +86,7 @@
                     <input type="email" name="email" placeholder="Email kamu" autocomplete="email" class="w-full py-3 pl-12 pr-4 bg-white text-[#1D1D1D] border-2 border-transparent focus:border-[#D95C3F] outline-none font-sans" required />
                     <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 text-[#5C8D59] w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                 </div>
-                <button type="submit" class="bg-[#D95C3F] hover:bg-[#c44e32] transition-colors text-white font-bold uppercase tracking-wider px-8 py-3 whitespace-nowrap font-sans text-sm border-2 border-transparent hover:border-[#1D1D1D]">Subscribe</button>
+                <button type="submit" class="bg-[#D95C3F] hover:bg-[#c44e32] transition-colors text-white font-bold uppercase tracking-wider px-8 py-3 whitespace-nowrap font-sans text-sm border-2 border-transparent hover:border-[#1D1D1D]">Berlangganan</button>
             </form>
         </div>
 

@@ -7,7 +7,8 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('assets/fonts/webfonts/font-face.css') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
@@ -18,16 +19,16 @@
             .hover-download-btn:hover {
                 background: #1D1D1D !important;
             }
-            .infographic-card {
+            .infografis-card {
                 transition: transform 0.2s ease, box-shadow 0.2s ease;
             }
-            .infographic-card:hover {
-                transform: translateY(-6px);
-                box-shadow: 0 16px 36px rgba(29, 29, 29, 0.15);
+            .infografis-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 24px rgba(29, 29, 29, 0.15);
             }
         </style>
     </head>
-    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Inter, sans-serif;">
+    <body style="width: 100%; background: #F4F1EA; margin: 0; overflow-x: clip; color: #1D1D1D; font-family: Montserrat, sans-serif;">
         <div style="position: relative; width: 100%; overflow-x: clip; background: #F4F1EA;">
             @include('partials.site-header')
 
@@ -38,7 +39,7 @@
                     <div class="w-full max-w-5xl mx-auto px-4 sm:px-8">
                         <div style="display: flex; flex-direction: column; gap: 24px; max-width: 860px; width: 100%;">
                             <!-- Breadcrumbs -->
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: Montserrat, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">
                                 <a href="{{ route('home') }}" style="color: #F4F1EA; text-decoration: none; opacity: 0.8;">Beranda</a>
                                 <span style="color: #256D4A; font-weight: 400; font-size: 16px;">/</span>
                                 <span style="color: #F4F1EA; opacity: 0.8;">Publikasi</span>
@@ -46,12 +47,12 @@
                                 <span style="color: #5C8D59;">Infografis</span>
                             </div>
                             
-                            <h1 style="margin: 0; color: #F4F1EA; font-size: clamp(52px, 7vw, 80px); font-family: Anton, sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 1.6px; text-transform: uppercase;">
+                            <h1 style="margin: 0; color: #F4F1EA; font-size: clamp(48px, 6vw, 76px); font-family: Aspekta, sans-serif; font-weight: 800; line-height: 1; letter-spacing: 1.6px; text-transform: uppercase;">
                                 INFOGRAFIS
                             </h1>
                             <div style="width: 128px; height: 8px; background: #D95C3F;"></div>
-                            <p style="margin: 0; color: #5C8D59; font-size: 20px; line-height: 32px; font-family: Inter, sans-serif;">
-                                Visualisasi Data Lingkungan Hidup
+                            <p style="margin: 0; color: #5C8D59; font-size: 20px; line-height: 32px; font-family: Montserrat, sans-serif;">
+                                Visualisasi Data Krisis Ekologis dan Fakta Lapangan Jawa Barat
                             </p>
                         </div>
                     </div>
@@ -86,7 +87,7 @@
                                     
                                     <!-- Card details -->
                                     <div style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 16px;">
-                                        <h2 style="margin: 0; color: #1D1D1D; font-size: 24px; font-family: 'Bebas Neue', sans-serif; font-weight: 400; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.5px;">
+                                        <h2 style="margin: 0; color: #1D1D1D; font-size: 20px; font-family: Aspekta, sans-serif; font-weight: 800; text-transform: uppercase; line-height: 1.3; letter-spacing: 0.5px;">
                                             <a href="{{ route('content.show', $item->slug) }}" style="color: #1D1D1D; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
                                                 {{ $item->title }}
                                             </a>
@@ -94,7 +95,7 @@
                                         
                                         <div>
                                             <a href="{{ route('content.show', $item->slug) }}"
-                                               style="width: 100%; height: 48px; background: #256D4A; color: #F4F1EA; border: none; font-family: Inter, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
+                                               style="width: 100%; height: 48px; background: #256D4A; color: #F4F1EA; border: none; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
                                                class="hover-download-btn">
                                                 <i data-lucide="book-open" style="width: 18px; height: 18px;"></i>
                                                 Baca Infografis
@@ -103,7 +104,7 @@
                                     </div>
                                 </article>
                             @empty
-                                <div style="grid-column: 1 / -1; background: white; border: 4px solid #1D1D1D; padding: 48px; text-align: center; font-size: 18px; font-family: Inter, sans-serif; color: #888;">
+                                <div style="grid-column: 1 / -1; background: white; border: 4px solid #1D1D1D; padding: 48px; text-align: center; font-size: 18px; font-family: Montserrat, sans-serif; color: #888;">
                                     <i data-lucide="alert-circle" style="width: 48px; height: 48px; margin: 0 auto 16px; color: #8B6B4A; display: block;"></i>
                                     Belum ada infografis yang diterbitkan.
                                 </div>
@@ -116,7 +117,7 @@
                                 <a href="{{ $items->previousPageUrl() }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ $items->onFirstPage() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
                                     ‹
                                 </a>
-                                <span style="font-weight: 700; font-size: 16px; color: #1D1D1D; font-family: Inter, sans-serif;">
+                                <span style="font-weight: 700; font-size: 16px; color: #1D1D1D; font-family: Montserrat, sans-serif;">
                                     Halaman {{ $items->currentPage() }} dari {{ $items->lastPage() }}
                                 </span>
                                 <a href="{{ $items->nextPageUrl() }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ !$items->hasMorePages() ? 'opacity: 0.5; pointer-events: none;' : '' }}">

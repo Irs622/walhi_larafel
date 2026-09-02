@@ -6,14 +6,15 @@ $breadcrumbMap = [
     'admin/siaran-pers' => 'Publikasi › Siaran Pers',
     'admin/infografis' => 'Publikasi › Infografis',
     'admin/kertas-posisi' => 'Publikasi › Kertas Posisi',
-    'admin/newsletter' => 'Publikasi › E-Newsletter',
+    'admin/catatan-kritis' => 'Publikasi › Catatan Kritis',
+    'admin/newsletter' => 'Publikasi › Nawala',
     'admin/buletin-bumi' => 'Publikasi › Buletin Bumi',
     'admin/jurnal' => 'Publikasi › Jurnal Tanah Air',
     'admin/laporan-tahunan' => 'Publikasi › Laporan Tahunan',
     'admin/donasi' => 'Dukung Kami › Donasi Publik',
     'admin/pekan-rakyat' => 'Dukung Kami › Pekan Rakyat',
     'admin/comments' => 'Moderasi Komentar',
-    'admin/subscribers' => 'Pelanggan (Newsletter)',
+    'admin/subscribers' => 'Pelanggan (Nawala)',
     'admin/tentang/sejarah' => 'Tentang Kami › Sejarah',
     'admin/tentang/visi-misi' => 'Tentang Kami › Visi & Misi',
     'admin/tentang/dewan-nasional' => 'Tentang Kami › Dewan Nasional',
@@ -42,12 +43,13 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
     <title>{{ $breadcrumb }} - WALHI Jawa Barat Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/fonts/webfonts/font-face.css') }}">
     @vite(['resources/css/app.css'])
     <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" integrity="sha384-ieG+IKD0d/ZPXyCBTMVAbqsQdns8QGJR/e26WMw7M4fkaI/rHcS/YIoi+ah9WGge" crossorigin="anonymous"></script>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Montserrat', sans-serif;
         }
         /* Custom scrollbar to match React app design */
         ::-webkit-scrollbar {
@@ -130,7 +132,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
 
                 <!-- Publikasi Dropdown Group -->
                 @php
-                    $publikasiActive = request()->is('admin/siaran-pers*') || request()->is('admin/infografis*') || request()->is('admin/kertas-posisi*') || request()->is('admin/newsletter*') || request()->is('admin/buletin-bumi*') || request()->is('admin/jurnal*') || request()->is('admin/laporan-tahunan*');
+                    $publikasiActive = request()->is('admin/siaran-pers*') || request()->is('admin/infografis*') || request()->is('admin/kertas-posisi*') || request()->is('admin/catatan-kritis*') || request()->is('admin/newsletter*') || request()->is('admin/buletin-bumi*') || request()->is('admin/jurnal*') || request()->is('admin/laporan-tahunan*');
                 @endphp
                 <div class="group-container" id="group-publikasi">
                     <button onclick="toggleGroup('publikasi')" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ $publikasiActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
@@ -142,7 +144,8 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                         <a href="{{ route('admin.content.index', 'siaran-pers') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/siaran-pers*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Siaran Pers</a>
                         <a href="{{ route('admin.content.index', 'infografis') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/infografis*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Infografis</a>
                         <a href="{{ route('admin.content.index', 'kertas-posisi') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/kertas-posisi*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Kertas Posisi</a>
-                        <a href="{{ route('admin.content.index', 'newsletter') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/newsletter*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">E-Newsletter</a>
+                        <a href="{{ route('admin.content.index', 'catatan-kritis') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/catatan-kritis*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Catatan Kritis</a>
+                        <a href="{{ route('admin.content.index', 'newsletter') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/newsletter*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Nawala</a>
                         <a href="{{ route('admin.content.index', 'buletin-bumi') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/buletin-bumi*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Buletin Bumi</a>
                         <a href="{{ route('admin.content.index', 'jurnal') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/jurnal*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Jurnal Tanah Air</a>
                         <a href="{{ route('admin.content.index', 'laporan-tahunan') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/laporan-tahunan*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Laporan Tahunan</a>

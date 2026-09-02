@@ -51,6 +51,8 @@ Route::get('/regulasi', [PageController::class, 'regulasi'])->middleware('thrott
 Route::get('/publikasi/siaran-pers', [PageController::class, 'siaranPers'])->name('siaran-pers');
 Route::get('/publikasi/infografis', [PageController::class, 'infografis'])->name('infografis');
 Route::get('/publikasi/laporan-tahunan', [PageController::class, 'laporanTahunan'])->name('laporan-tahunan');
+Route::get('/publikasi/kertas-posisi', [PageController::class, 'kertasPosisi'])->name('kertas-posisi');
+Route::get('/publikasi/catatan-kritis', [PageController::class, 'catatanKritis'])->name('catatan-kritis');
 Route::get('/dukung-kami/donasi-publik', [PageController::class, 'donasi'])->name('donasi');
 
 // SEO

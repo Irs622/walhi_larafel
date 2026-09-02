@@ -121,6 +121,7 @@ class AppServiceProvider extends ServiceProvider
             'facebook'  => 'https://facebook.com/walhi.jabar',
             'instagram' => 'https://instagram.com/walhi.jabar',
             'youtube'   => 'https://www.youtube.com/@walhijabar',
+            'twitter'   => 'https://x.com/walhijabar',
         ];
 
         try {
@@ -137,7 +138,7 @@ class AppServiceProvider extends ServiceProvider
                             $key = strtolower(trim($key));
                             $value = trim(filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS));
                             if (array_key_exists($key, $defaults)) {
-                                if (in_array($key, ['facebook', 'instagram', 'youtube', 'email'])) {
+                                if (in_array($key, ['facebook', 'instagram', 'youtube', 'twitter', 'email'])) {
                                     if ($key === 'email' && ! filter_var($value, FILTER_VALIDATE_EMAIL)) {
                                         continue;
                                     }
