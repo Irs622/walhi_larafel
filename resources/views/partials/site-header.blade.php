@@ -1,4 +1,4 @@
-<header style="width: 100%; z-index: 1000; position: sticky; top: 0;">
+<header style="width: 100%; z-index: 1000; position: -webkit-sticky; position: sticky; top: 0;">
     <style>
         @media (max-width: 1024px) {
             .desktop-nav {

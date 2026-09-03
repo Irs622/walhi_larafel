@@ -17,7 +17,7 @@
         
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-[#F4F1EA] text-[#1D1D1D] font-sans antialiased overflow-x-hidden">
+    <body class="bg-[#F4F1EA] text-[#1D1D1D] font-sans antialiased overflow-x-clip" style="overflow-x: clip;">
         @include('partials.site-header')
 
         <!-- Hero Section -->
