@@ -122,7 +122,20 @@ gunzip < storage/backups/walhi_prod_mysql_YYYYMMDD_HHMMSS.sql.gz | docker exec -
 
 ---
 
-## 📊 Monitoring & Manajemen Log
+## 📊 Monitoring, Alokasi RAM & Benchmark
+
+### Anggaran Memori pada VPS 4 GB RAM:
+Container produksi dibatasi secara ketat (*hard memory limit*) untuk mencegah crash akibat *Out of Memory (OOM)*:
+- **`walhi_prod_app` (PHP-FPM 8 workers + Laravel 12)**: Limit **1.536 MB** (Reservasi: 512 MB)
+- **`walhi_prod_db` (MySQL 8.0 tuned buffer pool)**: Limit **1.280 MB** (Reservasi: 512 MB)
+- **`walhi_prod_nginx` (Nginx Alpine Reverse Proxy)**: Limit **256 MB** (Reservasi: 64 MB)
+- **Headroom OS, Page Cache & Docker Daemon**: **~1.024 MB (1 GB)**
+
+### Memeriksa Penggunaan CPU & RAM Realtime:
+```bash
+docker stats
+```
+> **Target Normal:** Total konsumsi RAM server berada di kisaran 50% – 70%. Jika beban puncak (*peak*) mencapai 75% – 85%, server masih memiliki toleransi aman tanpa risiko *kernel panic*.
 
 ### Melihat Log Realtime:
 ```bash
@@ -133,11 +146,6 @@ docker compose -f docker-compose.prod.yml logs -f
 docker compose -f docker-compose.prod.yml logs -f app
 ```
 
-### Memeriksa Penggunaan CPU & RAM Container:
-```bash
-docker stats
-```
-
 ---
 
 ## 🔄 Prosedur Pembaruan Aplikasi (Update Workflow)
@@ -145,12 +153,40 @@ docker stats
 Saat ada pembaruan kode di branch `main` GitHub yang ingin di-deploy ke server live:
 
 ```bash
+# 1. Masuk ke direktori aplikasi
 cd /var/www/walhi_app
+
+# 2. Ambil pembaruan kode terbaru
 git pull origin main
+
+# 3. Build ulang image container dan jalankan stack produksi
 docker compose -f docker-compose.prod.yml up -d --build
+
+# 4. Jalankan migrasi database secara eksplisit (Explicit Release Step)
+docker compose -f docker-compose.prod.yml exec app php artisan migrate --force
 ```
-Proses ini akan otomatis:
-1. Melakukan build ulang asset frontend (`npm run build`).
-2. Menjalankan migrasi database baru jika ada (`php artisan migrate --force`).
-3. Memperbarui dan mengoptimalkan cache konfigurasi (`config:cache`, `route:cache`, `view:cache`).
-4. Merestart container dengan *zero manual intervention*.
+
+Alur ini memastikan:
+1. Kode dan aset frontend ter-compile ulang secara deterministik (`npm ci`).
+2. PHP-FPM dan OPcache termuat ulang secara bersih (*fresh bytecodes*).
+3. Skema database termigrasi secara terkontrol tanpa mengganggu restart rutin container.
+4. Cache produksi teroptimasi penuh (`config:cache`, `route:cache`, `view:cache`).
+
+---
+
+## 🧪 Panduan Load Testing Staging / Production
+
+Sebelum promosi traffic masif, lakukan pengujian konkurensi bertahap dari workstation pengembang atau server staging:
+
+```bash
+# Menggunakan ApacheBench (ab) atau k6 / wrk
+# Uji coba 100 request dengan 10 concurrent users:
+ab -n 100 -c 10 https://walhijabar.or.id/
+
+# Uji coba 500 request dengan 25 concurrent users:
+ab -n 500 -c 25 https://walhijabar.or.id/
+
+# Uji coba 1000 request dengan 50 concurrent users:
+ab -n 1000 -c 50 https://walhijabar.or.id/
+```
+Amati keluaran `docker stats`. Jika penggunaan RAM per PHP-FPM worker stabil dan antrean request rendah, nilai `pm.max_children` di `docker/php/zz-docker.conf` dapat dinaikkan bertahap (8 ➔ 10 ➔ 12) berdasarkan data aktual.
