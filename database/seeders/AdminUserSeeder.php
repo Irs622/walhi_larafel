@@ -17,7 +17,7 @@ class AdminUserSeeder extends Seeder
         // ── Admin User ──
         $adminEmail = config('auth.admin_seed.email') ?: 'admin@walhijabar.or.id';
         $isGenerated = false;
-        
+
         $adminPass = config('auth.admin_seed.password');
         if (empty($adminPass)) {
             $adminPass = Str::random(16);

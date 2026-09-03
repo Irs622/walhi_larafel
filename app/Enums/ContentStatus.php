@@ -5,8 +5,8 @@ namespace App\Enums;
 enum ContentStatus: string
 {
     case Published = 'published';
-    case Draft     = 'draft';
-    case Archived  = 'archived';
+    case Draft = 'draft';
+    case Archived = 'archived';
 
     /**
      * Human-readable label in Indonesian.
@@ -15,8 +15,8 @@ enum ContentStatus: string
     {
         return match ($this) {
             self::Published => 'Dipublikasikan',
-            self::Draft     => 'Draf',
-            self::Archived  => 'Diarsipkan',
+            self::Draft => 'Draf',
+            self::Archived => 'Diarsipkan',
         };
     }
 
@@ -27,8 +27,8 @@ enum ContentStatus: string
     {
         return match ($this) {
             self::Published => 'green',
-            self::Draft     => 'yellow',
-            self::Archived  => 'gray',
+            self::Draft => 'yellow',
+            self::Archived => 'gray',
         };
     }
 }

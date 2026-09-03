@@ -1,42 +1,45 @@
 <?php
- 
+
 namespace Tests\Feature;
- 
-use Tests\TestCase;
+
+use App\Models\Content;
+use App\Models\User;
+use Database\Seeders\ContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
- 
+use Tests\TestCase;
+
 class SEOAndResponsiveTest extends TestCase
 {
     use RefreshDatabase;
- 
+
     protected function setUp(): void
     {
         parent::setUp();
         // Seed database for sitemap contents
-        $this->seed(\Database\Seeders\ContentSeeder::class);
+        $this->seed(ContentSeeder::class);
     }
- 
+
     /**
      * Test sitemap XML renders successfully.
      */
     public function test_sitemap_xml_loads(): void
     {
         $response = $this->get(route('sitemap'));
- 
+
         $response->assertStatus(200)
             ->assertHeader('Content-Type', 'text/xml; charset=UTF-8')
             ->assertSee('<urlset', false)
             ->assertSee('<loc>http://localhost</loc>', false)
             ->assertSee('krisis-air-citarum');
     }
- 
+
     /**
      * Test robots.txt loads and contains disallow rules.
      */
     public function test_robots_txt_loads(): void
     {
         $response = $this->get('/robots.txt');
- 
+
         $response->assertStatus(200)
             ->assertSee('User-agent: *')
             ->assertSee('Disallow: /admin')
@@ -45,51 +48,51 @@ class SEOAndResponsiveTest extends TestCase
             ->assertSee('Disallow: /profile')
             ->assertSee('Sitemap:');
     }
- 
+
     /**
      * Test SEO Meta tags are rendered on welcome page.
      */
     public function test_seo_meta_tags_on_welcome_page(): void
     {
         $response = $this->get('/');
- 
+
         $response->assertStatus(200)
             ->assertSee('<meta name="description"', false)
             ->assertSee('property="og:title"', false)
             ->assertSee('property="og:description"', false)
             ->assertSee('property="twitter:title"', false);
     }
- 
+
     /**
      * Test dynamic article SEO tags, Open Graph, and JSON-LD schema on content detail page.
      */
     public function test_article_detail_has_dynamic_seo_and_open_graph(): void
     {
-        $content = \App\Models\Content::published()->first();
+        $content = Content::published()->first();
         $this->assertNotNull($content);
- 
+
         $response = $this->get(route('content.show', $content->slug));
- 
+
         $response->assertStatus(200)
-            ->assertSee('<title>' . e($content->title) . ' - WALHI Jawa Barat</title>', false)
+            ->assertSee('<title>'.e($content->title).' - WALHI Jawa Barat</title>', false)
             ->assertSee('property="og:title"', false)
             ->assertSee('property="og:type" content="article"', false)
             ->assertSee('name="twitter:card" content="summary_large_image"', false)
             ->assertSee('application/ld+json', false)
             ->assertSee('NewsArticle', false);
     }
- 
+
     /**
      * Test admin routes have noindex meta tag and X-Robots-Tag response header.
      */
     public function test_admin_routes_have_noindex_and_x_robots_tag(): void
     {
-        $admin = \App\Models\User::factory()->create([
+        $admin = User::factory()->create([
             'role' => 'admin',
         ]);
- 
+
         $response = $this->actingAs($admin)->get('/admin');
- 
+
         $response->assertStatus(200)
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet')
             ->assertSee('<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">', false)

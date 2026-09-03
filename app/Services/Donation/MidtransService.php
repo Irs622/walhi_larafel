@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\Log;
 class MidtransService
 {
     private string $serverKey;
+
     private string $baseUrl;
 
     public function __construct()
     {
         $this->serverKey = config('midtrans.server_key', '');
-        $isProduction    = config('midtrans.is_production', false);
+        $isProduction = config('midtrans.is_production', false);
 
         $this->baseUrl = $isProduction
             ? 'https://app.midtrans.com/snap/v1/transactions'
@@ -36,26 +37,26 @@ class MidtransService
     public function createTransaction(string $orderId, array $customerDetails, int $amount): string
     {
         $response = Http::withHeaders([
-            'Accept'       => 'application/json',
+            'Accept' => 'application/json',
             'Content-Type' => 'application/json',
         ])
-        ->withBasicAuth($this->serverKey, '')
-        ->post($this->baseUrl, [
-            'transaction_details' => [
-                'order_id'    => $orderId,
-                'gross_amount' => $amount,
-            ],
-            'customer_details' => [
-                'first_name' => $customerDetails['donor_name'],
-                'email'      => $customerDetails['donor_email'],
-                'phone'      => $customerDetails['donor_phone'],
-            ],
-        ]);
+            ->withBasicAuth($this->serverKey, '')
+            ->post($this->baseUrl, [
+                'transaction_details' => [
+                    'order_id' => $orderId,
+                    'gross_amount' => $amount,
+                ],
+                'customer_details' => [
+                    'first_name' => $customerDetails['donor_name'],
+                    'email' => $customerDetails['donor_email'],
+                    'phone' => $customerDetails['donor_phone'],
+                ],
+            ]);
 
         if (! $response->successful()) {
             Log::warning('Midtrans API error', [
-                'status'   => $response->status(),
-                'body'     => $response->body(),
+                'status' => $response->status(),
+                'body' => $response->body(),
                 'order_id' => $orderId,
             ]);
             throw new \RuntimeException('Midtrans API returned non-2xx response.');
@@ -83,7 +84,7 @@ class MidtransService
             return false;
         }
 
-        $expected = hash('sha512', $orderId . $statusCode . $grossAmount . $this->serverKey);
+        $expected = hash('sha512', $orderId.$statusCode.$grossAmount.$this->serverKey);
 
         return hash_equals($expected, $incomingSignature);
     }
