@@ -185,7 +185,7 @@
                                     <!-- Action buttons -->
                                     <div style="border-top: 2px solid #1D1D1D; padding-top: 24px; display: flex; gap: 12px; align-items: center;" class="report-actions-row">
                                         @if($item->image_url)
-                                            <a href="{{ $item->image_url }}" target="_blank"
+                                            <a href="{{ $item->image_url }}" target="_blank" rel="noopener noreferrer"
                                                 style="height: 52px; padding: 0 32px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 0.4px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s;"
                                                 class="hover-action-dark-btn">
                                                 <i data-lucide="download" style="width: 18px; height: 18px;"></i>

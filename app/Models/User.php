@@ -17,7 +17,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
     ];
 
     protected $hidden = [
@@ -72,5 +71,14 @@ class User extends Authenticatable
     public function canDelete(): bool
     {
         return $this->roleEnum->canDelete();
+    }
+
+    /**
+     * Explicitly assign a role to this user (safe assignment without mass assignment risk).
+     */
+    public function assignRole(string|UserRole $role): static
+    {
+        $this->role = $role instanceof UserRole ? $role->value : $role;
+        return $this;
     }
 }

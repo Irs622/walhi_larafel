@@ -65,21 +65,11 @@ class DonationController extends Controller
                 '127.0.0.1/32',
             ]);
 
-            $isAllowed = false;
-            $ipLong = ip2long($clientIp);
-            if ($ipLong !== false) {
-                foreach ($allowedRanges as $cidr) {
-                    [$subnet, $mask] = explode('/', $cidr);
-                    $subnetLong = ip2long($subnet);
-                    $maskLong = ~((1 << (32 - (int) $mask)) - 1);
-                    if (($ipLong & $maskLong) === ($subnetLong & $maskLong)) {
-                        $isAllowed = true;
-                        break;
-                    }
-                }
-            }
-
-            if (! $isAllowed) {
+            if (! \Symfony\Component\HttpFoundation\IpUtils::checkIp($clientIp, $allowedRanges)) {
+                \Illuminate\Support\Facades\Log::warning('Midtrans webhook rejected due to unlisted IP address', [
+                    'ip'         => $clientIp,
+                    'user_agent' => $request->userAgent(),
+                ]);
                 return response('Forbidden IP', 403);
             }
         }

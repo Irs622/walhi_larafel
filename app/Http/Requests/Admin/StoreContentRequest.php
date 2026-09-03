@@ -19,7 +19,26 @@ class StoreContentRequest extends FormRequest
             'body'       => ['nullable', 'string', 'max:5000000'],
             'tags'       => ['nullable', 'string', 'max:500'],
             'status'     => ['required', 'in:published,draft,archived'],
-            'image_url'  => ['nullable', 'string', 'max:500'],
+            'image_url'  => [
+                'nullable',
+                'string',
+                'max:500',
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if (!is_string($value) || trim($value) === '') {
+                        return;
+                    }
+                    $val = trim($value);
+                    if (preg_match('/^(javascript|vbscript|data):/i', $val)) {
+                        $fail('URL gambar/berkas tidak valid atau menggunakan protokol yang dilarang.');
+                        return;
+                    }
+                    $isUrl = filter_var($val, FILTER_VALIDATE_URL) && preg_match('/^https?:\/\//i', $val);
+                    $isSafeRelative = preg_match('/^(\/|storage\/|uploads\/|assets\/)/i', $val);
+                    if (!$isUrl && !$isSafeRelative) {
+                        $fail('URL gambar/berkas harus berupa tautan web yang valid (http/https) atau jalur berkas lokal yang aman.');
+                    }
+                },
+            ],
             'image'      => [
                 'nullable',
                 'file',
