@@ -93,48 +93,73 @@
                                 ];
                                 $dateObj = \Carbon\Carbon::parse($item->publish_date ?? $item->created_at);
                                 $formattedDate = $dateObj->format('d') . ' ' . $months[$dateObj->format('m')] . ' ' . $dateObj->format('Y');
+
+                                $isPdf = $item->image_url && (str_ends_with(strtolower($item->image_url), '.pdf') || str_ends_with(strtolower($item->image_url), '.doc') || str_ends_with(strtolower($item->image_url), '.docx'));
+                                $hasCoverImage = $item->image_url && !$isPdf;
+                                $coverImage = $hasCoverImage ? $item->image_url : asset('assets/images/blog/news-' . (($loop->index % 4) + 1) . '-3.jpg');
+
+                                $cleanBody = strip_tags($item->body);
+                                $wordsArray = preg_split('/\s+/', trim($cleanBody));
+                                $hasMore = count($wordsArray) > 18;
+                                $limitedBody = $hasMore ? implode(' ', array_slice($wordsArray, 0, 18)) . '...' : $cleanBody;
+                                $readMinutes = max(1, ceil(count($wordsArray) / 200));
                             @endphp
 
-                            <!-- Card item -->
-                            <article style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 32px; display: flex; flex-direction: column; gap: 16px;" class="press-release-card">
-                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;" class="card-header-bar">
-                                    <div style="background: #D95C3F; color: #F4F1EA; padding: 4px 16px; font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;">
+                            <!-- Card item with Photo Cover -->
+                            <article style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; overflow: hidden; display: flex; flex-direction: column;" class="press-release-card md:flex-row">
+                                <!-- Photo Cover Box -->
+                                <div style="position: relative; width: 100%; min-height: 220px; background-image: url('{{ $coverImage }}'); background-size: cover; background-position: center; border-bottom: 4px solid #1D1D1D;" class="md:w-[320px] md:min-h-full md:border-b-0 md:border-r-4 md:border-[#1D1D1D] flex-shrink-0">
+                                    <div style="position: absolute; left: 16px; top: 16px; background: #D95C3F; color: #F4F1EA; padding: 4px 14px; font-family: Montserrat, sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; border: 1px solid #1D1D1D;">
                                         Catatan Kritis
                                     </div>
-                                    <div style="display: flex; align-items: center; gap: 8px; color: #5C8D59; font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 600;">
-                                        <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
-                                        <span>{{ $formattedDate }}</span>
-                                    </div>
                                 </div>
-                                
-                                <h2 style="margin: 0; color: #1D1D1D; font-size: 28px; font-family: Aspekta, sans-serif; font-weight: 700; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.8px;">
-                                    {{ $item->title }}
-                                </h2>
-                                
-                                @php
-                                    $cleanBody = strip_tags($item->body);
-                                    $wordsArray = preg_split('/\s+/', trim($cleanBody));
-                                    $hasMore = count($wordsArray) > 13;
-                                    if ($hasMore) {
-                                        $limitedBody = implode(' ', array_slice($wordsArray, 0, 13)) . '...';
-                                    } else {
-                                        $limitedBody = $cleanBody;
-                                    }
-                                @endphp
-                                <p style="margin: 0; color: #1D1D1D; font-size: 16px; font-family: Montserrat, sans-serif; line-height: 1.7;">
-                                    {{ $limitedBody }}
-                                    @if($hasMore)
-                                        <a href="{{ route('content.show', $item->slug) }}" style="color: #256D4A; font-weight: 600; text-decoration: underline; margin-left: 4px;">Baca Selengkapnya</a>
-                                    @endif
-                                </p>
-                                
-                                <div style="border-top: 2px solid #1D1D1D; padding-top: 24px; display: flex; gap: 12px; align-items: center;" class="card-actions-bar">
-                                    <a href="{{ route('content.show', $item->slug) }}"
-                                       style="height: 48px; padding: 0 24px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s;"
-                                       class="hover-action-dark-btn">
-                                        <i data-lucide="book-open" style="width: 16px; height: 16px;"></i>
-                                        Baca Lengkap
-                                    </a>
+
+                                <!-- Content Box -->
+                                <div style="padding: 24px 28px; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; flex: 1;">
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                        <div style="display: flex; align-items: center; gap: 12px; color: #5C8D59; font-family: Montserrat, sans-serif; font-size: 13px; font-weight: 600; flex-wrap: wrap;">
+                                            <div style="display: flex; align-items: center; gap: 6px;">
+                                                <i data-lucide="calendar" style="width: 15px; height: 15px;"></i>
+                                                <span>{{ $formattedDate }}</span>
+                                            </div>
+                                            <span>▪</span>
+                                            <div style="display: flex; align-items: center; gap: 6px;">
+                                                <i data-lucide="clock" style="width: 15px; height: 15px;"></i>
+                                                <span>{{ $readMinutes }} menit baca</span>
+                                            </div>
+                                        </div>
+
+                                        <h2 style="margin: 0; color: #1D1D1D; font-size: 24px; font-family: Aspekta, sans-serif; font-weight: 800; text-transform: uppercase; line-height: 1.25; letter-spacing: 0.4px;">
+                                            <a href="{{ route('content.show', $item->slug) }}" style="color: #1D1D1D; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
+                                                {{ $item->title }}
+                                            </a>
+                                        </h2>
+
+                                        <p style="margin: 0; color: #333; font-size: 15px; font-family: Montserrat, sans-serif; line-height: 1.65;">
+                                            {{ $limitedBody }}
+                                            @if($hasMore)
+                                                <a href="{{ route('content.show', $item->slug) }}" style="color: #256D4A; font-weight: 700; text-decoration: underline; margin-left: 4px;">Baca Selengkapnya</a>
+                                            @endif
+                                        </p>
+                                    </div>
+
+                                    <div style="border-top: 2px solid #1D1D1D; padding-top: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;" class="card-actions-bar">
+                                        <a href="{{ route('content.show', $item->slug) }}"
+                                           style="height: 44px; padding: 0 20px; background: #1D1D1D; color: #F4F1EA; border: none; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s;"
+                                           class="hover-action-dark-btn">
+                                            <i data-lucide="book-open" style="width: 16px; height: 16px;"></i>
+                                            Baca Catatan Kritis
+                                        </a>
+
+                                        @if($isPdf)
+                                            <a href="{{ $item->image_url }}" target="_blank"
+                                               style="height: 44px; padding: 0 18px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
+                                               class="hover-action-light-btn">
+                                                <i data-lucide="download" style="width: 15px; height: 15px;"></i>
+                                                Unduh Lampiran
+                                            </a>
+                                        @endif
+                                    </div>
                                 </div>
                             </article>
                         @empty

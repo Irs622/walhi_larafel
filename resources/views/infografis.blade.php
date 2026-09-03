@@ -66,15 +66,17 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
                             @forelse($items as $item)
                                 @php
-                                    // Fallback cover image based on slug
-                                    $coverImage = $item->image_url ?: 'https://placehold.co/376x256/1d1d1d/f4f1ea?text=' . urlencode(Str::limit($item->title, 20));
-                                    if (!$item->image_url) {
-                                        if (Str::contains(Str::slug($item->title), 'tambang')) {
-                                            $coverImage = 'https://placehold.co/376x256/2d221c/f4f1ea?text=Pertambangan+Ilegal';
-                                        } elseif (Str::contains(Str::slug($item->title), 'citarum')) {
-                                            $coverImage = 'https://placehold.co/376x256/1c2a38/f4f1ea?text=Pencemaran+Citarum';
-                                        } elseif (Str::contains(Str::slug($item->title), 'deforestasi')) {
-                                            $coverImage = 'https://placehold.co/376x256/1c3821/f4f1ea?text=Deforestasi+Hutan';
+                                    $coverImage = $item->image_url;
+                                    if (!$coverImage) {
+                                        $slug = Str::slug($item->title);
+                                        if (Str::contains($slug, 'tambang')) {
+                                            $coverImage = asset('assets/images/blog/news-2-1.jpg');
+                                        } elseif (Str::contains($slug, 'citarum') || Str::contains($slug, 'air')) {
+                                            $coverImage = asset('assets/images/blog/news-1-1.jpg');
+                                        } elseif (Str::contains($slug, 'deforestasi') || Str::contains($slug, 'hutan')) {
+                                            $coverImage = asset('assets/images/blog/news-3-1.jpg');
+                                        } else {
+                                            $coverImage = asset('assets/images/blog/news-' . (($loop->index % 4) + 1) . '-1.jpg');
                                         }
                                     }
                                 @endphp

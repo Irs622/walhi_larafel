@@ -71,8 +71,23 @@
                             @foreach($items as $item)
                                 <tr class="hover:bg-[#fafaf8] transition-colors">
                                     <td class="px-4 py-3">
-                                        <div class="font-medium text-[#1D1D1D] leading-snug line-clamp-2 max-w-xs">{{ $item->title }}</div>
-                                        <div class="text-xs text-[#aaa] mt-0.5">/{{ $item->slug }}</div>
+                                        <div class="flex items-center gap-3">
+                                            @if($category !== 'laporan-tahunan' && $category !== 'regulasi' && $category !== 'statistik' && $category !== 'isu-kritis' && $category !== 'kampanye-darurat')
+                                                @if($item->image_url && !str_ends_with(strtolower($item->image_url), '.pdf') && !str_ends_with(strtolower($item->image_url), '.xls') && !str_ends_with(strtolower($item->image_url), '.xlsx'))
+                                                    <div class="w-12 h-12 rounded border border-[#ddd] overflow-hidden flex-shrink-0 bg-gray-100 shadow-sm">
+                                                        <img src="{{ $item->image_url }}" alt="" class="w-full h-full object-cover" />
+                                                    </div>
+                                                @else
+                                                    <div class="w-12 h-12 rounded border border-dashed border-[#ccc] bg-[#f5f3ef] flex items-center justify-center flex-shrink-0 text-[#aaa]" title="Belum ada foto cover">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                                    </div>
+                                                @endif
+                                            @endif
+                                            <div class="min-w-0 flex-1">
+                                                <div class="font-medium text-[#1D1D1D] leading-snug line-clamp-2 max-w-xs">{{ $item->title }}</div>
+                                                <div class="text-xs text-[#aaa] mt-0.5">/{{ $item->slug }}</div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td class="px-4 py-3 hidden md:table-cell">
                                         @if($category === 'kampanye-darurat')
@@ -118,21 +133,26 @@
                                     </td>
                                     <td class="px-4 py-3">
                                         @if($item->status === 'published')
-                                            <span class="px-2 py-0.5 text-xs font-medium rounded border bg-[#eaf4ee] text-[#256D4A] border-[#c5e0ce]">Terbit</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#5C8D59]/15 text-[#256D4A]">
+                                                Published
+                                            </span>
                                         @elseif($item->status === 'draft')
-                                            <span class="px-2 py-0.5 text-xs font-medium rounded border bg-[#f5f5f0] text-[#8B6B4A] border-[#ddd5c5]">Draf</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                                                Draft
+                                            </span>
                                         @else
-                                            <span class="px-2 py-0.5 text-xs font-medium rounded border bg-[#f5f5f5] text-[#888] border-[#ddd]">Arsip</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600">
+                                                Archived
+                                            </span>
                                         @endif
                                     </td>
                                     <td class="px-4 py-3 text-xs text-[#888] hidden sm:table-cell">
-                                        {{ $item->publish_date ? $item->publish_date->format('Y-m-d') : $item->updated_at->format('Y-m-d') }}
+                                        {{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('d M Y') : $item->created_at->translatedFormat('d M Y') }}
                                     </td>
-                                    <td class="px-4 py-3">
+                                    <td class="px-4 py-3 text-right">
                                         <div class="flex items-center justify-end gap-1">
-                                            <!-- Lihat Postingan -->
                                             @if(in_array($category, ['blog', 'regulasi', 'siaran-pers', 'infografis', 'laporan-tahunan', 'kertas-posisi', 'newsletter', 'buletin-bumi', 'jurnal']))
-                                                <a href="{{ route('content.show', $item->slug) }}" target="_blank" title="Lihat Postingan" class="p-1.5 rounded hover:bg-[#f4faf6] text-[#256D4A] transition-colors">
+                                                <a href="{{ route('content.show', $item->slug) }}" target="_blank" class="p-1.5 rounded hover:bg-[#f4faf6] text-[#256D4A] transition-colors" title="Lihat Publik">
                                                     <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                                                 </a>
                                             @endif
@@ -145,9 +165,9 @@
                                                     <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                                                 </button>
                                             </form>
-                                            
+
                                             <!-- Edit -->
-                                            <button onclick="openEditModal(this)" data-item="{{ json_encode($item) }}" class="p-1.5 rounded hover:bg-[#f0f5ff] text-[#555] transition-colors">
+                                            <button onclick="openEditModal(this)" data-item="{{ json_encode($item) }}" class="p-1.5 rounded hover:bg-[#f0f5ff] text-[#555] transition-colors" title="Edit">
                                                 <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
                                             </button>
 
