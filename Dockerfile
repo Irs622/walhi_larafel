@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json vite.config.js tailwind.config.js postcss.config.js ./
 COPY resources ./resources
 COPY public ./public
-RUN npm ci || npm install
+RUN npm ci
 RUN npm run build
 
 # ─── Stage 2: PHP Application Container (PHP-FPM) ─────────────
@@ -38,7 +38,8 @@ RUN apk add --no-cache \
         bcmath \
         gd \
         zip \
-        intl
+        intl \
+        opcache
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -57,6 +58,10 @@ COPY --from=frontend /app/public/build ./public/build
 
 # Complete composer autoloader
 RUN composer dump-autoload --optimize --no-dev
+
+# Copy custom PHP-FPM and OPcache configurations for 4 GB RAM VPS tuning
+COPY docker/php/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # Ensure all Laravel storage framework directories exist in the image
 RUN mkdir -p storage/framework/views \

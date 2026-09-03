@@ -6,7 +6,7 @@ echo "  WALHI Jabar — Docker Entrypoint"
 echo "═══════════════════════════════════════════════════════════"
 
 # ── 1. Ensure all required Laravel storage directories exist ──
-echo "[1/7] Creating storage directories..."
+echo "[1/8] Checking storage directories..."
 mkdir -p storage/framework/views \
          storage/framework/cache/data \
          storage/framework/sessions \
@@ -15,10 +15,10 @@ mkdir -p storage/framework/views \
          storage/app/public \
          bootstrap/cache
 
-# ── 2. Fix permissions ──
-echo "[2/7] Setting permissions..."
-chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
-chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+# ── 2. Minimal permission setup without expensive recursive scan ──
+echo "[2/8] Setting runtime permissions..."
+chown www-data:www-data storage storage/framework storage/framework/* storage/logs bootstrap/cache 2>/dev/null || true
+chmod 775 storage storage/framework storage/framework/* storage/logs bootstrap/cache 2>/dev/null || true
 
 # ── 3. Generate .env from Docker environment variables ──
 # Always regenerate .env to ensure Docker env vars take precedence.
@@ -122,17 +122,32 @@ fi
 
 # ── Sync public assets to shared public volume (for Nginx container) ──
 if [ -d "/var/www/html/public_shared" ]; then
-    echo "       Syncing built public assets to shared Nginx volume..."
-    cp -ru /var/www/html/public/. /var/www/html/public_shared/ 2>/dev/null || cp -r /var/www/html/public/. /var/www/html/public_shared/
+    if [ ! -f "/var/www/html/public_shared/.assets_synced" ] || [ "/var/www/html/public/build" -nt "/var/www/html/public_shared/.assets_synced" ]; then
+        echo "       Syncing updated public assets to shared Nginx volume..."
+        cp -ru /var/www/html/public/. /var/www/html/public_shared/ 2>/dev/null || cp -r /var/www/html/public/. /var/www/html/public_shared/
+        touch /var/www/html/public_shared/.assets_synced 2>/dev/null || true
+    else
+        echo "       Shared public assets already up-to-date, skipping sync..."
+    fi
 fi
 
 # ── 7. Run Database Migrations & Seeding ──
-echo "[7/7] Clearing cache & running database migrations..."
-php artisan config:clear 2>/dev/null || true
-php artisan view:clear 2>/dev/null || true
-php artisan route:clear 2>/dev/null || true
-php artisan cache:clear 2>/dev/null || true
-php artisan migrate --force
+if [ "${CLEAR_CACHE_ON_START:-false}" = "true" ]; then
+    echo "       Clearing caches..."
+    php artisan config:clear 2>/dev/null || true
+    php artisan view:clear 2>/dev/null || true
+    php artisan route:clear 2>/dev/null || true
+    php artisan cache:clear 2>/dev/null || true
+fi
+
+if [ "${MIGRATE_ON_START:-false}" = "true" ]; then
+    echo "[7/8] Running database migrations (MIGRATE_ON_START=true)..."
+    php artisan migrate --force
+else
+    echo "[7/8] Skipping automatic migrations (MIGRATE_ON_START=false)."
+    echo "       Tip: Execute migrations explicitly during deploy:"
+    echo "       docker compose -f docker-compose.prod.yml exec app php artisan migrate --force"
+fi
 
 if [ "${SEED_ON_START:-false}" = "true" ]; then
     echo "       Seeding database..."
@@ -146,10 +161,6 @@ if [ "${APP_ENV:-local}" = "production" ] && [ "${APP_DEBUG:-false}" = "false" ]
     php artisan route:cache 2>/dev/null || true
     php artisan view:cache 2>/dev/null || true
 fi
-
-# Final permission fix after all operations
-chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
-chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
 echo ""
 echo "═══════════════════════════════════════════════════════════"
