@@ -17,6 +17,7 @@ class DonationService
      * local or testing environments if Midtrans is unconfigured or unreachable.
      *
      * @return array{donation: Donation, snap_token: string, is_mock: bool}
+     *
      * @throws \RuntimeException when payment gateway fails in production
      */
     public function initiate(array $validated): array
@@ -24,13 +25,13 @@ class DonationService
         $orderId = $this->generateOrderId();
 
         $donation = Donation::create([
-            'order_id'    => $orderId,
-            'donor_name'  => $validated['donor_name'],
+            'order_id' => $orderId,
+            'donor_name' => $validated['donor_name'],
             'donor_email' => $validated['donor_email'],
             'donor_phone' => $validated['donor_phone'],
-            'amount'      => $validated['amount'],
+            'amount' => $validated['amount'],
             'campaign_id' => $validated['campaign_id'] ?? null,
-            'status'      => DonationStatus::Pending->value,
+            'status' => DonationStatus::Pending->value,
         ]);
 
         // Attempt real Midtrans transaction
@@ -45,16 +46,16 @@ class DonationService
                 $donation->update(['snap_token' => $snapToken]);
 
                 return [
-                    'donation'   => $donation->fresh(),
+                    'donation' => $donation->fresh(),
                     'snap_token' => $snapToken,
-                    'order_id'   => $orderId,
-                    'is_mock'    => false,
+                    'order_id' => $orderId,
+                    'is_mock' => false,
                 ];
             } catch (\RuntimeException $e) {
                 Log::error('Midtrans payment transaction initiation failed', [
                     'order_id' => $orderId,
-                    'amount'   => $validated['amount'],
-                    'error'    => $e->getMessage(),
+                    'amount' => $validated['amount'],
+                    'error' => $e->getMessage(),
                 ]);
 
                 if (! app()->environment('local', 'testing')) {
@@ -69,14 +70,14 @@ class DonationService
         }
 
         // Mock fallback strictly for local development and automated testing
-        $mockToken = 'MOCK-SNAP-' . Str::upper(Str::random(24));
+        $mockToken = 'MOCK-SNAP-'.Str::upper(Str::random(24));
         $donation->update(['snap_token' => $mockToken]);
 
         return [
-            'donation'   => $donation->fresh(),
+            'donation' => $donation->fresh(),
             'snap_token' => $mockToken,
-            'order_id'   => $orderId,
-            'is_mock'    => true,
+            'order_id' => $orderId,
+            'is_mock' => true,
         ];
     }
 
@@ -84,7 +85,7 @@ class DonationService
      * Process an incoming Midtrans webhook payload in an idempotent manner.
      * Once a donation reaches "success", it cannot be downgraded.
      *
-     * @return bool  true if status was updated, false if already terminal/no change
+     * @return bool true if status was updated, false if already terminal/no change
      */
     public function processWebhook(Donation $donation, string $transactionStatus, ?string $paymentType): bool
     {
@@ -121,6 +122,6 @@ class DonationService
      */
     private function generateOrderId(): string
     {
-        return 'WALHI-DON-' . date('YmdHis') . '-' . Str::upper(Str::random(8));
+        return 'WALHI-DON-'.date('YmdHis').'-'.Str::upper(Str::random(8));
     }
 }

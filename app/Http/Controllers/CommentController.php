@@ -37,7 +37,7 @@ class CommentController extends Controller
 
         $comment = new Comment($request->validated());
         $comment->content_id = $content->id;
-        $comment->status     = 'pending';
+        $comment->status = 'pending';
         $comment->save();
 
         return redirect()->back()->with(

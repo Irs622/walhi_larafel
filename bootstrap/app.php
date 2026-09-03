@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\SecurityHeaders;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -35,8 +37,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 $appHost = parse_url(config('app.url'), PHP_URL_HOST);
                 if ($appHost && ! in_array($appHost, ['localhost', '127.0.0.1'])) {
                     $escapedHost = preg_quote($appHost, '/');
-                    $hosts[] = '^(.+\.)?' . $escapedHost . '$';
-                    $hosts[] = '^' . $escapedHost . '$';
+                    $hosts[] = '^(.+\.)?'.$escapedHost.'$';
+                    $hosts[] = '^'.$escapedHost.'$';
                 }
 
                 return array_values(array_unique($hosts));
@@ -48,11 +50,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,
+            'role' => CheckRole::class,
         ]);
 
         $middleware->web(append: [
-            \App\Http\Middleware\SecurityHeaders::class,
+            SecurityHeaders::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -61,7 +63,7 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $exceptions->render(function (QueryException $e, Request $request) {
-            if (!config('app.debug')) {
+            if (! config('app.debug')) {
                 Log::error('Database Query Exception', [
                     'code' => $e->getCode(),
                     'message' => $e->getMessage(),
@@ -69,7 +71,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
                 if ($request->is('api/*') || $request->expectsJson()) {
                     return response()->json([
-                        'message' => 'Internal Server Error: A database operation failed.'
+                        'message' => 'Internal Server Error: A database operation failed.',
                     ], 500);
                 }
 
@@ -77,13 +79,13 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        $exceptions->render(function (\PDOException $e, Request $request) {
-            if (!config('app.debug')) {
-                Log::error('PDO Exception: ' . $e->getMessage());
+        $exceptions->render(function (PDOException $e, Request $request) {
+            if (! config('app.debug')) {
+                Log::error('PDO Exception: '.$e->getMessage());
 
                 if ($request->is('api/*') || $request->expectsJson()) {
                     return response()->json([
-                        'message' => 'Internal Server Error: A database connection error occurred.'
+                        'message' => 'Internal Server Error: A database connection error occurred.',
                     ], 500);
                 }
 

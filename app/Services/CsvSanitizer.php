@@ -21,7 +21,7 @@ class CsvSanitizer
 
         $firstChar = substr($value, 0, 1);
         if (in_array($firstChar, self::DANGEROUS_PREFIXES, true)) {
-            return "'" . $value;
+            return "'".$value;
         }
 
         return $value;

@@ -5,37 +5,37 @@ namespace App\Enums;
 enum ContentCategory: string
 {
     // ── Publikasi / Berita ─────────────────────────────────────────
-    case Blog          = 'blog';
-    case SiaranPers    = 'siaran-pers';
-    case Infografis    = 'infografis';
-    case KertasPosisi  = 'kertas-posisi';
+    case Blog = 'blog';
+    case SiaranPers = 'siaran-pers';
+    case Infografis = 'infografis';
+    case KertasPosisi = 'kertas-posisi';
     case CatatanKritis = 'catatan-kritis';
 
     // ── Dokumen Resmi ─────────────────────────────────────────────
-    case Regulasi      = 'regulasi';
+    case Regulasi = 'regulasi';
     case LaporanTahunan = 'laporan-tahunan';
 
     // ── Terbitan Berkala ──────────────────────────────────────────
-    case Newsletter    = 'newsletter';
-    case BuletinBumi   = 'buletin-bumi';
-    case Jurnal        = 'jurnal';
+    case Newsletter = 'newsletter';
+    case BuletinBumi = 'buletin-bumi';
+    case Jurnal = 'jurnal';
 
     // ── Profil Organisasi ─────────────────────────────────────────
-    case Sejarah           = 'sejarah';
-    case VisiMisi          = 'visi-misi';
-    case DewanNasional     = 'dewan-nasional';
+    case Sejarah = 'sejarah';
+    case VisiMisi = 'visi-misi';
+    case DewanNasional = 'dewan-nasional';
     case EksekutifNasional = 'eksekutif-nasional';
-    case EksekutifDaerah   = 'eksekutif-daerah';
-    case Kontak            = 'kontak';
+    case EksekutifDaerah = 'eksekutif-daerah';
+    case Kontak = 'kontak';
 
     // ── Kampanye & Event ──────────────────────────────────────────
-    case Donasi          = 'donasi';
-    case PekanRakyat     = 'pekan-rakyat';
+    case Donasi = 'donasi';
+    case PekanRakyat = 'pekan-rakyat';
     case KampanyeDarurat = 'kampanye-darurat';
 
     // ── Beranda ───────────────────────────────────────────────────
-    case Statistik  = 'statistik';
-    case IsuKritis  = 'isu-kritis';
+    case Statistik = 'statistik';
+    case IsuKritis = 'isu-kritis';
 
     /**
      * Human-readable label in Indonesian.
@@ -43,27 +43,27 @@ enum ContentCategory: string
     public function label(): string
     {
         return match ($this) {
-            self::Blog             => 'Blog',
-            self::SiaranPers       => 'Siaran Pers',
-            self::Infografis       => 'Infografis',
-            self::KertasPosisi     => 'Kertas Posisi',
-            self::CatatanKritis    => 'Catatan Kritis',
-            self::Regulasi         => 'Regulasi',
-            self::LaporanTahunan   => 'Laporan Tahunan',
-            self::Newsletter       => 'Nawala',
-            self::BuletinBumi      => 'Buletin Bumi',
-            self::Jurnal           => 'Jurnal Tanah Air',
-            self::Sejarah          => 'Sejarah',
-            self::VisiMisi         => 'Visi & Misi',
-            self::DewanNasional    => 'Dewan Nasional',
-            self::EksekutifNasional=> 'Eksekutif Nasional',
-            self::EksekutifDaerah  => 'Eksekutif Daerah',
-            self::Kontak           => 'Kontak',
-            self::Donasi           => 'Kampanye Donasi',
-            self::PekanRakyat      => 'Pekan Rakyat',
-            self::KampanyeDarurat  => 'Kampanye Darurat',
-            self::Statistik        => 'Statistik Utama',
-            self::IsuKritis        => 'Isu Kritis',
+            self::Blog => 'Blog',
+            self::SiaranPers => 'Siaran Pers',
+            self::Infografis => 'Infografis',
+            self::KertasPosisi => 'Kertas Posisi',
+            self::CatatanKritis => 'Catatan Kritis',
+            self::Regulasi => 'Regulasi',
+            self::LaporanTahunan => 'Laporan Tahunan',
+            self::Newsletter => 'Nawala',
+            self::BuletinBumi => 'Buletin Bumi',
+            self::Jurnal => 'Jurnal Tanah Air',
+            self::Sejarah => 'Sejarah',
+            self::VisiMisi => 'Visi & Misi',
+            self::DewanNasional => 'Dewan Nasional',
+            self::EksekutifNasional => 'Eksekutif Nasional',
+            self::EksekutifDaerah => 'Eksekutif Daerah',
+            self::Kontak => 'Kontak',
+            self::Donasi => 'Kampanye Donasi',
+            self::PekanRakyat => 'Pekan Rakyat',
+            self::KampanyeDarurat => 'Kampanye Darurat',
+            self::Statistik => 'Statistik Utama',
+            self::IsuKritis => 'Isu Kritis',
         };
     }
 

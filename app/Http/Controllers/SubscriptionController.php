@@ -30,6 +30,7 @@ class SubscriptionController extends Controller
                 $subscriber->is_active = true;
                 $subscriber->save();
             }
+
             return redirect()->back()->with(
                 'subscribe_success',
                 'Terima kasih! Email Anda sudah terdaftar dalam newsletter kami.'
@@ -37,7 +38,7 @@ class SubscriptionController extends Controller
         }
 
         Subscriber::create([
-            'email'     => $email,
+            'email' => $email,
             'is_active' => true,
         ]);
 

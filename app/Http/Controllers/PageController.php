@@ -24,7 +24,7 @@ class PageController extends Controller
 
     public function regulasi(Request $request)
     {
-        $search         = $request->input('search');
+        $search = $request->input('search');
         $categoryFilter = $request->input('kategori');
 
         $query = Content::ofCategory(ContentCategory::Regulasi)->published();
@@ -33,18 +33,18 @@ class PageController extends Controller
             $escapedSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
             $query->where(function ($q) use ($escapedSearch) {
                 $q->where('title', 'like', "%{$escapedSearch}%")
-                  ->orWhere('body', 'like', "%{$escapedSearch}%")
-                  ->orWhere('tags', 'like', "%{$escapedSearch}%");
+                    ->orWhere('body', 'like', "%{$escapedSearch}%")
+                    ->orWhere('tags', 'like', "%{$escapedSearch}%");
             });
         }
 
         if ($categoryFilter) {
             $tagMap = [
-                'undang-undang'       => 'undang-undang',
-                'peraturan-pemerintah'=> 'peraturan pemerintah',
-                'peraturan-daerah'    => 'peraturan daerah',
-                'keputusan-menteri'   => 'keputusan menteri',
-                'peraturan-menteri'   => 'peraturan menteri',
+                'undang-undang' => 'undang-undang',
+                'peraturan-pemerintah' => 'peraturan pemerintah',
+                'peraturan-daerah' => 'peraturan daerah',
+                'keputusan-menteri' => 'keputusan menteri',
+                'peraturan-menteri' => 'peraturan menteri',
             ];
             if (isset($tagMap[$categoryFilter])) {
                 $mappedTag = $tagMap[$categoryFilter];
@@ -67,7 +67,7 @@ class PageController extends Controller
         $countKM = Content::ofCategory(ContentCategory::Regulasi)->published()
             ->where(function ($q) {
                 $q->where('tags', 'like', '%keputusan menteri%')
-                  ->orWhere('tags', 'like', '%peraturan menteri%');
+                    ->orWhere('tags', 'like', '%peraturan menteri%');
             })->count();
 
         return view('regulasi', compact('items', 'countUU', 'countPP', 'countPD', 'countKM', 'search', 'categoryFilter'));
@@ -151,7 +151,7 @@ class PageController extends Controller
 
         if (file_exists($path)) {
             $content = file_get_contents($path);
-            $content = str_replace('Sitemap: /sitemap.xml', 'Sitemap: ' . url('sitemap.xml'), $content);
+            $content = str_replace('Sitemap: /sitemap.xml', 'Sitemap: '.url('sitemap.xml'), $content);
         } else {
             $sitemapUrl = url('sitemap.xml');
             $content = "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /login\nDisallow: /register\nDisallow: /profile\n\nSitemap: {$sitemapUrl}\n";

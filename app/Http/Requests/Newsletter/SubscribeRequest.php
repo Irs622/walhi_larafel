@@ -36,7 +36,7 @@ class SubscribeRequest extends FormRequest
     {
         return [
             'email.required' => 'Alamat email wajib diisi.',
-            'email.email'    => 'Alamat email tidak valid.',
+            'email.email' => 'Alamat email tidak valid.',
         ];
     }
 

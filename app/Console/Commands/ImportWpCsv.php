@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Content;
-use Illuminate\Support\Str;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ImportWpCsv extends Command
 {
@@ -35,32 +35,35 @@ class ImportWpCsv extends Command
         $dryRun = $this->option('dry-run');
         $truncate = $this->option('truncate');
 
-        $this->info("=== MEMULAI IMPORT DATA WORDPRESS CSV ===");
-        $this->line("File path: " . $filePath);
+        $this->info('=== MEMULAI IMPORT DATA WORDPRESS CSV ===');
+        $this->line('File path: '.$filePath);
 
-        if (!file_exists($filePath)) {
-            $this->error("File CSV tidak ditemukan pada path: " . $filePath);
-            $this->line("Silakan spesifikasikan path menggunakan opsi --file, contoh:");
-            $this->line("php artisan import:wp-csv --file=/path/to/your/file.csv");
+        if (! file_exists($filePath)) {
+            $this->error('File CSV tidak ditemukan pada path: '.$filePath);
+            $this->line('Silakan spesifikasikan path menggunakan opsi --file, contoh:');
+            $this->line('php artisan import:wp-csv --file=/path/to/your/file.csv');
+
             return Command::FAILURE;
         }
 
         // Buka file CSV
-        if (($handle = fopen($filePath, "r")) === false) {
-            $this->error("Gagal membuka file CSV.");
+        if (($handle = fopen($filePath, 'r')) === false) {
+            $this->error('Gagal membuka file CSV.');
+
             return Command::FAILURE;
         }
 
         // Membaca header
-        $headers = fgetcsv($handle, 0, ',', '"', "");
-        if (!$headers) {
-            $this->error("File CSV kosong atau tidak valid.");
+        $headers = fgetcsv($handle, 0, ',', '"', '');
+        if (! $headers) {
+            $this->error('File CSV kosong atau tidak valid.');
             fclose($handle);
+
             return Command::FAILURE;
         }
 
         // Tampilkan info kolom
-        $this->line("Kolom terdeteksi: " . implode(', ', $headers));
+        $this->line('Kolom terdeteksi: '.implode(', ', $headers));
 
         // Pengolahan awal untuk analisis statistik
         $typeDistribution = [];
@@ -68,27 +71,27 @@ class ImportWpCsv extends Command
         $rows = [];
         $rowCount = 0;
 
-        while (($data = fgetcsv($handle, 0, ',', '"', "")) !== false) {
+        while (($data = fgetcsv($handle, 0, ',', '"', '')) !== false) {
             $rowCount++;
             // Map row dengan header
             $row = array_combine(array_slice($headers, 0, count($data)), array_slice($data, 0, count($headers)));
-            
+
             // Hitung distribusi type dan status
             $type = $row['type'] ?? 'unknown';
             $status = $row['status'] ?? 'unknown';
-            
+
             $typeDistribution[$type] = ($typeDistribution[$type] ?? 0) + 1;
             $statusDistribution[$status] = ($statusDistribution[$status] ?? 0) + 1;
-            
+
             if ($rowCount <= 5) {
                 $rows[] = $row;
             }
         }
         rewind($handle);
-        fgetcsv($handle, 0, ',', '"', ""); // skip header lagi
+        fgetcsv($handle, 0, ',', '"', ''); // skip header lagi
 
         $this->info("\n=== HASIL ANALISIS CSV ===");
-        $this->line("Total Baris Data: " . $rowCount);
+        $this->line('Total Baris Data: '.$rowCount);
         $this->line("Distribusi Kolom 'type' (WordPress):");
         foreach ($typeDistribution as $t => $count) {
             $this->line("  - Type '{$t}': {$count} baris");
@@ -101,25 +104,26 @@ class ImportWpCsv extends Command
         if ($dryRun) {
             $this->info("\n=== DRY RUN AKTIF: CONTOH PEMBERSIHAN DATA ===");
             foreach ($rows as $index => $row) {
-                $this->comment("\n--- Baris Contoh #" . ($index + 1) . " ---");
-                $this->line("Judul Asli: " . ($row['title'] ?? ''));
-                $this->line("Slug Asli: " . ($row['slug'] ?? ''));
-                $this->line("Tanggal Publish: " . ($row['publish_date'] ?? ''));
-                
+                $this->comment("\n--- Baris Contoh #".($index + 1).' ---');
+                $this->line('Judul Asli: '.($row['title'] ?? ''));
+                $this->line('Slug Asli: '.($row['slug'] ?? ''));
+                $this->line('Tanggal Publish: '.($row['publish_date'] ?? ''));
+
                 // Demo Pembersihan
                 $cleanedBody = $this->cleanWordPressContent($row['content'] ?? '');
                 $mappedCategory = $this->mapCategory($row['title'] ?? '', $row['slug'] ?? '', $row['type'] ?? '');
                 $mappedStatus = (($row['status'] ?? '') == '1') ? 'published' : 'draft';
                 $imageUrl = (($row['thumbnail'] ?? '') !== 'default_news.jpg') ? $row['thumbnail'] : null;
 
-                $this->line("Kategori Terpetakan: " . $mappedCategory);
-                $this->line("Status Terpetakan: " . $mappedStatus);
-                $this->line("Image URL Terpetakan: " . ($imageUrl ?? 'NULL (Menggunakan default)'));
-                $this->line("Contoh Potongan Body Terbersih (150 karakter): " . Str::limit(strip_tags($cleanedBody), 150));
+                $this->line('Kategori Terpetakan: '.$mappedCategory);
+                $this->line('Status Terpetakan: '.$mappedStatus);
+                $this->line('Image URL Terpetakan: '.($imageUrl ?? 'NULL (Menggunakan default)'));
+                $this->line('Contoh Potongan Body Terbersih (150 karakter): '.Str::limit(strip_tags($cleanedBody), 150));
             }
-            
+
             $this->info("\nDry run selesai. Tidak ada data yang dimasukkan ke database.");
             fclose($handle);
+
             return Command::SUCCESS;
         }
 
@@ -132,9 +136,9 @@ class ImportWpCsv extends Command
             } else {
                 DB::statement('SET FOREIGN_KEY_CHECKS=0;');
             }
-            
+
             Content::truncate();
-            
+
             if ($driver === 'sqlite') {
                 DB::statement('PRAGMA foreign_keys = ON;');
             } else {
@@ -150,7 +154,7 @@ class ImportWpCsv extends Command
         $bar = $this->output->createProgressBar($rowCount);
         $bar->start();
 
-        while (($data = fgetcsv($handle, 0, ',', '"', "")) !== false) {
+        while (($data = fgetcsv($handle, 0, ',', '"', '')) !== false) {
             // Gabungkan header dan data
             if (count($data) < count($headers)) {
                 // Pad data jika kolom kurang
@@ -163,16 +167,17 @@ class ImportWpCsv extends Command
                 if (empty($title)) {
                     $failedCount++;
                     $bar->advance();
+
                     continue;
                 }
 
                 $slug = $row['slug'] ?? Str::slug($title);
-                
+
                 // Pastikan slug unik di database untuk mencegah error constraint
                 $originalSlug = $slug;
                 $slugCounter = 1;
                 while (Content::where('slug', $slug)->exists()) {
-                    $slug = $originalSlug . '-' . $slugCounter;
+                    $slug = $originalSlug.'-'.$slugCounter;
                     $slugCounter++;
                 }
 
@@ -196,7 +201,7 @@ class ImportWpCsv extends Command
                     'tags' => null, // WordPress tags tidak dipetakan langsung dari CSV ini
                     'status' => $mappedStatus,
                     'image_url' => $imageUrl,
-                    'publish_date' => !empty($row['publish_date']) ? $row['publish_date'] : null,
+                    'publish_date' => ! empty($row['publish_date']) ? $row['publish_date'] : null,
                     'category' => $mappedCategory,
                 ]);
 
@@ -204,7 +209,7 @@ class ImportWpCsv extends Command
             } catch (\Exception $e) {
                 $failedCount++;
                 // Simpan log error secara internal
-                \Log::error("Gagal mengimpor baris CSV: " . ($row['title'] ?? '') . ". Error: " . $e->getMessage());
+                \Log::error('Gagal mengimpor baris CSV: '.($row['title'] ?? '').'. Error: '.$e->getMessage());
             }
 
             $bar->advance();
@@ -265,7 +270,7 @@ class ImportWpCsv extends Command
             return 'siaran-pers';
         }
 
-        if (str_contains($titleLower, 'regulasi') || str_contains($slugLower, 'regulasi') || 
+        if (str_contains($titleLower, 'regulasi') || str_contains($slugLower, 'regulasi') ||
             preg_match('/\buu\b|\bpp\b|\bundang-undang\b|\bperaturan\b/', $titleLower)) {
             return 'regulasi';
         }
@@ -310,12 +315,13 @@ class ImportWpCsv extends Command
         if ($wpType == '2') {
             return 'blog'; // Kebanyakan post berita masuk blog
         }
-        
+
         if ($wpType == '4') {
             // Bisa berupa profil atau pages statis
             if (str_contains($titleLower, 'profil') || str_contains($titleLower, 'tentang')) {
-                return 'sejarah'; 
+                return 'sejarah';
             }
+
             return 'blog';
         }
 

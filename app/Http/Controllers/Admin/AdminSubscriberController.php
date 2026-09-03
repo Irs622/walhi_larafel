@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Subscriber;
 use App\Services\AuditLogService;
 use App\Services\CsvSanitizer;
-use Illuminate\Http\Request;
 
 class AdminSubscriberController extends Controller
 {
@@ -27,7 +26,7 @@ class AdminSubscriberController extends Controller
 
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="newsletter_subscribers_' . now()->format('Y-m-d') . '.csv"',
+            'Content-Disposition' => 'attachment; filename="newsletter_subscribers_'.now()->format('Y-m-d').'.csv"',
             'Pragma' => 'no-cache',
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
             'Expires' => '0',

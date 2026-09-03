@@ -26,23 +26,23 @@ class StoreCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'author_name'  => ['required', 'string', 'max:255'],
+            'author_name' => ['required', 'string', 'max:255'],
             'author_email' => ['required', 'email:rfc', 'max:255'],
-            'body'         => ['required', 'string', 'min:5', 'max:5000'],
-            'parent_id'    => ['nullable', 'integer', 'exists:comments,id'],
+            'body' => ['required', 'string', 'min:5', 'max:5000'],
+            'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'author_name.required'  => 'Nama wajib diisi.',
+            'author_name.required' => 'Nama wajib diisi.',
             'author_email.required' => 'Email wajib diisi.',
-            'author_email.email'    => 'Format email tidak valid.',
-            'body.required'         => 'Isi komentar wajib diisi.',
-            'body.min'              => 'Komentar minimal 5 karakter.',
-            'body.max'              => 'Komentar maksimal 5.000 karakter.',
-            'parent_id.exists'      => 'Komentar yang dibalas tidak ditemukan.',
+            'author_email.email' => 'Format email tidak valid.',
+            'body.required' => 'Isi komentar wajib diisi.',
+            'body.min' => 'Komentar minimal 5 karakter.',
+            'body.max' => 'Komentar maksimal 5.000 karakter.',
+            'parent_id.exists' => 'Komentar yang dibalas tidak ditemukan.',
         ];
     }
 

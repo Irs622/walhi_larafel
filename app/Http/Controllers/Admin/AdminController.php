@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\ContentCategory;
 use App\Http\Controllers\Controller;
 use App\Models\Content;
 use App\Models\Donation;
@@ -17,21 +16,21 @@ class AdminController extends Controller
             $totalArticles = Content::publishable()->count();
 
             $activeDonations = Content::ofCategory('donasi')->published()->count();
-            $activeEvents    = Content::ofCategory('pekan-rakyat')->published()->count();
+            $activeEvents = Content::ofCategory('pekan-rakyat')->published()->count();
 
             $totalDonationsAmount = Donation::where('status', 'success')->sum('amount');
 
             [$labels, $monthsData] = $this->buildMonthlyChart();
 
             return [
-                'total_articles'        => $totalArticles,
-                'active_campaigns'      => $activeDonations + $activeEvents,
-                'active_donations'      => $activeDonations,
-                'active_events'         => $activeEvents,
-                'total_donations_amount'=> $totalDonationsAmount,
-                'chart_labels'          => $labels,
-                'chart_data'            => $monthsData,
-                'has_donations'         => array_sum($monthsData) > 0,
+                'total_articles' => $totalArticles,
+                'active_campaigns' => $activeDonations + $activeEvents,
+                'active_donations' => $activeDonations,
+                'active_events' => $activeEvents,
+                'total_donations_amount' => $totalDonationsAmount,
+                'chart_labels' => $labels,
+                'chart_data' => $monthsData,
+                'has_donations' => array_sum($monthsData) > 0,
             ];
         });
 
@@ -54,7 +53,7 @@ class AdminController extends Controller
     private function buildMonthlyChart(): array
     {
         $labels = [];
-        $data   = [];
+        $data = [];
 
         $startDate = Carbon::now()->startOfMonth()->subMonths(11);
 
@@ -70,10 +69,10 @@ class AdminController extends Controller
             ->pluck('total', 'period_key');
 
         for ($i = 11; $i >= 0; $i--) {
-            $month      = Carbon::now()->startOfMonth()->subMonths($i);
-            $key        = $month->format('Y-m');
-            $labels[]   = $month->translatedFormat("M 'y");
-            $data[]     = (int) ($monthlyTotals[$key] ?? 0);
+            $month = Carbon::now()->startOfMonth()->subMonths($i);
+            $key = $month->format('Y-m');
+            $labels[] = $month->translatedFormat("M 'y");
+            $data[] = (int) ($monthlyTotals[$key] ?? 0);
         }
 
         return [$labels, $data];

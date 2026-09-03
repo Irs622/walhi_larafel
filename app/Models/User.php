@@ -33,7 +33,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
+            'password' => 'hashed',
         ];
     }
 
@@ -79,6 +79,7 @@ class User extends Authenticatable
     public function assignRole(string|UserRole $role): static
     {
         $this->role = $role instanceof UserRole ? $role->value : $role;
+
         return $this;
     }
 }

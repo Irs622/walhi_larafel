@@ -17,8 +17,8 @@ class SlugService
      */
     public function makeUnique(string $slug, ?int $excludeId = null): string
     {
-        $slug  = Str::slug($slug);
-        $query = Content::where('slug', 'like', $slug . '%');
+        $slug = Str::slug($slug);
+        $query = Content::where('slug', 'like', $slug.'%');
 
         if ($excludeId !== null) {
             $query->where('id', '!=', $excludeId);
