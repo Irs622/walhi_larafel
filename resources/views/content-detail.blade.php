@@ -205,7 +205,7 @@
  
                                 <div style="border-top: 2px solid #1D1D1D; padding-top: 24px;">
                                     @if($item->image_url)
-                                        <a href="{{ $item->image_url }}" target="_blank" style="height: 52px; padding: 0 32px; background: #1D1D1D; color: #F4F1EA; border: none; font-weight: 700; font-size: 14px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;" class="btn-action">
+                                        <a href="{{ $item->image_url }}" target="_blank" rel="noopener noreferrer" style="height: 52px; padding: 0 32px; background: #1D1D1D; color: #F4F1EA; border: none; font-weight: 700; font-size: 14px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;" class="btn-action">
                                             <i data-lucide="download" style="width: 18px; height: 18px;"></i>
                                             Unduh Dokumen PDF
                                         </a>
@@ -324,7 +324,7 @@
 
                                 <div style="border-top: 2px solid #1D1D1D; padding-top: 24px; display: flex; gap: 12px;">
                                     @if($item->image_url)
-                                        <a href="{{ $item->image_url }}" target="_blank" style="height: 52px; padding: 0 32px; background: #1D1D1D; color: #F4F1EA; border: none; font-weight: 700; font-size: 14px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;" class="btn-action">
+                                        <a href="{{ $item->image_url }}" target="_blank" rel="noopener noreferrer" style="height: 52px; padding: 0 32px; background: #1D1D1D; color: #F4F1EA; border: none; font-weight: 700; font-size: 14px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;" class="btn-action">
                                             <i data-lucide="download" style="width: 18px; height: 18px;"></i>
                                             {{ $btnText }}
                                         </a>

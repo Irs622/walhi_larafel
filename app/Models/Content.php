@@ -108,7 +108,12 @@ class Content extends Model
 
         $value = trim($value);
 
-        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://') || str_starts_with($value, 'data:')) {
+        // Explicitly block dangerous URI schemes
+        if (preg_match('/^(javascript|vbscript|data):/i', $value)) {
+            return null;
+        }
+
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
             return $value;
         }
 
@@ -136,7 +141,12 @@ class Content extends Model
             return $value;
         }
 
-        return '/storage/' . $value;
+        // Only allow clean alphanumeric filename paths for fallback storage prefix
+        if (preg_match('/^[a-zA-Z0-9_\-\.\/]+$/', $value)) {
+            return '/storage/' . $value;
+        }
+
+        return null;
     }
 
     /**
@@ -189,7 +199,6 @@ class Content extends Model
             'https'  => true,
             'mailto' => true,
             'tel'    => true,
-            'data'   => true,
         ]);
         $config->set('HTML.Allowed', 'p,br,strong,b,em,i,u,ul,ol,li,h2,h3,h4,h5,blockquote,a[href|title|target],img[src|alt|width|height|style|class],table,thead,tbody,tr,th,td,figure,figcaption,hr,span,div');
 
