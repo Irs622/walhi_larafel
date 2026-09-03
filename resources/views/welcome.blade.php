@@ -12,7 +12,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-brand-cream antialiased text-brand-dark overflow-x-hidden" style="font-family: Montserrat, sans-serif;">
+    <body class="bg-brand-cream antialiased text-brand-dark overflow-x-clip" style="font-family: Montserrat, sans-serif; overflow-x: clip;">
         @php
             $iqon = function (string $name): string {
                 return asset('iqon/'.$name);
