@@ -24,29 +24,23 @@ class AdminUserSeeder extends Seeder
             $isGenerated = true;
         }
 
-        User::updateOrCreate(
-            ['email' => $adminEmail],
-            [
-                'name' => 'Admin WALHI Jabar',
-                'password' => Hash::make($adminPass),
-                'email_verified_at' => now(),
-                'role' => 'admin',
-            ]
-        );
+        $admin = User::firstOrNew(['email' => $adminEmail]);
+        $admin->name = 'Admin WALHI Jabar';
+        $admin->password = Hash::make($adminPass);
+        $admin->email_verified_at = now();
+        $admin->assignRole('admin');
+        $admin->save();
 
         // ── Editor User ──
         $editorEmail = config('auth.editor_seed.email', 'editor@walhijabar.or.id');
         $editorPass = config('auth.editor_seed.password', 'WalhiEditor2026!');
 
-        User::updateOrCreate(
-            ['email' => $editorEmail],
-            [
-                'name' => 'Editor WALHI Jabar',
-                'password' => Hash::make($editorPass),
-                'email_verified_at' => now(),
-                'role' => 'editor',
-            ]
-        );
+        $editor = User::firstOrNew(['email' => $editorEmail]);
+        $editor->name = 'Editor WALHI Jabar';
+        $editor->password = Hash::make($editorPass);
+        $editor->email_verified_at = now();
+        $editor->assignRole('editor');
+        $editor->save();
 
         if ($this->command) {
             $this->command->info("Admin user {$adminEmail} berhasil dibuat/diperbarui.");

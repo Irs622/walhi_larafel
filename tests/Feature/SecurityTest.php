@@ -511,8 +511,9 @@ class SecurityTest extends TestCase
         $responseRegulasi->assertStatus(200);
     }
 
-    public function test_user_model_allows_role_mass_assignment_and_seeder_persists_admin(): void
+    public function test_user_model_protects_role_from_mass_assignment_and_seeder_persists_admin(): void
     {
+        // Mass assignment via constructor must NOT assign role
         $user = new User([
             'name'     => 'Seeded Admin',
             'email'    => 'custom_admin@example.com',
@@ -521,19 +522,76 @@ class SecurityTest extends TestCase
         ]);
         $user->save();
 
+        $this->assertNotEquals('admin', $user->fresh()->role);
+        $this->assertFalse($user->fresh()->isAdmin());
+
+        // Explicit assignment works securely
+        $user->assignRole('admin');
+        $user->save();
         $this->assertEquals('admin', $user->fresh()->role);
         $this->assertTrue($user->fresh()->isAdmin());
 
-        $editor = new User([
-            'name'     => 'Seeded Editor',
-            'email'    => 'custom_editor@example.com',
-            'password' => 'secret123',
-            'role'     => 'editor',
-        ]);
-        $editor->save();
+        // Seeder successfully creates admin & editor using secure assignment
+        $this->seed(\Database\Seeders\AdminUserSeeder::class);
+        $seededAdmin = User::where('email', config('auth.admin_seed.email') ?: 'admin@walhijabar.or.id')->first();
+        $this->assertNotNull($seededAdmin);
+        $this->assertTrue($seededAdmin->isAdmin());
 
-        $this->assertEquals('editor', $editor->fresh()->role);
-        $this->assertTrue($editor->fresh()->canManageContent());
-        $this->assertFalse($editor->fresh()->canDelete());
+        $seededEditor = User::where('email', config('auth.editor_seed.email', 'editor@walhijabar.or.id'))->first();
+        $this->assertNotNull($seededEditor);
+        $this->assertTrue($seededEditor->canManageContent());
+        $this->assertFalse($seededEditor->canDelete());
+    }
+
+    public function test_content_request_rejects_dangerous_image_url_protocols(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        // javascript: scheme must be rejected
+        $response1 = $this->actingAs($admin)->post('/admin/blog', [
+            'title'     => 'XSS Attack',
+            'status'    => 'published',
+            'image_url' => 'javascript:alert(document.cookie)',
+        ]);
+        $response1->assertSessionHasErrors('image_url');
+
+        // data: scheme must be rejected
+        $response2 = $this->actingAs($admin)->post('/admin/blog', [
+            'title'     => 'XSS Attack 2',
+            'status'    => 'published',
+            'image_url' => 'data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==',
+        ]);
+        $response2->assertSessionHasErrors('image_url');
+
+        // vbscript: scheme must be rejected
+        $response3 = $this->actingAs($admin)->post('/admin/blog', [
+            'title'     => 'XSS Attack 3',
+            'status'    => 'published',
+            'image_url' => 'vbscript:msgbox(1)',
+        ]);
+        $response3->assertSessionHasErrors('image_url');
+
+        // Safe relative and absolute URLs are accepted
+        $responseSafe = $this->actingAs($admin)->post('/admin/blog', [
+            'title'     => 'Safe Article',
+            'status'    => 'published',
+            'image_url' => 'https://images.unsplash.com/photo-sample.jpg',
+        ]);
+        $responseSafe->assertSessionHasNoErrors();
+    }
+
+    public function test_content_model_sanitizes_dangerous_image_url_schemes(): void
+    {
+        $contentXss = new Content(['image_url' => 'javascript:alert(1)']);
+        $this->assertNull($contentXss->image_url);
+
+        $contentData = new Content(['image_url' => 'data:text/html,<script>alert(1)</script>']);
+        $this->assertNull($contentData->image_url);
+
+        $contentSafe = new Content(['image_url' => 'https://example.com/safe.jpg']);
+        $this->assertSame('https://example.com/safe.jpg', $contentSafe->image_url);
+
+        $contentRelative = new Content(['image_url' => '/storage/uploads/safe.jpg']);
+        $this->assertSame('/storage/uploads/safe.jpg', $contentRelative->image_url);
     }
 }
