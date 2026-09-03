@@ -7,8 +7,8 @@ use App\Http\Requests\Admin\StoreContentRequest;
 use App\Http\Requests\Admin\UpdateContentRequest;
 use App\Models\Content;
 use App\Models\Donation;
-use App\Services\Content\SlugService;
 use App\Services\AuditLogService;
+use App\Services\Content\SlugService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -25,26 +25,26 @@ class ContentController extends Controller
      * Used to drive the Admin UI labels.
      */
     protected array $config = [
-        'blog'               => ['title' => 'Blog',              'desc' => 'Kelola artikel dan tulisan di halaman Blog.'],
-        'regulasi'           => ['title' => 'Regulasi',           'desc' => 'Kelola dokumen peraturan dan regulasi lingkungan.'],
-        'siaran-pers'        => ['title' => 'Siaran Pers',        'desc' => 'Kelola siaran pers dan rilis media WALHI Jabar.'],
-        'infografis'         => ['title' => 'Infografis',         'desc' => 'Kelola infografis dan visualisasi data lingkungan.'],
-        'kertas-posisi'      => ['title' => 'Kertas Posisi',      'desc' => 'Kelola dokumen posisi kebijakan WALHI Jabar.'],
-        'newsletter'         => ['title' => 'E-Newsletter',       'desc' => 'Kelola edisi E-Newsletter WALHI Jabar.'],
-        'buletin-bumi'       => ['title' => 'Buletin Bumi',       'desc' => 'Kelola edisi Buletin Bumi.'],
-        'jurnal'             => ['title' => 'Jurnal Tanah Air',   'desc' => 'Kelola edisi Jurnal Tanah Air.'],
-        'laporan-tahunan'    => ['title' => 'Laporan Tahunan',    'desc' => 'Kelola laporan tahunan organisasi.'],
-        'sejarah'            => ['title' => 'Sejarah',            'desc' => 'Kelola halaman Sejarah organisasi.'],
-        'visi-misi'          => ['title' => 'Visi & Misi',        'desc' => 'Kelola konten Visi dan Misi.'],
-        'dewan-nasional'     => ['title' => 'Dewan Nasional',     'desc' => 'Kelola data anggota Dewan Nasional.'],
+        'blog' => ['title' => 'Blog',              'desc' => 'Kelola artikel dan tulisan di halaman Blog.'],
+        'regulasi' => ['title' => 'Regulasi',           'desc' => 'Kelola dokumen peraturan dan regulasi lingkungan.'],
+        'siaran-pers' => ['title' => 'Siaran Pers',        'desc' => 'Kelola siaran pers dan rilis media WALHI Jabar.'],
+        'infografis' => ['title' => 'Infografis',         'desc' => 'Kelola infografis dan visualisasi data lingkungan.'],
+        'kertas-posisi' => ['title' => 'Kertas Posisi',      'desc' => 'Kelola dokumen posisi kebijakan WALHI Jabar.'],
+        'newsletter' => ['title' => 'E-Newsletter',       'desc' => 'Kelola edisi E-Newsletter WALHI Jabar.'],
+        'buletin-bumi' => ['title' => 'Buletin Bumi',       'desc' => 'Kelola edisi Buletin Bumi.'],
+        'jurnal' => ['title' => 'Jurnal Tanah Air',   'desc' => 'Kelola edisi Jurnal Tanah Air.'],
+        'laporan-tahunan' => ['title' => 'Laporan Tahunan',    'desc' => 'Kelola laporan tahunan organisasi.'],
+        'sejarah' => ['title' => 'Sejarah',            'desc' => 'Kelola halaman Sejarah organisasi.'],
+        'visi-misi' => ['title' => 'Visi & Misi',        'desc' => 'Kelola konten Visi dan Misi.'],
+        'dewan-nasional' => ['title' => 'Dewan Nasional',     'desc' => 'Kelola data anggota Dewan Nasional.'],
         'eksekutif-nasional' => ['title' => 'Eksekutif Nasional', 'desc' => 'Kelola data Eksekutif Nasional.'],
-        'eksekutif-daerah'   => ['title' => 'Eksekutif Daerah',  'desc' => 'Kelola data Eksekutif Daerah.'],
-        'kontak'             => ['title' => 'Kontak',             'desc' => 'Kelola informasi kontak organisasi.'],
-        'donasi'             => ['title' => 'Kampanye Donasi',    'desc' => 'Manajemen kampanye donasi dan laporan penerimaan.'],
-        'pekan-rakyat'       => ['title' => 'Pekan Rakyat',       'desc' => 'Manajemen event Pekan Rakyat.'],
-        'statistik'          => ['title' => 'Statistik Utama',    'desc' => 'Kelola angka-angka statistik utama di halaman Beranda.'],
-        'isu-kritis'         => ['title' => 'Isu Kritis',         'desc' => 'Kelola 5 isu kritis lingkungan di halaman Beranda.'],
-        'kampanye-darurat'   => ['title' => 'Kampanye Darurat',   'desc' => 'Kelola teks & link Kampanye Darurat di bar navigasi atas.'],
+        'eksekutif-daerah' => ['title' => 'Eksekutif Daerah',  'desc' => 'Kelola data Eksekutif Daerah.'],
+        'kontak' => ['title' => 'Kontak',             'desc' => 'Kelola informasi kontak organisasi.'],
+        'donasi' => ['title' => 'Kampanye Donasi',    'desc' => 'Manajemen kampanye donasi dan laporan penerimaan.'],
+        'pekan-rakyat' => ['title' => 'Pekan Rakyat',       'desc' => 'Manajemen event Pekan Rakyat.'],
+        'statistik' => ['title' => 'Statistik Utama',    'desc' => 'Kelola angka-angka statistik utama di halaman Beranda.'],
+        'isu-kritis' => ['title' => 'Isu Kritis',         'desc' => 'Kelola 5 isu kritis lingkungan di halaman Beranda.'],
+        'kampanye-darurat' => ['title' => 'Kampanye Darurat',   'desc' => 'Kelola teks & link Kampanye Darurat di bar navigasi atas.'],
     ];
 
     private function getCategoryConfig(string $category): array
@@ -65,7 +65,7 @@ class ContentController extends Controller
             $escapedSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
             $query->where(function ($q) use ($escapedSearch) {
                 $q->where('title', 'like', "%{$escapedSearch}%")
-                  ->orWhere('tags', 'like', "%{$escapedSearch}%");
+                    ->orWhere('tags', 'like', "%{$escapedSearch}%");
             });
         }
 
@@ -82,18 +82,18 @@ class ContentController extends Controller
             ->first();
 
         $counts = [
-            'total'     => (int) ($rawCounts->total ?? 0),
+            'total' => (int) ($rawCounts->total ?? 0),
             'published' => (int) ($rawCounts->published ?? 0),
-            'draft'     => (int) ($rawCounts->draft ?? 0),
-            'archived'  => (int) ($rawCounts->archived ?? 0),
+            'draft' => (int) ($rawCounts->draft ?? 0),
+            'archived' => (int) ($rawCounts->archived ?? 0),
         ];
 
         // Donation-specific dashboard
         if ($category === 'donasi') {
             $recentDonations = Donation::orderBy('created_at', 'desc')->take(10)->get();
-            $totalAmount     = Donation::where('status', 'success')->sum('amount');
-            $uniqueDonors    = Donation::where('status', 'success')->distinct('donor_email')->count('donor_email');
-            $avgDonation     = Donation::where('status', 'success')->avg('amount') ?: 0;
+            $totalAmount = Donation::where('status', 'success')->sum('amount');
+            $uniqueDonors = Donation::where('status', 'success')->distinct('donor_email')->count('donor_email');
+            $avgDonation = Donation::where('status', 'success')->avg('amount') ?: 0;
 
             // Monthly trend — last 12 months (real data only)
             [$chartLabels, $chartData] = $this->buildMonthlyChart();
@@ -128,7 +128,7 @@ class ContentController extends Controller
         // Image upload / URL
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('uploads', 'public');
-            $validated['image_url'] = '/storage/' . $path;
+            $validated['image_url'] = '/storage/'.$path;
         } elseif (! empty($validated['image_url'])) {
             $validated['image_url'] = trim($validated['image_url']);
         } else {
@@ -172,7 +172,7 @@ class ContentController extends Controller
         if ($request->hasFile('image')) {
             $this->deleteOldImage($content);
             $path = $request->file('image')->store('uploads', 'public');
-            $validated['image_url'] = '/storage/' . $path;
+            $validated['image_url'] = '/storage/'.$path;
         } elseif ($request->filled('image_url')) {
             $newUrl = trim($validated['image_url']);
             $oldRaw = (string) $content->getRawOriginal('image_url');
@@ -263,17 +263,17 @@ class ContentController extends Controller
             ],
         ], [
             'image.required' => 'File gambar wajib dipilih.',
-            'image.image'    => 'File harus berupa gambar valid.',
-            'image.mimes'    => 'Format gambar harus JPEG, PNG, WebP, atau GIF.',
-            'image.max'      => 'Ukuran gambar maksimal 2 MB agar server tetap cepat dan ringan.',
+            'image.image' => 'File harus berupa gambar valid.',
+            'image.mimes' => 'Format gambar harus JPEG, PNG, WebP, atau GIF.',
+            'image.max' => 'Ukuran gambar maksimal 2 MB agar server tetap cepat dan ringan.',
         ]);
 
         $path = $request->file('image')->store('uploads', 'public');
-        $url = '/storage/' . $path;
+        $url = '/storage/'.$path;
 
         return response()->json([
             'success' => true,
-            'url'     => $url,
+            'url' => $url,
         ]);
     }
 
@@ -290,7 +290,7 @@ class ContentController extends Controller
     private function buildMonthlyChart(): array
     {
         $labels = [];
-        $data   = [];
+        $data = [];
         $startDate = Carbon::now()->startOfMonth()->subMonths(11);
 
         $driver = DB::getDriverName();
@@ -305,10 +305,10 @@ class ContentController extends Controller
             ->pluck('total', 'period_key');
 
         for ($i = 11; $i >= 0; $i--) {
-            $month    = Carbon::now()->startOfMonth()->subMonths($i);
-            $key      = $month->format('Y-m');
+            $month = Carbon::now()->startOfMonth()->subMonths($i);
+            $key = $month->format('Y-m');
             $labels[] = $month->translatedFormat("M 'y");
-            $data[]   = (int) ($monthlyTotals[$key] ?? 0);
+            $data[] = (int) ($monthlyTotals[$key] ?? 0);
         }
 
         return [$labels, $data];
@@ -320,15 +320,17 @@ class ContentController extends Controller
     private function encodeTags(Request $request, string $category, ?string $defaultTags): ?string
     {
         if ($category === 'isu-kritis') {
-            $icon  = $request->input('isu_icon', 'Icon-4.svg');
+            $icon = $request->input('isu_icon', 'Icon-4.svg');
             $badge = $request->input('isu_badge', 'Isu');
-            return $icon . '|' . $badge;
+
+            return $icon.'|'.$badge;
         }
 
         if ($category === 'regulasi') {
             $regCategory = $request->input('reg_category', 'undang-undang');
-            $regIssuer   = $request->input('reg_issuer', 'Pemerintah RI');
-            $regStatus   = $request->input('reg_status', 'berlaku');
+            $regIssuer = $request->input('reg_issuer', 'Pemerintah RI');
+            $regStatus = $request->input('reg_status', 'berlaku');
+
             return implode(', ', [$regCategory, $regIssuer, $regStatus]);
         }
 
@@ -362,7 +364,7 @@ class ContentController extends Controller
             }
 
             if ($filename && ! in_array($filename, ['.', '..'], true)) {
-                Storage::disk('public')->delete('uploads/' . $filename);
+                Storage::disk('public')->delete('uploads/'.$filename);
             }
         }
     }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Content;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -38,9 +39,9 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(Lockout::class, function (Lockout $event) {
             Log::warning('Security Alert: Account Lockout triggered due to excessive failed login attempts.', [
-                'ip'         => request()->ip(),
+                'ip' => request()->ip(),
                 'user_agent' => request()->userAgent(),
-                'email'      => request()->input('email'),
+                'email' => request()->input('email'),
             ]);
         });
 
@@ -62,7 +63,7 @@ class AppServiceProvider extends ServiceProvider
         // Login attempts — keyed by email + IP and globally by IP to prevent brute-force & spraying
         RateLimiter::for('login', function (Request $request) {
             return [
-                Limit::perMinute(5)->by($request->input('email') . '|' . $request->ip()),
+                Limit::perMinute(5)->by($request->input('email').'|'.$request->ip()),
                 Limit::perMinute(20)->by($request->ip()),
             ];
         });
@@ -99,7 +100,7 @@ class AppServiceProvider extends ServiceProvider
         view()->composer(
             ['welcome', 'partials.site-header', 'partials.site-footer'],
             function ($view) {
-                $contactData  = Cache::remember('global_contact', 3600, fn () => $this->resolveContactData());
+                $contactData = Cache::remember('global_contact', 3600, fn () => $this->resolveContactData());
                 $campaignData = Cache::remember('global_campaign', 3600, fn () => $this->resolveCampaignData());
 
                 $view->with('globalContact', (object) $contactData);
@@ -115,18 +116,18 @@ class AppServiceProvider extends ServiceProvider
     private function resolveContactData(): array
     {
         $defaults = [
-            'email'     => 'walhijabar@gmail.com',
-            'whatsapp'  => '+62 821-1982-1159',
-            'address'   => 'Jl. Simponi No.29, Turangga, Kec. Lengkong, Kota Bandung, Jawa Barat 40264',
-            'facebook'  => 'https://facebook.com/walhi.jabar',
+            'email' => 'walhijabar@gmail.com',
+            'whatsapp' => '+62 821-1982-1159',
+            'address' => 'Jl. Simponi No.29, Turangga, Kec. Lengkong, Kota Bandung, Jawa Barat 40264',
+            'facebook' => 'https://facebook.com/walhi.jabar',
             'instagram' => 'https://instagram.com/walhi.jabar',
-            'youtube'   => 'https://www.youtube.com/@walhijabar',
-            'twitter'   => 'https://x.com/walhijabar',
+            'youtube' => 'https://www.youtube.com/@walhijabar',
+            'twitter' => 'https://x.com/walhijabar',
         ];
 
         try {
             if (\Schema::hasTable('contents')) {
-                $kontak = \App\Models\Content::where('category', 'kontak')
+                $kontak = Content::where('category', 'kontak')
                     ->where('status', 'published')
                     ->first();
 
@@ -163,18 +164,18 @@ class AppServiceProvider extends ServiceProvider
     {
         $defaults = [
             'title' => 'Kampanye Darurat: Hentikan Tambang Ilegal',
-            'url'   => '#',
+            'url' => '#',
         ];
 
         try {
             if (\Schema::hasTable('contents')) {
-                $campaign = \App\Models\Content::where('category', 'kampanye-darurat')
+                $campaign = Content::where('category', 'kampanye-darurat')
                     ->where('status', 'published')
                     ->first();
 
                 if ($campaign) {
                     $defaults['title'] = filter_var($campaign->title, FILTER_SANITIZE_SPECIAL_CHARS);
-                    $defaults['url']   = filter_var($campaign->tags, FILTER_VALIDATE_URL) ? $campaign->tags : '#';
+                    $defaults['url'] = filter_var($campaign->tags, FILTER_VALIDATE_URL) ? $campaign->tags : '#';
                 }
             }
         } catch (\Exception) {

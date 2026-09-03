@@ -1,27 +1,27 @@
 <?php
- 
+
 namespace Tests\Feature;
- 
+
 use App\Models\Content;
 use App\Models\Donation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
- 
+
 class DonationTest extends TestCase
 {
     use RefreshDatabase;
- 
+
     /**
      * Test donation payment request validation.
      */
     public function test_donation_payment_request_requires_parameters(): void
     {
         $response = $this->postJson(route('donasi.pay'), []);
- 
+
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['donor_name', 'donor_email', 'amount']);
     }
- 
+
     /**
      * Test successful mock donation token checkout.
      */
@@ -31,25 +31,25 @@ class DonationTest extends TestCase
             'donor_name' => 'Wira Pratama',
             'donor_email' => 'donatur@example.org',
             'donor_phone' => '08123456789',
-            'amount' => 50000
+            'amount' => 50000,
         ];
- 
+
         $response = $this->postJson(route('donasi.pay'), $payload);
- 
+
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'is_mock' => true
+                'is_mock' => true,
             ]);
-            
+
         $this->assertDatabaseHas('donations', [
             'donor_name' => 'Wira Pratama',
             'donor_email' => 'donatur@example.org',
             'amount' => 50000,
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
     }
- 
+
     /**
      * Test simulated mock payment status update.
      */
@@ -62,23 +62,23 @@ class DonationTest extends TestCase
             'donor_phone' => '08111222333',
             'amount' => 100000,
             'status' => 'pending',
-            'snap_token' => 'MOCK-SNAP-TOKEN-123'
+            'snap_token' => 'MOCK-SNAP-TOKEN-123',
         ]);
- 
+
         $response = $this->postJson(route('donasi.mock-payment-status'), [
             'order_id' => 'WALHI-DON-1234567890',
-            'status' => 'success'
+            'status' => 'success',
         ]);
- 
+
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
- 
+
         $this->assertDatabaseHas('donations', [
             'order_id' => 'WALHI-DON-1234567890',
-            'status' => 'success'
+            'status' => 'success',
         ]);
     }
- 
+
     /**
      * Test rendering single content detail page.
      */
@@ -91,11 +91,11 @@ class DonationTest extends TestCase
             'status' => 'published',
             'body' => 'Isi berita gugatan izin lingkungan di Cirebon.',
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
- 
+
         $response = $this->get(route('content.show', 'gugatan-izin-lingkungan-cirebon'));
- 
+
         $response->assertStatus(200)
             ->assertSee('Gugatan Izin Lingkungan Cirebon')
             ->assertSee('Isi berita gugatan izin lingkungan di Cirebon.');

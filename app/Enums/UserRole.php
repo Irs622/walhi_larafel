@@ -4,8 +4,8 @@ namespace App\Enums;
 
 enum UserRole: string
 {
-    case Admin      = 'admin';
-    case Editor     = 'editor';
+    case Admin = 'admin';
+    case Editor = 'editor';
     case Subscriber = 'subscriber';
 
     /**
@@ -14,8 +14,8 @@ enum UserRole: string
     public function label(): string
     {
         return match ($this) {
-            self::Admin      => 'Administrator',
-            self::Editor     => 'Editor',
+            self::Admin => 'Administrator',
+            self::Editor => 'Editor',
             self::Subscriber => 'Pelanggan / Anggota',
         };
     }

@@ -8,6 +8,7 @@ use App\Models\Donation;
 use App\Models\Subscriber;
 use App\Models\User;
 use App\Services\CsvSanitizer;
+use Database\Seeders\AdminUserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -515,10 +516,10 @@ class SecurityTest extends TestCase
     {
         // Mass assignment via constructor must NOT assign role
         $user = new User([
-            'name'     => 'Seeded Admin',
-            'email'    => 'custom_admin@example.com',
+            'name' => 'Seeded Admin',
+            'email' => 'custom_admin@example.com',
             'password' => 'secret123',
-            'role'     => 'admin',
+            'role' => 'admin',
         ]);
         $user->save();
 
@@ -532,7 +533,7 @@ class SecurityTest extends TestCase
         $this->assertTrue($user->fresh()->isAdmin());
 
         // Seeder successfully creates admin & editor using secure assignment
-        $this->seed(\Database\Seeders\AdminUserSeeder::class);
+        $this->seed(AdminUserSeeder::class);
         $seededAdmin = User::where('email', config('auth.admin_seed.email') ?: 'admin@walhijabar.or.id')->first();
         $this->assertNotNull($seededAdmin);
         $this->assertTrue($seededAdmin->isAdmin());
@@ -549,32 +550,32 @@ class SecurityTest extends TestCase
 
         // javascript: scheme must be rejected
         $response1 = $this->actingAs($admin)->post('/admin/blog', [
-            'title'     => 'XSS Attack',
-            'status'    => 'published',
+            'title' => 'XSS Attack',
+            'status' => 'published',
             'image_url' => 'javascript:alert(document.cookie)',
         ]);
         $response1->assertSessionHasErrors('image_url');
 
         // data: scheme must be rejected
         $response2 = $this->actingAs($admin)->post('/admin/blog', [
-            'title'     => 'XSS Attack 2',
-            'status'    => 'published',
+            'title' => 'XSS Attack 2',
+            'status' => 'published',
             'image_url' => 'data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==',
         ]);
         $response2->assertSessionHasErrors('image_url');
 
         // vbscript: scheme must be rejected
         $response3 = $this->actingAs($admin)->post('/admin/blog', [
-            'title'     => 'XSS Attack 3',
-            'status'    => 'published',
+            'title' => 'XSS Attack 3',
+            'status' => 'published',
             'image_url' => 'vbscript:msgbox(1)',
         ]);
         $response3->assertSessionHasErrors('image_url');
 
         // Safe relative and absolute URLs are accepted
         $responseSafe = $this->actingAs($admin)->post('/admin/blog', [
-            'title'     => 'Safe Article',
-            'status'    => 'published',
+            'title' => 'Safe Article',
+            'status' => 'published',
             'image_url' => 'https://images.unsplash.com/photo-sample.jpg',
         ]);
         $responseSafe->assertSessionHasNoErrors();

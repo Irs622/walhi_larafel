@@ -6,7 +6,7 @@ enum DonationStatus: string
 {
     case Pending = 'pending';
     case Success = 'success';
-    case Failed  = 'failed';
+    case Failed = 'failed';
     case Expired = 'expired';
 
     /**
@@ -17,7 +17,7 @@ enum DonationStatus: string
         return match ($this) {
             self::Pending => 'Menunggu Pembayaran',
             self::Success => 'Berhasil',
-            self::Failed  => 'Gagal',
+            self::Failed => 'Gagal',
             self::Expired => 'Kadaluarsa',
         };
     }
@@ -37,9 +37,9 @@ enum DonationStatus: string
     {
         return match ($transactionStatus) {
             'capture', 'settlement' => self::Success,
-            'deny', 'cancel'        => self::Failed,
-            'expire'                => self::Expired,
-            default                 => self::Pending,
+            'deny', 'cancel' => self::Failed,
+            'expire' => self::Expired,
+            default => self::Pending,
         };
     }
 }

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\DonationStatus;
 use App\Http\Requests\Donation\InitiateDonationRequest;
 use App\Models\Content;
 use App\Models\Donation;
 use App\Services\Donation\DonationService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\IpUtils;
 
 class DonationController extends Controller
 {
@@ -36,10 +36,10 @@ class DonationController extends Controller
             $result = $this->donationService->initiate($validated);
 
             return response()->json([
-                'success'    => true,
+                'success' => true,
                 'snap_token' => $result['snap_token'],
-                'order_id'   => $result['order_id'],
-                'is_mock'    => $result['is_mock'],
+                'order_id' => $result['order_id'],
+                'is_mock' => $result['is_mock'],
             ]);
         } catch (\Throwable $e) {
             return response()->json([
@@ -65,21 +65,22 @@ class DonationController extends Controller
                 '127.0.0.1/32',
             ]);
 
-            if (! \Symfony\Component\HttpFoundation\IpUtils::checkIp($clientIp, $allowedRanges)) {
-                \Illuminate\Support\Facades\Log::warning('Midtrans webhook rejected due to unlisted IP address', [
-                    'ip'         => $clientIp,
+            if (! IpUtils::checkIp($clientIp, $allowedRanges)) {
+                Log::warning('Midtrans webhook rejected due to unlisted IP address', [
+                    'ip' => $clientIp,
                     'user_agent' => $request->userAgent(),
                 ]);
+
                 return response('Forbidden IP', 403);
             }
         }
 
         $payload = $request->all();
 
-        $orderId         = $payload['order_id'] ?? null;
-        $statusCode      = $payload['status_code'] ?? null;
-        $grossAmount     = $payload['gross_amount'] ?? null;
-        $signatureKey    = $payload['signature_key'] ?? null;
+        $orderId = $payload['order_id'] ?? null;
+        $statusCode = $payload['status_code'] ?? null;
+        $grossAmount = $payload['gross_amount'] ?? null;
+        $signatureKey = $payload['signature_key'] ?? null;
 
         if (! $orderId || ! $statusCode || ! $grossAmount || ! $signatureKey) {
             return response('Bad Request', 400);
@@ -97,16 +98,17 @@ class DonationController extends Controller
 
         // Defense-in-depth: Verify gross amount matches stored donation record
         if ((int) floatval($grossAmount) !== (int) $donation->amount) {
-            \Illuminate\Support\Facades\Log::warning('Donation webhook amount mismatch detected', [
-                'order_id'        => $orderId,
+            Log::warning('Donation webhook amount mismatch detected', [
+                'order_id' => $orderId,
                 'database_amount' => $donation->amount,
-                'payload_amount'  => $grossAmount,
+                'payload_amount' => $grossAmount,
             ]);
+
             return response('Amount Mismatch', 400);
         }
 
         $transactionStatus = $payload['transaction_status'] ?? '';
-        $paymentType       = $payload['payment_type'] ?? null;
+        $paymentType = $payload['payment_type'] ?? null;
 
         $this->donationService->processWebhook($donation, $transactionStatus, $paymentType);
 
@@ -124,17 +126,17 @@ class DonationController extends Controller
 
         $validated = $request->validate([
             'order_id' => ['required', 'exists:donations,order_id'],
-            'status'   => ['required', 'in:success,failed,pending,expired'],
+            'status' => ['required', 'in:success,failed,pending,expired'],
         ]);
 
         $donation = Donation::where('order_id', $validated['order_id'])->firstOrFail();
-        $donation->status       = $validated['status'];
+        $donation->status = $validated['status'];
         $donation->payment_type = 'simulation';
         $donation->save();
 
         return response()->json([
             'success' => true,
-            'status'  => $donation->status,
+            'status' => $donation->status,
         ]);
     }
 }

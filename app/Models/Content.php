@@ -30,8 +30,8 @@ class Content extends Model
 
     protected $casts = [
         'publish_date' => 'date:Y-m-d',
-        'is_promoted'  => 'boolean',
-        'views'        => 'integer',
+        'is_promoted' => 'boolean',
+        'views' => 'integer',
     ];
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -122,11 +122,11 @@ class Content extends Model
         }
 
         if (str_starts_with($value, 'storage/')) {
-            return '/' . $value;
+            return '/'.$value;
         }
 
         if (str_starts_with($value, 'uploads/')) {
-            return '/storage/' . $value;
+            return '/storage/'.$value;
         }
 
         if (str_starts_with($value, '/assets/')) {
@@ -134,7 +134,7 @@ class Content extends Model
         }
 
         if (str_starts_with($value, 'assets/')) {
-            return '/' . $value;
+            return '/'.$value;
         }
 
         if (str_starts_with($value, '/')) {
@@ -143,7 +143,7 @@ class Content extends Model
 
         // Only allow clean alphanumeric filename paths for fallback storage prefix
         if (preg_match('/^[a-zA-Z0-9_\-\.\/]+$/', $value)) {
-            return '/storage/' . $value;
+            return '/storage/'.$value;
         }
 
         return null;
@@ -163,6 +163,7 @@ class Content extends Model
     public function getReadTimeAttribute(): int
     {
         $wordCount = str_word_count(strip_tags($this->body ?? ''));
+
         return max(1, (int) ceil($wordCount / 200));
     }
 
@@ -183,10 +184,10 @@ class Content extends Model
             foreach ($paragraphs as $p) {
                 $p = trim($p);
                 if ($p !== '') {
-                    $formatted .= '<p>' . nl2br(htmlspecialchars($p, ENT_QUOTES, 'UTF-8')) . '</p>';
+                    $formatted .= '<p>'.nl2br(htmlspecialchars($p, ENT_QUOTES, 'UTF-8')).'</p>';
                 }
             }
-            $raw = $formatted ?: '<p>' . nl2br(htmlspecialchars($raw, ENT_QUOTES, 'UTF-8')) . '</p>';
+            $raw = $formatted ?: '<p>'.nl2br(htmlspecialchars($raw, ENT_QUOTES, 'UTF-8')).'</p>';
         }
 
         $config = \HTMLPurifier_Config::createDefault();
@@ -195,10 +196,10 @@ class Content extends Model
         $config->set('Cache.DefinitionImpl', null);
         $config->set('HTML.TargetBlank', true);
         $config->set('URI.AllowedSchemes', [
-            'http'   => true,
-            'https'  => true,
+            'http' => true,
+            'https' => true,
             'mailto' => true,
-            'tel'    => true,
+            'tel' => true,
         ]);
         $config->set('HTML.Allowed', 'p,br,strong,b,em,i,u,ul,ol,li,h2,h3,h4,h5,blockquote,a[href|title|target],img[src|alt|width|height|style|class],table,thead,tbody,tr,th,td,figure,figcaption,hr,span,div');
 
@@ -208,6 +209,7 @@ class Content extends Model
         }
 
         $purifier = new \HTMLPurifier($config);
+
         return $purifier->purify($raw);
     }
 }
