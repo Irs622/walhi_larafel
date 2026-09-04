@@ -122,7 +122,7 @@
                                 $downloadsText = $item->views . ' Kali Dibaca';
                                 $year = $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->format('Y') : '2025';
                                 
-                                $ext = pathinfo($item->image_url, PATHINFO_EXTENSION);
+                                $ext = $item->image_url ? pathinfo($item->image_url, PATHINFO_EXTENSION) : '';
                                 if (in_array(strtolower($ext), ['xls', 'xlsx'])) {
                                     $btnText = 'Unduh Berkas Excel';
                                 } elseif (in_array(strtolower($ext), ['pdf'])) {
