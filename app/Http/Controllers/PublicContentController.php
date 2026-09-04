@@ -55,7 +55,11 @@ class PublicContentController extends Controller
 
         if ($categoryFilter && $categoryFilter !== 'Semua') {
             $escapedFilter = str_replace(['%', '_'], ['\%', '\_'], $categoryFilter);
-            $query->where('tags', 'like', "%{$escapedFilter}%");
+            $query->where(function ($q) use ($escapedFilter) {
+                $q->where('tags', 'like', "%{$escapedFilter}%")
+                    ->orWhere('title', 'like', "%{$escapedFilter}%")
+                    ->orWhere('body', 'like', "%{$escapedFilter}%");
+            });
         }
 
         $items = $query->orderBy('publish_date', 'desc')->paginate(9)->withQueryString();
