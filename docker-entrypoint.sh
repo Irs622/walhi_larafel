@@ -30,6 +30,15 @@ if [ -z "$ADMIN_PASS_VAL" ]; then
     ADMIN_PASS_VAL=$(tr -dc 'A-Za-z0-9' < /dev/urandom 2>/dev/null | head -c 16 || date +%s | sha256sum | head -c 16)
 fi
 
+SECURE_COOKIE_VAL="${SESSION_SECURE_COOKIE:-}"
+if [ -z "$SECURE_COOKIE_VAL" ]; then
+    if [ "${APP_ENV:-local}" = "production" ]; then
+        SECURE_COOKIE_VAL="true"
+    else
+        SECURE_COOKIE_VAL="null"
+    fi
+fi
+
 cat > .env <<ENVFILE
 APP_NAME="${APP_NAME:-WALHI Jawa Barat}"
 APP_ENV=${APP_ENV:-local}
@@ -61,7 +70,7 @@ SESSION_LIFETIME=${SESSION_LIFETIME:-120}
 SESSION_ENCRYPT=true
 SESSION_PATH=/
 SESSION_DOMAIN=null
-SESSION_SECURE_COOKIE=${SESSION_SECURE_COOKIE:-false}
+SESSION_SECURE_COOKIE=${SECURE_COOKIE_VAL}
 
 BROADCAST_CONNECTION=log
 FILESYSTEM_DISK=local
