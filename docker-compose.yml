@@ -22,9 +22,10 @@ services:
       - QUEUE_CONNECTION=sync
       - LOG_CHANNEL=stack
       - LOG_LEVEL=debug
+      - MIGRATE_ON_START=true
       - SEED_ON_START=true
-      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@walhi-jabar.org}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@walhijabar.or.id}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
     volumes:
       # Only persist the SQLite database — NOT the entire storage/ directory
       # This prevents volume shadowing of storage/framework/* dirs built into the image
