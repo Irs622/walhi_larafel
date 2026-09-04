@@ -116,7 +116,7 @@ class ContentController extends Controller
 
     public function store(StoreContentRequest $request, string $category)
     {
-        $this->authorize('create', Content::class);
+        $this->authorize('create', [Content::class, $category]);
 
         $validated = $request->validated();
         $validated['is_promoted'] = $request->boolean('is_promoted');
