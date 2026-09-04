@@ -84,8 +84,9 @@ MIDTRANS_IS_PRODUCTION=${MIDTRANS_IS_PRODUCTION:-false}
 
 VITE_APP_NAME="${APP_NAME:-WALHI Jawa Barat}"
 
-ADMIN_EMAIL=${ADMIN_EMAIL:-admin@walhi-jabar.org}
+ADMIN_EMAIL=${ADMIN_EMAIL:-admin@walhijabar.or.id}
 ADMIN_PASSWORD=${ADMIN_PASS_VAL}
+TEAM_ADMIN_PASSWORD=${TEAM_ADMIN_PASSWORD:-}
 ENVFILE
 chown www-data:www-data .env 2>/dev/null || true
 chmod 640 .env 2>/dev/null || chmod 600 .env 2>/dev/null || true
