@@ -43,14 +43,16 @@
                 </section>
  
                 <!-- Content Section -->
-                <section style="background: #F4F1EA; color: #1D1D1D; border-bottom: 4px #1D1D1D solid;" class="py-16 md:py-20">
+                <section id="daftar-artikel" style="background: #F4F1EA; color: #1D1D1D; border-bottom: 4px #1D1D1D solid;" class="py-16 md:py-20 scroll-mt-12">
                     <div class="w-full max-w-5xl mx-auto px-4 sm:px-8 flex flex-col gap-10">
                         <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: flex-start;">
                             @foreach ($blogCategories as $category)
                                 @php
                                     $isActive = ($categoryFilter ?? 'Semua') === $category;
+                                    $categoryParams = $category === 'Semua' ? request()->except(['kategori', 'page']) : array_merge(request()->except('page'), ['kategori' => $category]);
+                                    $url = route('blog', $categoryParams) . '#daftar-artikel';
                                 @endphp
-                                <a href="{{ route('blog', ['kategori' => $category]) }}" style="padding: 12px 18px; border: 2px solid {{ $isActive ? '#256D4A' : '#1D1D1D' }}; background: {{ $isActive ? '#256D4A' : '#F4F1EA' }}; color: {{ $isActive ? '#F4F1EA' : '#1D1D1D' }}; font-size: 12px; font-weight: 700; line-height: 18px; letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer; text-decoration: none; display: inline-block;">
+                                <a href="{{ $url }}" style="padding: 12px 18px; border: 2px solid {{ $isActive ? '#256D4A' : '#1D1D1D' }}; background: {{ $isActive ? '#256D4A' : '#F4F1EA' }}; color: {{ $isActive ? '#F4F1EA' : '#1D1D1D' }}; font-size: 12px; font-weight: 700; line-height: 18px; letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer; text-decoration: none; display: inline-block;">
                                     {{ $category }}
                                 </a>
                             @endforeach
@@ -167,23 +169,77 @@
                         <!-- Neobrutalist Pagination -->
                         @if($items->hasPages())
                             <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 48px;">
-                                <a href="{{ $items->previousPageUrl() }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ $items->onFirstPage() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
+                                <a href="{{ $items->previousPageUrl() ? $items->previousPageUrl() . '#daftar-artikel' : '#' }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ $items->onFirstPage() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
                                     ‹
                                 </a>
                                 <span style="font-weight: 700; font-size: 16px; color: #1D1D1D;">
                                     Halaman {{ $items->currentPage() }} dari {{ $items->lastPage() }}
                                 </span>
-                                <a href="{{ $items->nextPageUrl() }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ !$items->hasMorePages() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
+                                <a href="{{ $items->nextPageUrl() ? $items->nextPageUrl() . '#daftar-artikel' : '#' }}" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: white; border: 2px solid #1D1D1D; color: #1D1D1D; font-weight: 700; text-decoration: none; cursor: pointer; {{ !$items->hasMorePages() ? 'opacity: 0.5; pointer-events: none;' : '' }}">
                                     ›
                                 </a>
                             </div>
                         @endif
- 
+
                     </div>
                 </section>
             </main>
 
             @include('partials.site-footer')
         </div>
+
+        <script nonce="{{ Vite::cspNonce() }}">
+            document.addEventListener('DOMContentLoaded', () => {
+                const section = document.getElementById('daftar-artikel');
+                if (!section) return;
+
+                document.addEventListener('click', (e) => {
+                    const link = e.target.closest('#daftar-artikel a[href*="kategori="], #daftar-artikel a[href*="page="], #daftar-artikel a[href$="#daftar-artikel"]');
+                    if (!link) return;
+
+                    const url = new URL(link.href, window.location.origin);
+                    if (url.origin !== window.location.origin) return;
+                    if (url.pathname !== window.location.pathname) return;
+
+                    e.preventDefault();
+                    const currentScrollY = window.scrollY;
+
+                    section.style.transition = 'opacity 0.2s ease';
+                    section.style.opacity = '0.5';
+                    section.style.pointerEvents = 'none';
+
+                    fetch(url.href, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newSection = doc.getElementById('daftar-artikel');
+                        if (newSection) {
+                            section.innerHTML = newSection.innerHTML;
+                            history.pushState(null, doc.title || '', url.href);
+                            if (doc.title) document.title = doc.title;
+                        } else {
+                            window.location.href = url.href;
+                        }
+                    })
+                    .catch(() => {
+                        window.location.href = url.href;
+                    })
+                    .finally(() => {
+                        section.style.opacity = '1';
+                        section.style.pointerEvents = 'auto';
+                        window.scrollTo({ top: currentScrollY, behavior: 'instant' });
+                    });
+                });
+
+                window.addEventListener('popstate', () => {
+                    window.location.reload();
+                });
+            });
+        </script>
     </body>
 </html>
