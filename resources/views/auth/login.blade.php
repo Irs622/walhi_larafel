@@ -66,10 +66,10 @@
                 <form method="POST" action="{{ route('login') }}" style="display: flex; flex-direction: column; gap: 20px;">
                     @csrf
 
-                    <!-- Email -->
+                    <!-- Email atau Username -->
                     <div style="display: flex; flex-direction: column; gap: 6px;">
-                        <label for="email" style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #1D1D1D; letter-spacing: 0.5px;">Email *</label>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: 'Inter', sans-serif; color: #1D1D1D; border-radius: 0px;" class="focus:border-[#256D4A] focus:ring-0 focus:shadow-none" />
+                        <label for="email" style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #1D1D1D; letter-spacing: 0.5px;">Email atau Username *</label>
+                        <input id="email" type="text" name="email" value="{{ old('email') }}" placeholder="nama@walhijabar.or.id atau username" required autofocus autocomplete="username" style="border: 2px solid #1D1D1D; padding: 12px; font-size: 14px; outline: none; background: white; font-family: 'Inter', sans-serif; color: #1D1D1D; border-radius: 0px;" class="focus:border-[#256D4A] focus:ring-0 focus:shadow-none" />
                     </div>
 
                     <!-- Password -->
