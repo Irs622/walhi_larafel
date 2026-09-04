@@ -87,6 +87,83 @@ class SecurityTest extends TestCase
         $response->assertStatus(403);
     }
 
+    public function test_editor_cannot_modify_sensitive_organizational_categories(): void
+    {
+        $editor = User::factory()->editor()->create();
+
+        // 1. Editor CAN manage normal content like blog
+        $blogResponse = $this->actingAs($editor)->post('/admin/blog', [
+            'title' => 'Editor Normal Article',
+            'slug' => 'editor-normal-article',
+            'status' => 'published',
+            'body' => 'Normal body',
+        ]);
+        $blogResponse->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('contents', ['slug' => 'editor-normal-article']);
+
+        // 2. Editor CANNOT create in sensitive categories
+        foreach (['kontak', 'kampanye-darurat', 'donasi'] as $cat) {
+            $response = $this->actingAs($editor)->post("/admin/{$cat}", [
+                'title' => 'Malicious Config Edit',
+                'slug' => 'malicious-'.$cat,
+                'status' => 'published',
+                'body' => 'Tampered body',
+            ]);
+            $response->assertStatus(403);
+        }
+
+        // 3. Editor CANNOT update or toggle status in sensitive categories
+        foreach (['kontak', 'kampanye-darurat', 'donasi'] as $cat) {
+            $sensitiveContent = Content::create([
+                'title' => 'Official '.ucfirst($cat),
+                'slug' => 'official-'.$cat,
+                'category' => $cat,
+                'status' => 'published',
+                'body' => 'Official body',
+            ]);
+
+            $updateResponse = $this->actingAs($editor)->put("/admin/{$cat}/{$sensitiveContent->id}", [
+                'title' => 'Tampered '.ucfirst($cat),
+                'slug' => 'official-'.$cat,
+                'status' => 'published',
+                'body' => 'Tampered body',
+            ]);
+            $updateResponse->assertStatus(403);
+
+            $toggleResponse = $this->actingAs($editor)->patch("/admin/{$cat}/{$sensitiveContent->id}/toggle-status");
+            $toggleResponse->assertStatus(403);
+        }
+    }
+
+    public function test_admin_can_modify_sensitive_organizational_categories(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        foreach (['kontak', 'kampanye-darurat', 'donasi'] as $cat) {
+            $createResponse = $this->actingAs($admin)->post("/admin/{$cat}", [
+                'title' => 'Admin '.ucfirst($cat),
+                'slug' => 'admin-'.$cat,
+                'status' => 'published',
+                'body' => 'Admin verified body',
+            ]);
+            $createResponse->assertSessionHasNoErrors();
+            $this->assertDatabaseHas('contents', ['slug' => 'admin-'.$cat]);
+
+            $content = Content::where('slug', 'admin-'.$cat)->first();
+
+            $updateResponse = $this->actingAs($admin)->put("/admin/{$cat}/{$content->id}", [
+                'title' => 'Admin Updated '.ucfirst($cat),
+                'slug' => 'admin-'.$cat,
+                'status' => 'published',
+                'body' => 'Admin updated body',
+            ]);
+            $updateResponse->assertSessionHasNoErrors();
+
+            $toggleResponse = $this->actingAs($admin)->patch("/admin/{$cat}/{$content->id}/toggle-status");
+            $toggleResponse->assertStatus(302);
+        }
+    }
+
     public function test_admin_can_perform_administrative_and_export_actions(): void
     {
         $admin = User::factory()->admin()->create();

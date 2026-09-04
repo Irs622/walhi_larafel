@@ -111,10 +111,12 @@
     <div>
         <div class="flex items-center justify-between gap-4 mb-4">
             <h2 class="font-bold text-[#1D1D1D] text-base">Kampanye Donasi</h2>
-            <button onclick="openAddModal()" class="flex items-center gap-2 px-4 py-2 bg-[#256D4A] text-white text-sm font-semibold rounded hover:bg-[#1e5a3d] transition-colors shrink-0">
-                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                Tambah Kampanye
-            </button>
+            @if(auth()->user()->isAdmin())
+                <button onclick="openAddModal()" class="flex items-center gap-2 px-4 py-2 bg-[#256D4A] text-white text-sm font-semibold rounded hover:bg-[#1e5a3d] transition-colors shrink-0">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    Tambah Kampanye
+                </button>
+            @endif
         </div>
 
         <div class="bg-white border border-[#ddd] rounded-lg overflow-hidden">
@@ -156,25 +158,29 @@
                                     </td>
                                     <td class="px-4 py-3">
                                         <div class="flex items-center justify-end gap-1">
-                                            <form action="{{ route('admin.content.toggle-status', [$category, $item->id]) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" title="{{ $item->status === 'published' ? 'Arsipkan' : 'Terbitkan' }}" class="p-1.5 rounded hover:bg-[#eaf4ee] text-[#256D4A] transition-colors">
-                                                    <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                            @if(auth()->user()->isAdmin())
+                                                <form action="{{ route('admin.content.toggle-status', [$category, $item->id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" title="{{ $item->status === 'published' ? 'Arsipkan' : 'Terbitkan' }}" class="p-1.5 rounded hover:bg-[#eaf4ee] text-[#256D4A] transition-colors">
+                                                        <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                                    </button>
+                                                </form>
+                                                
+                                                <button onclick="openEditModal(this)" data-item="{{ json_encode($item) }}" class="p-1.5 rounded hover:bg-[#f0f5ff] text-[#555] transition-colors">
+                                                    <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
                                                 </button>
-                                            </form>
-                                            
-                                            <button onclick="openEditModal(this)" data-item="{{ json_encode($item) }}" class="p-1.5 rounded hover:bg-[#f0f5ff] text-[#555] transition-colors">
-                                                <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
-                                            </button>
 
-                                            <form action="{{ route('admin.content.destroy', [$category, $item->id]) }}" method="POST" onsubmit="return confirm('Hapus kampanye &quot;{{ $item->title }}&quot;?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="p-1.5 rounded hover:bg-[#fdf0ee] text-[#D95C3F] transition-colors">
-                                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                                </button>
-                                            </form>
+                                                <form action="{{ route('admin.content.destroy', [$category, $item->id]) }}" method="POST" onsubmit="return confirm('Hapus kampanye &quot;{{ $item->title }}&quot;?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="p-1.5 rounded hover:bg-[#fdf0ee] text-[#D95C3F] transition-colors">
+                                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <span class="text-[11px] text-[#888] italic px-1.5 py-0.5 bg-[#f0ede8] rounded">Hanya Admin</span>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -356,13 +362,11 @@
                     const formData = new FormData();
                     formData.append('image', file);
 
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
-
                     try {
                         const response = await fetch('{{ route('admin.upload-image') }}', {
                             method: 'POST',
                             headers: {
-                                'X-CSRF-TOKEN': csrfToken,
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
                                 'Accept': 'application/json'
                             },
                             body: formData
