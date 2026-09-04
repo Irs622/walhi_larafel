@@ -14,35 +14,38 @@ Dokumen ini berisi panduan langkah-demi-langkah untuk mendeploy dan mengoperasik
 
 ---
 
-## 💻 Spesifikasi Server Minimum
+## 💻 Spesifikasi Server Rekomendasi
 
 - **OS:** Ubuntu 22.04 LTS / 24.04 LTS atau Debian 12
-- **CPU:** 2 vCPU
-- **RAM:** 2 GB (Rekomendasi: 4 GB)
-- **Disk:** 25 GB SSD (Untuk OS, Docker images, MySQL database, dan PDF laporan)
+- **CPU:** 1 vCPU (atau 2 vCPU)
+- **RAM:** 4 GB (Telah di-tuning untuk alokasi MySQL 1.2 GB + PHP-FPM 1.5 GB + OS margin 1.3 GB)
+- **Disk:** 50 GB NVMe / SSD
+- **Bandwidth:** 4 TB / bulan
 - **Software Terpasang:** Docker Engine & Docker Compose v2 (`docker-compose-plugin`)
 
 ---
 
-## 🐳 Langkah Deployment Produksi (Docker Compose)
+## 🐳 Langkah Deployment Cepat (Turnkey VPS Setup)
 
-### 1. Masuk ke Server VPS
+### 1. Masuk ke Server VPS Baru Anda
 ```bash
-ssh user@ip-server-walhi
+ssh root@IP_SERVER_VPS_ANDA
 ```
 
-### 2. Install Docker & Docker Compose (Jika belum ada)
+### 2. Jalankan Skrip Auto-Setup
+Skrip ini akan secara otomatis memperbarui sistem, memasang Swap 2 GB (mencegah crash OOM pada 1 vCPU), mengonfigurasi firewall UFW, menginstal Docker Engine resmi, dan menyiapkan cron backup harian:
+
 ```bash
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo usermod -aG docker $USER
+curl -fsSL https://raw.githubusercontent.com/Irs622/walhi_larafel/main/setup-vps.sh -o setup-vps.sh
+chmod +x setup-vps.sh
+sudo ./setup-vps.sh
 ```
 
-### 3. Clone Repository ke Server
+### 3. Clone Repository ke Direktori Produksi
 ```bash
 cd /var/www
 git clone https://github.com/Irs622/walhi_larafel.git walhi_app
-cd walhi_app
+cd /var/www/walhi_app
 ```
 
 ### 4. Siapkan File `.env` Produksi
