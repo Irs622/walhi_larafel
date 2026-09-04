@@ -130,7 +130,7 @@ return [
 
     'editor_seed' => [
         'email' => env('EDITOR_EMAIL', 'editor@walhijabar.or.id'),
-        'password' => env('EDITOR_PASSWORD', 'WalhiEditor2026!'),
+        'password' => env('EDITOR_PASSWORD'),
     ],
 
     'team_admin_password' => env('TEAM_ADMIN_PASSWORD'),
