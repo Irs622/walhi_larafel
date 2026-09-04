@@ -33,7 +33,10 @@ class AdminUserSeeder extends Seeder
 
         // ── Editor User ──
         $editorEmail = config('auth.editor_seed.email', 'editor@walhijabar.or.id');
-        $editorPass = config('auth.editor_seed.password', 'WalhiEditor2026!');
+        $editorPass = config('auth.editor_seed.password');
+        if (empty($editorPass)) {
+            $editorPass = Str::random(16);
+        }
 
         $editor = User::firstOrNew(['email' => $editorEmail]);
         $editor->name = 'Editor WALHI Jabar';
