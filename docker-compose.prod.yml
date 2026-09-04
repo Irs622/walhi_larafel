@@ -5,6 +5,7 @@
 services:
   # ── 1. Application Service (Laravel 12 / PHP 8.4) ──
   app:
+    image: walhi_larafel-app:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -38,6 +39,7 @@ services:
       # Admin Seed & Migration Controls
       ADMIN_EMAIL: "${ADMIN_EMAIL:-admin@walhijabar.or.id}"
       ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+      TEAM_ADMIN_PASSWORD: "${TEAM_ADMIN_PASSWORD}"
       SEED_ON_START: "${SEED_ON_START:-false}"
       MIGRATE_ON_START: "${MIGRATE_ON_START:-false}"
     deploy:
