@@ -43,10 +43,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.50'
+          cpus: '0.85'
           memory: 1536M
         reservations:
-          memory: 512M
+          cpus: '0.25'
+          memory: 384M
     volumes:
       - walhi_prod_public:/var/www/html/public_shared
       - walhi_prod_storage:/var/www/html/storage/app/public
@@ -70,9 +71,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
+          cpus: '0.75'
           memory: 1280M
         reservations:
+          cpus: '0.20'
           memory: 512M
     volumes:
       - walhi_prod_db:/var/lib/mysql
@@ -97,9 +99,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
+          cpus: '0.25'
           memory: 256M
         reservations:
+          cpus: '0.05'
           memory: 64M
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro

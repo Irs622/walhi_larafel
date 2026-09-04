@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json vite.config.js tailwind.config.js postcss.config.js ./
 COPY resources ./resources
 COPY public ./public
-RUN npm ci
+RUN npm install
 RUN npm run build
 
 # ─── Stage 2: PHP Application Container (PHP-FPM) ─────────────
