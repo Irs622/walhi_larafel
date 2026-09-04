@@ -351,6 +351,7 @@ class ContentController extends Controller
 
     /**
      * Delete a locally uploaded image file if it exists.
+     * Sanitizes filename with basename() to strictly prevent path traversal.
      */
     private function deleteOldImage(Content $content): void
     {
@@ -363,8 +364,11 @@ class ContentController extends Controller
                 $filename = substr($raw, strlen('uploads/'));
             }
 
-            if ($filename && ! in_array($filename, ['.', '..'], true)) {
-                Storage::disk('public')->delete('uploads/'.$filename);
+            if ($filename !== null && $filename !== '') {
+                $cleanFilename = basename($filename);
+                if ($cleanFilename !== '' && ! in_array($cleanFilename, ['.', '..'], true)) {
+                    Storage::disk('public')->delete('uploads/'.$cleanFilename);
+                }
             }
         }
     }

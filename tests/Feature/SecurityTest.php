@@ -595,4 +595,59 @@ class SecurityTest extends TestCase
         $contentRelative = new Content(['image_url' => '/storage/uploads/safe.jpg']);
         $this->assertSame('/storage/uploads/safe.jpg', $contentRelative->image_url);
     }
+
+    public function test_delete_old_image_prevents_path_traversal(): void
+    {
+        Storage::fake('public');
+
+        // Put a sensitive file outside uploads/
+        Storage::disk('public')->put('sensitive.txt', 'do not delete');
+        // Put a legitimate file inside uploads/
+        Storage::disk('public')->put('uploads/valid.jpg', 'image data');
+
+        $admin = User::factory()->admin()->create();
+
+        // Create content with path traversal in raw image_url
+        $content = Content::create([
+            'title' => 'Traversal Article',
+            'slug' => 'traversal-article',
+            'category' => 'blog',
+            'status' => 'published',
+            'body' => 'Test body',
+            'image_url' => '/storage/uploads/../../sensitive.txt',
+        ]);
+
+        // Attempt to remove image via content update
+        $response = $this->actingAs($admin)->put('/admin/blog/'.$content->id, [
+            'title' => 'Updated Traversal Article',
+            'slug' => 'traversal-article',
+            'status' => 'published',
+            'remove_image' => '1',
+        ]);
+
+        $response->assertSessionHasNoErrors();
+
+        // The sensitive file outside uploads must NOT have been deleted
+        Storage::disk('public')->assertExists('sensitive.txt');
+
+        // Verify that legitimate deletion works as expected
+        $legitContent = Content::create([
+            'title' => 'Legit Article',
+            'slug' => 'legit-article',
+            'category' => 'blog',
+            'status' => 'published',
+            'body' => 'Legit body',
+            'image_url' => '/storage/uploads/valid.jpg',
+        ]);
+
+        $legitRes = $this->actingAs($admin)->put('/admin/blog/'.$legitContent->id, [
+            'title' => 'Updated Legit Article',
+            'slug' => 'legit-article',
+            'status' => 'published',
+            'remove_image' => '1',
+        ]);
+        $legitRes->assertSessionHasNoErrors();
+
+        Storage::disk('public')->assertMissing('uploads/valid.jpg');
+    }
 }
