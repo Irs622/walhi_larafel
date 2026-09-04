@@ -178,82 +178,113 @@
                             </div>
                         </div>
 
-                        <!-- Donation Form Block -->
-                        <!-- Donation Form Block -->
-                        <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 52px 96px; display: flex; flex-direction: column; gap: 32px; box-sizing: border-box;" class="form-outer-container">
+                        <!-- WhatsApp Donation Block -->
+                        <div style="background: white; border: 4px solid #1D1D1D; outline: 4px #1D1D1D solid; outline-offset: -4px; padding: 48px 64px; display: flex; flex-direction: column; gap: 32px; box-sizing: border-box;" class="form-outer-container">
                             
-                            <!-- WhatsApp Narrative Card -->
-                            <div style="background: #256D4A; border: 3px solid #1D1D1D; padding: 24px; color: #F4F1EA; display: flex; flex-direction: column; gap: 12px; text-align: center; box-shadow: 4px 4px 0px 0px #1D1D1D;">
-                                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #1D1D1D; background: #F4F1EA; display: inline-block; padding: 4px 12px; margin: 0 auto;">Layanan Donasi Langsung</div>
-                                <p style="margin: 0; font-size: 17px; font-weight: 600; line-height: 1.6; font-family: Montserrat, sans-serif;">
+                            <!-- WhatsApp Narrative Hero Card -->
+                            <div style="background: #256D4A; border: 3px solid #1D1D1D; padding: 32px 24px; color: #F4F1EA; display: flex; flex-direction: column; gap: 16px; text-align: center; box-shadow: 4px 4px 0px 0px #1D1D1D;">
+                                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #1D1D1D; background: #F4F1EA; display: inline-block; padding: 4px 14px; margin: 0 auto;">Layanan Donasi Langsung</div>
+                                <h2 style="margin: 0; font-family: Aspekta, sans-serif; font-weight: 800; font-size: clamp(24px, 4vw, 32px); letter-spacing: 0.5px; text-transform: uppercase; color: #F4F1EA;">
+                                    Donasi Publik via WhatsApp
+                                </h2>
+                                <p style="margin: 0; font-size: 17px; font-weight: 500; line-height: 1.6; font-family: Montserrat, sans-serif; max-width: 680px; margin: 0 auto;">
                                     “Ingin berdonasi untuk lingkungan hidup? Hubungi WA dibawah ini untuk mengetahui manfaat apa saja yang akan kamu terima :)”
                                 </p>
-                                <div style="margin-top: 6px;">
-                                    <a href="https://wa.me/6282119821159?text=Halo%20WALHI%20Jawa%20Barat,%20saya%20ingin%20berdonasi%20untuk%20lingkungan%20hidup.%20Mohon%20informasi%20manfaat%20apa%20saja%20yang%20akan%20saya%20terima%20:)" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #D95C3F; color: #FFFFFF; padding: 12px 24px; font-weight: 700; font-size: 14px; text-transform: uppercase; text-decoration: none; border: 2px solid #FFFFFF; transition: background 0.2s;" onmouseover="this.style.background='#c44e32'" onmouseout="this.style.background='#D95C3F'">
-                                        <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
-                                        <span>Hubungi WA WALHI Jabar (+62-82-1982-1159)</span>
+                                <div style="margin-top: 8px; display: flex; justify-content: center;">
+                                    <a href="https://wa.me/6282119821159?text=Halo%20WALHI%20Jawa%20Barat,%20saya%20ingin%20berdonasi%20untuk%20lingkungan%20hidup.%20Mohon%20informasi%20manfaat%20apa%20saja%20yang%20akan%20saya%20terima%20:)" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #D95C3F; color: #FFFFFF; padding: 16px 32px; font-weight: 700; font-size: 16px; text-transform: uppercase; text-decoration: none; border: 2px solid #FFFFFF; box-shadow: 3px 3px 0px 0px #1D1D1D; transition: all 0.2s;" onmouseover="this.style.background='#c44e32'" onmouseout="this.style.background='#D95C3F'">
+                                        <i data-lucide="message-circle" style="width: 22px; height: 22px;"></i>
+                                        <span>Hubungi WA WALHI Jabar (+62-821-1982-1159)</span>
                                     </a>
                                 </div>
                             </div>
 
-                            <h2 style="margin: 0; font-family: Aspekta, sans-serif; font-weight: 800; font-size: 32px; letter-spacing: 1px; text-transform: uppercase; text-align: center; color: #1D1D1D;">
-                                FORMULIR DONASI
-                            </h2>
-                            
-                            <form id="donation-form" onsubmit="handleWhatsAppDonationSubmit(event)" style="display: flex; flex-direction: column; gap: 32px; width: 100%;">
-                                <!-- Select Amount Presets -->
-                                <div style="display: flex; flex-direction: column; gap: 16px;">
-                                    <label style="color: #1D1D1D; font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.35px;">
-                                        Pilih Jumlah Donasi
-                                    </label>
-                                    
-                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%;" class="amount-grid">
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(10000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 10.000</button>
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(25000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 25000</button>
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(30000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 30.000</button>
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(50000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 50.000</button>
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(100000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 100.000</button>
-                                        <button type="button" class="amount-btn" onclick="selectPresetAmount(150000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 150.000</button>
-                                    </div>
-                                    
-                                    <!-- Custom Amount Field -->
-                                    <div style="position: relative; width: 100%;">
-                                        <input type="number" id="custom-amount" placeholder="Atau masukkan nominal lain" autocomplete="off" oninput="handleCustomAmountInput(this)" class="input-field" required />
-                                    </div>
+                            <!-- Fast Nominal Selection -->
+                            <div style="display: flex; flex-direction: column; gap: 24px; width: 100%;">
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <h3 style="margin: 0; color: #1D1D1D; font-family: Aspekta, sans-serif; font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        Pilih Nominal Donasi
+                                    </h3>
+                                    <p style="margin: 0; color: #666; font-family: Montserrat, sans-serif; font-size: 14px; line-height: 1.5;">
+                                        Pilih nominal cepat di bawah ini atau tentukan sendiri. Pesan konfirmasi donasi akan otomatis disiapkan untuk WhatsApp resmi WALHI Jawa Barat:
+                                    </p>
                                 </div>
                                 
-                                <!-- Personal Info Form -->
-                                <div style="display: flex; flex-direction: column; gap: 16px;">
-                                    <label style="color: #1D1D1D; font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.35px;">
-                                        Informasi Donatur
-                                    </label>
-                                    <input type="text" id="donor-name" placeholder="Nama Lengkap" autocomplete="name" class="input-field" required />
-                                    <input type="tel" id="donor-phone" placeholder="Nomor Telepon / WhatsApp" autocomplete="tel" class="input-field" required />
-                                    <input type="email" id="donor-email" placeholder="Email (Opsional)" autocomplete="email" class="input-field" />
-                                    <textarea id="donor-notes" rows="2" placeholder="Pesan atau doa untuk pejuang lingkungan (opsional)" class="input-field" style="resize: vertical;"></textarea>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%;" class="amount-grid">
+                                    <button type="button" class="amount-btn" onclick="selectPresetAmount(10000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 10.000</button>
+                                    <button type="button" class="amount-btn" onclick="selectPresetAmount(25000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 25.000</button>
+                                    <button type="button" class="amount-btn" onclick="selectPresetAmount(30000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 30.000</button>
+                                    <button type="button" class="amount-btn" onclick="selectPresetAmount(50000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 50.000</button>
+                                    <button type="button" class="amount-btn" onclick="selectPresetAmount(100000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 100.000</button>
+                                    <button type="button" class="amount-btn" onclick="selectPresetAmount(150000, this)" style="height: 60px; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px;">Rp 150.000</button>
                                 </div>
                                 
-                                <!-- Transparency Notice -->
-                                <div style="background: #F4F1EA; border-left: 4px solid #256D4A; padding: 24px; display: flex; gap: 16px; box-sizing: border-box; align-items: flex-start;">
-                                    <i data-lucide="shield-check" style="width: 24px; height: 24px; color: #256D4A; flex-shrink: 0;"></i>
-                                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                                        <h4 style="margin: 0; color: #1D1D1D; font-family: Montserrat, sans-serif; font-size: 16px; font-weight: 700; line-height: 1.2;">
-                                            Transparansi & Rekening Resmi
-                                        </h4>
-                                        <p style="margin: 0; color: #1D1D1D; font-family: Montserrat, sans-serif; font-size: 14px; line-height: 1.6;">
-                                            Seluruh donasi disalurkan langsung untuk advokasi dan pendampingan masyarakat korban krisis iklim. Admin resmi WALHI Jawa Barat akan memverifikasi dan memberikan nomor rekening resmi / QRIS langsung melalui WhatsApp.
-                                        </p>
-                                    </div>
+                                <!-- Custom Amount Field -->
+                                <div style="position: relative; width: 100%;">
+                                    <input type="number" id="custom-amount" placeholder="Atau masukkan nominal lain (Rp)" autocomplete="off" oninput="handleCustomAmountInput(this)" class="input-field" />
+                                </div>
+
+                                <!-- Optional Donor Info -->
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <label style="color: #1D1D1D; font-family: Montserrat, sans-serif; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.35px;">
+                                        Catatan / Identitas Donatur (Opsional)
+                                    </label>
+                                    <input type="text" id="donor-name" placeholder="Nama Anda (Opsional, kosongkan jika anonim)" autocomplete="name" class="input-field" />
+                                    <textarea id="donor-notes" rows="2" placeholder="Pesan atau doa untuk gerakan keadilan ekologis (opsional)" class="input-field" style="resize: vertical;"></textarea>
                                 </div>
                                 
                                 <!-- Action Button: Direct WhatsApp Donation -->
                                 <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-                                    <button type="submit" style="height: 60px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.45px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#1f5a3d'" onmouseout="this.style.background='#256D4A'">
-                                        <i data-lucide="message-circle" style="width: 22px; height: 22px;"></i>
+                                    <button type="button" onclick="handleWhatsAppDonationSubmit()" style="height: 64px; background: #256D4A; color: white; border: 2px solid #1D1D1D; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.45px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: background 0.2s; box-shadow: 4px 4px 0px 0px #1D1D1D;" onmouseover="this.style.background='#1f5a3d'" onmouseout="this.style.background='#256D4A'">
+                                        <i data-lucide="message-circle" style="width: 24px; height: 24px;"></i>
                                         <span>Lanjutkan Donasi via WhatsApp</span>
                                     </button>
                                 </div>
-                            </form>
+                            </div>
+
+                            <!-- 3-Step Transparent Process Guide -->
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; border-top: 2px solid #1D1D1D; padding-top: 28px;" class="why-donate-grid">
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; color: #256D4A; font-family: Aspekta, sans-serif; font-weight: 800; font-size: 16px;">
+                                        <span style="background: #256D4A; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px;">1</span>
+                                        <span>Chat WhatsApp</span>
+                                    </div>
+                                    <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #555;">
+                                        Klik tombol untuk terhubung langsung dengan WhatsApp resmi WALHI Jabar (+62-821-1982-1159).
+                                    </p>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; color: #256D4A; font-family: Aspekta, sans-serif; font-weight: 800; font-size: 16px;">
+                                        <span style="background: #256D4A; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px;">2</span>
+                                        <span>Rekening &amp; QRIS</span>
+                                    </div>
+                                    <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #555;">
+                                        Admin akan memberikan nomor rekening giro resmi atau QRIS resmi atas nama WALHI Jawa Barat.
+                                    </p>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; color: #256D4A; font-family: Aspekta, sans-serif; font-weight: 800; font-size: 16px;">
+                                        <span style="background: #256D4A; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px;">3</span>
+                                        <span>Konfirmasi Donasi</span>
+                                    </div>
+                                    <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #555;">
+                                        Kirim bukti transfer via chat untuk pencatatan dan penerbitan bukti donasi publik yang transparan.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Transparency Notice -->
+                            <div style="background: #F4F1EA; border-left: 4px solid #256D4A; padding: 20px 24px; display: flex; gap: 16px; box-sizing: border-box; align-items: flex-start;">
+                                <i data-lucide="shield-check" style="width: 24px; height: 24px; color: #256D4A; flex-shrink: 0; margin-top: 2px;"></i>
+                                <div style="display: flex; flex-direction: column; gap: 6px;">
+                                    <h4 style="margin: 0; color: #1D1D1D; font-family: Montserrat, sans-serif; font-size: 15px; font-weight: 700; line-height: 1.2;">
+                                        Transparansi &amp; Rekening Resmi
+                                    </h4>
+                                    <p style="margin: 0; color: #444; font-family: Montserrat, sans-serif; font-size: 13px; line-height: 1.6;">
+                                        Seluruh donasi disalurkan langsung untuk advokasi dan pendampingan masyarakat korban krisis iklim. Admin resmi WALHI Jawa Barat akan memverifikasi dan memberikan nomor rekening resmi / QRIS langsung melalui WhatsApp.
+                                    </p>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </section>
@@ -264,30 +295,22 @@
         <script nonce="{{ Vite::cspNonce() }}">
             // Select Preset Amount
             function selectPresetAmount(amount, buttonElement) {
-                // Clear active states on all buttons
                 var buttons = document.getElementsByClassName('amount-btn');
                 for (var i = 0; i < buttons.length; i++) {
                     buttons[i].classList.remove('active');
                 }
-                
-                // Set active class on clicked button
                 buttonElement.classList.add('active');
-                
-                // Populate custom amount field and trigger validation checks
                 var customInput = document.getElementById('custom-amount');
-                customInput.value = amount;
+                if (customInput) customInput.value = amount;
             }
             
             // Custom Amount Input Handler
             function handleCustomAmountInput(inputElement) {
-                // Clear preset button active highlights if custom typing occurs
                 var buttons = document.getElementsByClassName('amount-btn');
                 var val = parseInt(inputElement.value);
-                
                 for (var i = 0; i < buttons.length; i++) {
                     buttons[i].classList.remove('active');
-                    // Check if value matches preset to keep button highlighted
-                    var btnText = buttons[i].textContent.replace('Rp ', '').replace(/\./g, '');
+                    var btnText = buttons[i].textContent.replace(/[^0-9]/g, '');
                     if (val === parseInt(btnText)) {
                         buttons[i].classList.add('active');
                     }
@@ -301,45 +324,32 @@
             
             // Direct WhatsApp Donation Handler
             function handleWhatsAppDonationSubmit(event) {
-                if (event) event.preventDefault();
+                if (event && event.preventDefault) event.preventDefault();
 
                 var nameInput = document.getElementById('donor-name');
                 var amountInput = document.getElementById('custom-amount');
-                var phoneInput = document.getElementById('donor-phone');
-                var emailInput = document.getElementById('donor-email');
                 var notesInput = document.getElementById('donor-notes');
                 
                 var name = (nameInput && nameInput.value) ? nameInput.value.trim() : '';
                 var amount = (amountInput && amountInput.value) ? amountInput.value.trim() : '';
-                var phone = (phoneInput && phoneInput.value) ? phoneInput.value.trim() : '';
-                var email = (emailInput && emailInput.value) ? emailInput.value.trim() : '';
                 var notes = (notesInput && notesInput.value) ? notesInput.value.trim() : '';
                 
-                if (!amount || parseInt(amount) < 1000) {
-                    alert('Silakan pilih atau masukkan nominal donasi terlebih dahulu.');
-                    return;
-                }
-                if (!name) {
-                    alert('Silakan masukkan nama lengkap Anda.');
-                    return;
-                }
-                if (!phone) {
-                    alert('Silakan masukkan nomor telepon / WhatsApp Anda.');
-                    return;
-                }
-                
-                var nominalFormatted = formatRupiah(amount);
-                var message = "Halo Tim WALHI Jawa Barat,\n\n" +
-                    "Saya ingin berdonasi untuk mendukung advokasi lingkungan hidup dan gerakan keadilan ekologis di Jawa Barat.\n\n" +
-                    "📌 *Detail Donasi:*\n" +
-                    "• Nama: " + name + "\n" +
-                    "• WhatsApp: " + phone + "\n" +
-                    (email ? "• Email: " + email + "\n" : "") +
-                    "• Nominal Donasi: " + nominalFormatted + "\n" +
-                    (notes ? "• Pesan/Doa: " + notes + "\n" : "") +
-                    "\nMohon kirimkan informasi rekening resmi atau QRIS WALHI Jawa Barat untuk penyaluran donasi ini. Terima kasih! 🙏🌿";
-                
                 var waNumber = "{{ preg_replace('/[^0-9]/', '', $globalContact->whatsapp ?? '6282119821159') }}";
+                var message = "Halo Tim WALHI Jawa Barat,\n\n" +
+                    "Saya ingin berdonasi untuk mendukung advokasi lingkungan hidup dan gerakan keadilan ekologis di Jawa Barat.\n\n";
+                
+                if (amount && parseInt(amount) > 0) {
+                    message += "📌 *Rencana Donasi:*\n";
+                    if (name) message += "• Nama: " + name + "\n";
+                    message += "• Nominal Donasi: " + formatRupiah(amount) + "\n";
+                    if (notes) message += "• Pesan/Doa: " + notes + "\n";
+                    message += "\n";
+                } else if (name) {
+                    message += "Saya atas nama: " + name + "\n\n";
+                }
+                
+                message += "Mohon informasi rekening resmi atau QRIS WALHI Jawa Barat untuk penyaluran donasi ini. Terima kasih! 🙏🌿";
+                
                 var url = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
                 window.open(url, '_blank');
             }

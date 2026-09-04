@@ -538,10 +538,15 @@
                                     </ul>
                                 </div>
                             </div>
-                            <a href="{{ route('donasi') }}" class="mt-8 flex h-[60px] items-center justify-center gap-2 bg-brand-orange hover:bg-brand-orange/80 transition-colors px-6 text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">
-                                <img src="{{ $iqon('Icon-22.svg') }}" alt="Donasi" class="h-5 w-5 object-contain">
-                                <span>Donasi Sekarang</span>
-                            </a>
+                            <div class="mt-8 flex flex-col gap-3">
+                                <a href="https://wa.me/6282119821159?text=Halo%20Tim%20WALHI%20Jawa%20Barat,%20saya%20ingin%20berdonasi%20untuk%20mendukung%20advokasi%20lingkungan%20hidup%20dan%20keadilan%20ekologis%20di%20Jawa%20Barat.%20Mohon%20informasi%20rekening%20resmi%20atau%20QRIS.%20Terima%20kasih!%20🙏🌿" target="_blank" class="flex h-[60px] items-center justify-center gap-2 bg-brand-orange hover:bg-brand-orange/80 transition-colors px-6 text-[16px] font-bold uppercase tracking-[0.04em] text-brand-cream">
+                                    <img src="{{ $iqon('Icon-22.svg') }}" alt="Donasi" class="h-5 w-5 object-contain">
+                                    <span>Donasi via WhatsApp</span>
+                                </a>
+                                <a href="{{ route('donasi') }}" class="text-center text-xs font-bold uppercase tracking-wider text-brand-green hover:underline">
+                                    Info Detail Donasi &amp; Transparansi &rarr;
+                                </a>
+                            </div>
                         </section>
                     </div>
 
