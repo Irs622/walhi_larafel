@@ -39,3 +39,9 @@ Thumbs.db
 *.sql.gz
 *.sqlite.gz
 *.zip
+
+# Local seed credentials & admin data
+/database/seeders/*.local.json
+/database/seeders/admins.json
+*.local.json
+

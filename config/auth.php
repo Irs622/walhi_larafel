@@ -133,4 +133,6 @@ return [
         'password' => env('EDITOR_PASSWORD', 'WalhiEditor2026!'),
     ],
 
+    'team_admin_password' => env('TEAM_ADMIN_PASSWORD'),
+
 ];

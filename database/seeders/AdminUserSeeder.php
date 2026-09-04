@@ -42,6 +42,43 @@ class AdminUserSeeder extends Seeder
         $editor->assignRole('editor');
         $editor->save();
 
+        // ── Team Administrators (Loaded dynamically from local json file if present) ──
+        $teamPassword = config('auth.team_admin_password') ?: ($adminPass ?: Str::random(16));
+        $forceReset = env('FORCE_ADMIN_PASSWORD_RESET', false);
+
+        $localJsonPath = database_path('seeders/admins.local.json');
+        if (! file_exists($localJsonPath)) {
+            $localJsonPath = database_path('seeders/admins.json');
+        }
+
+        if (file_exists($localJsonPath)) {
+            $jsonContent = file_get_contents($localJsonPath);
+            $teamAdmins = json_decode($jsonContent, true);
+
+            if (is_array($teamAdmins)) {
+                foreach ($teamAdmins as $member) {
+                    if (empty($member['email'])) {
+                        continue;
+                    }
+
+                    $user = User::firstOrNew(['email' => $member['email']]);
+                    $user->name = $member['name'] ?? explode('@', $member['email'])[0];
+                    if (! $user->exists || empty($user->password) || $forceReset) {
+                        $user->password = Hash::make($teamPassword);
+                    }
+                    $user->email_verified_at = $user->email_verified_at ?: now();
+                    $user->assignRole('admin');
+                    $user->save();
+
+                    if ($this->command) {
+                        $this->command->info("Admin {$user->name} ({$user->email}) berhasil disiapkan dari file lokal.");
+                    }
+                }
+            }
+        } elseif ($this->command) {
+            $this->command->line("ℹ️  File admins.local.json tidak ditemukan, melewati seeding tim tambahan.");
+        }
+
         if ($this->command) {
             $this->command->info("Admin user {$adminEmail} berhasil dibuat/diperbarui.");
             $this->command->info("Editor user {$editorEmail} berhasil dibuat/diperbarui.");

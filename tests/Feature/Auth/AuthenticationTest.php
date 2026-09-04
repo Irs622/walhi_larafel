@@ -42,6 +42,39 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_users_can_authenticate_using_username(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'teammember@walhijabar.or.id',
+            'password' => bcrypt('password'),
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => 'teammember',
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('admin.dashboard', absolute: false));
+    }
+
+    public function test_users_can_authenticate_using_name(): void
+    {
+        $user = User::factory()->create([
+            'name' => 'Admin Tim Contoh',
+            'email' => 'teammember@walhijabar.or.id',
+            'password' => bcrypt('password'),
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => 'admin tim contoh',
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('admin.dashboard', absolute: false));
+    }
+
     public function test_users_can_logout(): void
     {
         $user = User::factory()->create();
