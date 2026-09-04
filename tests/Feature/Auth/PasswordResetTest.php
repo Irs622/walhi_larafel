@@ -70,4 +70,26 @@ class PasswordResetTest extends TestCase
             return true;
         });
     }
+
+    public function test_reset_password_endpoint_is_rate_limited(): void
+    {
+        for ($i = 0; $i < 6; $i++) {
+            $this->post('/reset-password', [
+                'token' => 'dummy-token',
+                'email' => 'test@example.com',
+                'password' => 'Walhi2026#SecurePassword!9x',
+                'password_confirmation' => 'Walhi2026#SecurePassword!9x',
+            ]);
+        }
+
+        // The 7th attempt within the same minute should be rate limited (HTTP 429)
+        $response = $this->post('/reset-password', [
+            'token' => 'dummy-token',
+            'email' => 'test@example.com',
+            'password' => 'Walhi2026#SecurePassword!9x',
+            'password_confirmation' => 'Walhi2026#SecurePassword!9x',
+        ]);
+
+        $response->assertStatus(429);
+    }
 }
