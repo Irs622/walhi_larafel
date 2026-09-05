@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             at: function () {
                 $hosts = [
                     '^(.+\.)?walhi\-jabar\.org$',
+                    '^(.+\.)?walhijabar\.co\.id$',
                     '^(.+\.)?walhijabar\.or\.id$',
                     '^(.+\.)?walhijabar\.org$',
                     '^localhost$',

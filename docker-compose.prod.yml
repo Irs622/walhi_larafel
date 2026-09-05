@@ -19,7 +19,7 @@ services:
       APP_ENV: "${APP_ENV:-production}"
       APP_KEY: "${APP_KEY}"
       APP_DEBUG: "${APP_DEBUG:-false}"
-      APP_URL: "${APP_URL:-https://walhijabar.or.id}"
+      APP_URL: "${APP_URL:-https://walhijabar.co.id}"
 
       # Database Configuration
       DB_CONNECTION: "${DB_CONNECTION:-mysql}"
@@ -50,7 +50,7 @@ services:
       MAIL_USERNAME: "${MAIL_USERNAME:-}"
       MAIL_PASSWORD: "${MAIL_PASSWORD:-}"
       MAIL_ENCRYPTION: "${MAIL_ENCRYPTION:-tls}"
-      MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS:-kontak@walhijabar.or.id}"
+      MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS:-kontak@walhijabar.co.id}"
       MAIL_FROM_NAME: "${MAIL_FROM_NAME:-WALHI Jawa Barat}"
 
       # Payment Gateway (Midtrans)
@@ -59,9 +59,9 @@ services:
       MIDTRANS_IS_PRODUCTION: "${MIDTRANS_IS_PRODUCTION:-true}"
 
       # Admin & Editor Seed Credentials
-      ADMIN_EMAIL: "${ADMIN_EMAIL:-admin@walhijabar.or.id}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL:-admin@walhijabar.co.id}"
       ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
-      EDITOR_EMAIL: "${EDITOR_EMAIL:-editor@walhijabar.or.id}"
+      EDITOR_EMAIL: "${EDITOR_EMAIL:-editor@walhijabar.co.id}"
       EDITOR_PASSWORD: "${EDITOR_PASSWORD}"
       TEAM_ADMIN_PASSWORD: "${TEAM_ADMIN_PASSWORD}"
       FORCE_ADMIN_PASSWORD_RESET: "${FORCE_ADMIN_PASSWORD_RESET:-false}"

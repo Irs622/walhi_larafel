@@ -56,7 +56,7 @@ nano .env
 ```
 
 **Konfigurasi Kunci yang Wajib Diisi:**
-- `APP_URL=https://walhijabar.or.id`
+- `APP_URL=https://walhijabar.co.id`
 - `DB_PASSWORD` & `DB_ROOT_PASSWORD` (Gunakan password acak kuat minimal 24 karakter — **DILARANG** menggunakan string default contoh)
 - `MIDTRANS_SERVER_KEY` & `MIDTRANS_CLIENT_KEY` (Kunci produksi akun Midtrans resmi)
 - `ADMIN_PASSWORD` (Password akun Super Admin)
@@ -90,11 +90,11 @@ Untuk mengamankan website dengan sertifikat SSL gratis via Let's Encrypt / Certb
 ### Menggunakan Certbot di Host Server:
 ```bash
 sudo apt update && sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d walhijabar.or.id -d www.walhijabar.or.id
+sudo certbot --nginx -d walhijabar.co.id -d www.walhijabar.co.id
 ```
 
 ### Atau via Cloudflare SSL (Paling Praktis):
-1. Arahkan DNS domain `walhijabar.or.id` (A Record) ke IP Server VPS Anda.
+1. Arahkan DNS domain `walhijabar.co.id` (A Record) ke IP Server VPS Anda.
 2. Aktifkan **Proxy Cloudflare (Orange Cloud ☁️)**.
 3. Set mode SSL/TLS di dashboard Cloudflare ke **Full (Strict)**.
 
@@ -184,12 +184,12 @@ Sebelum promosi traffic masif, lakukan pengujian konkurensi bertahap dari workst
 ```bash
 # Menggunakan ApacheBench (ab) atau k6 / wrk
 # Uji coba 100 request dengan 10 concurrent users:
-ab -n 100 -c 10 https://walhijabar.or.id/
+ab -n 100 -c 10 https://walhijabar.co.id/
 
 # Uji coba 500 request dengan 25 concurrent users:
-ab -n 500 -c 25 https://walhijabar.or.id/
+ab -n 500 -c 25 https://walhijabar.co.id/
 
 # Uji coba 1000 request dengan 50 concurrent users:
-ab -n 1000 -c 50 https://walhijabar.or.id/
+ab -n 1000 -c 50 https://walhijabar.co.id/
 ```
 Amati keluaran `docker stats`. Jika penggunaan RAM per PHP-FPM worker stabil dan antrean request rendah, nilai `pm.max_children` di `docker/php/zz-docker.conf` dapat dinaikkan bertahap (8 ➔ 10 ➔ 12) berdasarkan data aktual.
