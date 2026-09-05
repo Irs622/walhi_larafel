@@ -17,10 +17,10 @@ Dokumen ini berisi panduan langkah-demi-langkah untuk mendeploy dan mengoperasik
 ## 💻 Spesifikasi Server Rekomendasi
 
 - **OS:** Ubuntu 22.04 LTS / 24.04 LTS atau Debian 12
-- **CPU:** 1 vCPU (atau 2 vCPU)
-- **RAM:** 4 GB (Telah di-tuning untuk alokasi MySQL 1.2 GB + PHP-FPM 1.5 GB + OS margin 1.3 GB)
-- **Disk:** 50 GB NVMe / SSD
-- **Bandwidth:** 4 TB / bulan
+- **CPU:** 2 vCPU core
+- **RAM:** 8 GB (Telah di-tuning untuk alokasi MySQL 2.5 GB + PHP-FPM 3.0 GB + OS margin 2.5 GB)
+- **Disk:** 100 GB NVMe / SSD
+- **Bandwidth:** 8 TB / bulan
 - **Software Terpasang:** Docker Engine & Docker Compose v2 (`docker-compose-plugin`)
 
 ---
@@ -127,12 +127,12 @@ gunzip < storage/backups/walhi_prod_mysql_YYYYMMDD_HHMMSS.sql.gz | docker exec -
 
 ## 📊 Monitoring, Alokasi RAM & Benchmark
 
-### Anggaran Memori pada VPS 4 GB RAM:
-Container produksi dibatasi secara ketat (*hard memory limit*) untuk mencegah crash akibat *Out of Memory (OOM)*:
-- **`walhi_prod_app` (PHP-FPM 8 workers + Laravel 12)**: Limit **1.536 MB** (Reservasi: 512 MB)
-- **`walhi_prod_db` (MySQL 8.0 tuned buffer pool)**: Limit **1.280 MB** (Reservasi: 512 MB)
-- **`walhi_prod_nginx` (Nginx Alpine Reverse Proxy)**: Limit **256 MB** (Reservasi: 64 MB)
-- **Headroom OS, Page Cache & Docker Daemon**: **~1.024 MB (1 GB)**
+### Anggaran Memori pada VPS 8 GB RAM:
+Container produksi dibatasi secara optimal (*resource limits*) untuk memaksimalkan throughput sekaligus mencegah crash akibat *Out of Memory (OOM)*:
+- **`walhi_prod_app` (PHP-FPM 18 workers + Laravel 12)**: Limit **3.072 MB (3 GB)** (Reservasi: 768 MB)
+- **`walhi_prod_db` (MySQL 8.0 tuned 1.5 GB buffer pool)**: Limit **2.560 MB (2.5 GB)** (Reservasi: 1.024 MB)
+- **`walhi_prod_nginx` (Nginx Alpine Reverse Proxy)**: Limit **512 MB** (Reservasi: 128 MB)
+- **Headroom OS, Page Cache & Linux Buffers**: **~2.048 MB (2 GB)** + Swap 4 GB NVMe
 
 ### Memeriksa Penggunaan CPU & RAM Realtime:
 ```bash
