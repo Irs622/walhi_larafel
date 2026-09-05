@@ -81,22 +81,22 @@ Setelah perintah selesai, 3 container akan otomatis berjalan:
 - `walhi_prod_db` (Basis data MySQL 8.0)
 - `walhi_prod_nginx` (Web Server Nginx & Reverse Proxy)
 
----
-
 ## 🔒 Konfigurasi Domain & SSL (HTTPS)
 
-Untuk mengamankan website dengan sertifikat SSL gratis via Let's Encrypt / Certbot:
-
-### Menggunakan Certbot di Host Server:
+### Otomatis Menggunakan Skrip `setup-ssl.sh`:
 ```bash
-sudo apt update && sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d walhijabar.co.id -d www.walhijabar.co.id
+cd /var/www/walhi_app
+chmod +x setup-ssl.sh
+./setup-ssl.sh
 ```
+Skrip ini otomatis:
+1. Menginstal certbot.
+2. Menerbitkan sertifikat SSL resmi Let's Encrypt untuk `walhijabar.co.id` & `www.walhijabar.co.id`.
+3. Mengonfigurasi volume SSL di `docker-compose.prod.yml`.
+4. Mengonfigurasi Nginx untuk HTTPS & auto-redirect HTTP ke HTTPS.
+5. Memperbarui `APP_URL=https://walhijabar.co.id` dan `SESSION_SECURE_COOKIE=true` di `.env`.
+6. Menyetel auto-renewal sertifikat secara berkala via crontab.
 
-### Atau via Cloudflare SSL (Paling Praktis):
-1. Arahkan DNS domain `walhijabar.co.id` (A Record) ke IP Server VPS Anda.
-2. Aktifkan **Proxy Cloudflare (Orange Cloud ☁️)**.
-3. Set mode SSL/TLS di dashboard Cloudflare ke **Full (Strict)**.
 
 ---
 
