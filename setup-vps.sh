@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
 # WALHI Jawa Barat — Production VPS Auto-Provisioning Script
-# Target: Ubuntu 22.04 / 24.04 LTS or Debian 12 (1 vCPU / 4 GB RAM / 50 GB NVMe)
+# Target: Ubuntu 22.04 / 24.04 LTS or Debian 12 (2 vCPU / 8 GB RAM / 100 GB NVMe)
 # ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
 echo "==================================================================="
 echo "  🌿 WALHI Jawa Barat — Production VPS Setup"
-echo "  Target: 1 vCPU / 4 GB RAM / 50 GB NVMe"
+echo "  Target: 2 vCPU / 8 GB RAM / 100 GB NVMe"
 echo "==================================================================="
 
 # 1. Ensure script is run as root
@@ -22,17 +22,17 @@ apt-get update -y
 DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 DEBIAN_FRONTEND=noninteractive apt-get install -y curl git ufw htop ca-certificates gnupg lsb-release
 
-# 3. Setup 2 GB Swap file (Krusial untuk 1 vCPU / 4 GB RAM agar OOM-safe)
-echo "💾 [2/6] Memeriksa dan mengonfigurasi 2 GB Swap File..."
+# 3. Setup 4 GB Swap file (Rekomendasi standar untuk 8 GB RAM / 100 GB NVMe)
+echo "💾 [2/6] Memeriksa dan mengonfigurasi 4 GB Swap File..."
 if [ ! -f /swapfile ]; then
-    fallocate -l 2G /swapfile || dd if=/dev/zero of=/swapfile bs=1M count=2048
+    fallocate -l 4G /swapfile || dd if=/dev/zero of=/swapfile bs=1M count=4096
     chmod 600 /swapfile
     mkswap /swapfile
     swapon /swapfile
     if ! grep -q '/swapfile' /etc/fstab; then
         echo '/swapfile none swap sw 0 0' >> /etc/fstab
     fi
-    echo "✅ Swap 2 GB berhasil dibuat dan diaktifkan."
+    echo "✅ Swap 4 GB berhasil dibuat dan diaktifkan."
 else
     echo "ℹ️  Swap file sudah ada, melewati pembuatan swap."
 fi
