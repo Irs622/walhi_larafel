@@ -146,4 +146,22 @@ class AdminTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('image');
     }
+
+    public function test_admin_dashboard_renders_real_data_and_no_dummy_strings(): void
+    {
+        $response = $this->get('/admin');
+        $response->assertStatus(200);
+
+        // Ensure dummy mock names are completely gone
+        $response->assertDontSee('Siti Rahayu');
+        $response->assertDontSee('Budi Santoso');
+        $response->assertDontSee('press@mediaindonesia.co.id');
+        $response->assertDontSee('14,320');
+
+        // Ensure real labels are present
+        $response->assertSee('Aktivitas Terkini');
+        $response->assertSee('Total Pembaca');
+        $response->assertViewHas('recentActivities');
+        $response->assertViewHas('stats');
+    }
 }

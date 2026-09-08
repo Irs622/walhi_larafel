@@ -17,7 +17,7 @@
             <div class="min-w-0">
                 <div class="text-xs text-[#888] uppercase tracking-wide mb-1">Total Artikel</div>
                 <div class="text-2xl font-bold text-[#1D1D1D] leading-tight">{{ $stats['total_articles'] }}</div>
-                <div class="text-xs text-[#888] mt-0.5">+3 bulan ini</div>
+                <div class="text-xs text-[#888] mt-0.5">+{{ $stats['articles_this_month'] }} bulan ini</div>
             </div>
         </div>
 
@@ -35,19 +35,19 @@
                         Rp {{ number_format($stats['total_donations_amount'], 0, ',', '.') }}
                     @endif
                 </div>
-                <div class="text-xs text-[#888] mt-0.5">Sejak Jan 2025</div>
+                <div class="text-xs text-[#888] mt-0.5">{{ $stats['successful_donations_count'] }} donasi terverifikasi</div>
             </div>
         </div>
 
-        <!-- Pengunjung Realtime -->
+        <!-- Total Pembaca Konten -->
         <div class="bg-white border border-[#ddd] rounded-lg p-5 flex items-start gap-4">
             <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 bg-[#5C8D59] text-white">
-                <i data-lucide="trending-up" class="w-[18px] h-[18px]"></i>
+                <i data-lucide="eye" class="w-[18px] h-[18px]"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-xs text-[#888] uppercase tracking-wide mb-1">Pengunjung Bulan Ini</div>
-                <div class="text-2xl font-bold text-[#1D1D1D] leading-tight" id="realtime-visitors">14,320</div>
-                <div class="text-xs text-[#888] mt-0.5">Realtime counter</div>
+                <div class="text-xs text-[#888] uppercase tracking-wide mb-1">Total Pembaca</div>
+                <div class="text-2xl font-bold text-[#1D1D1D] leading-tight">{{ number_format($stats['total_views'], 0, ',', '.') }}</div>
+                <div class="text-xs text-[#888] mt-0.5">Akumulasi views konten</div>
             </div>
         </div>
 
@@ -79,17 +79,39 @@
             </div>
         </div>
 
-        <!-- Live Feed Activity -->
+        <!-- Live Feed Activity (Real Data) -->
         <div class="bg-white border border-[#ddd] rounded-lg p-5 flex flex-col h-[280px]">
-            <div class="flex items-center gap-2 mb-3">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#256D4A] opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-[#256D4A]"></span>
-                </span>
-                <span class="text-xs font-semibold text-[#1D1D1D] uppercase tracking-wide">Live Aktivitas</span>
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#256D4A] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[#256D4A]"></span>
+                    </span>
+                    <span class="text-xs font-semibold text-[#1D1D1D] uppercase tracking-wide">Aktivitas Terkini</span>
+                </div>
+                <span class="text-[10px] text-[#888] font-medium bg-[#f5f5f0] px-2 py-0.5 rounded border border-[#eee]">Data Riil</span>
             </div>
-            <div id="live-feed-container" class="flex-1 overflow-y-auto space-y-2 pr-1">
-                <!-- Javascript will populate this with realtime items -->
+            <div class="flex-1 overflow-y-auto space-y-2 pr-1">
+                @forelse($recentActivities as $activity)
+                    <a href="{{ $activity['link'] }}" class="flex items-start gap-2.5 p-2.5 rounded-lg border border-transparent {{ $activity['bg'] }} hover:border-[#ccc] transition-all block group">
+                        <div class="mt-0.5 shrink-0 {{ $activity['color'] }}">
+                            <i data-lucide="{{ $activity['icon'] }}" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-semibold text-[#1D1D1D] leading-snug group-hover:text-[#256D4A] transition-colors">{{ $activity['title'] }}</div>
+                            <div class="text-xs text-[#666] truncate">{{ $activity['detail'] }}</div>
+                        </div>
+                        <div class="text-[10px] text-[#888] shrink-0 mt-0.5 whitespace-nowrap">{{ $activity['time'] }}</div>
+                    </a>
+                @empty
+                    <div class="h-full flex flex-col items-center justify-center text-center p-4">
+                        <div class="w-8 h-8 rounded-full bg-[#f5f5f5] text-[#aaa] flex items-center justify-center mb-2">
+                            <i data-lucide="inbox" class="w-4 h-4"></i>
+                        </div>
+                        <p class="text-xs text-[#888] font-medium">Belum ada aktivitas terbaru.</p>
+                        <p class="text-[11px] text-[#aaa] mt-0.5">Aktivitas donasi, komentar, atau publikasi baru akan muncul di sini.</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>
@@ -226,186 +248,97 @@
 @push('scripts')
 <script nonce="{{ Vite::cspNonce() }}" src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script>
 <script nonce="{{ Vite::cspNonce() }}">
-    // Realtime visitors count logic
-    let visitors = 14320;
-    const visitorsEl = document.getElementById('realtime-visitors');
-    
-    function formatVisitors(val) {
-        return val.toLocaleString('id-ID');
-    }
-
-    setInterval(() => {
-        visitors += Math.floor(Math.random() * 3);
-        if (visitorsEl) {
-            visitorsEl.innerText = formatVisitors(visitors);
-        }
-    }, 6000);
-
-    // Chart.js Area Chart initialization
     document.addEventListener('DOMContentLoaded', () => {
-        const ctx = document.getElementById('donationChartCanvas').getContext('2d');
-        
-        // Gradient fill
-        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-        gradient.addColorStop(0, 'rgba(37, 109, 74, 0.3)');
-        gradient.addColorStop(1, 'rgba(37, 109, 74, 0)');
+        // Notification counter sync based on real database activities
+        const notifDot = document.getElementById('notif-dot');
+        const notifText = document.getElementById('notif-text');
+        @if(count($recentActivities) > 0)
+            if (notifDot) notifDot.style.display = 'block';
+            if (notifText) notifText.innerText = '{{ count($recentActivities) }} aktivitas database terkini.';
+        @endif
 
-        const data = @json($stats['chart_data']);
-        const labels = @json($stats['chart_labels']);
+        // Chart.js Area Chart initialization
+        const chartCanvas = document.getElementById('donationChartCanvas');
+        if (chartCanvas) {
+            const ctx = chartCanvas.getContext('2d');
+            
+            // Gradient fill
+            const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+            gradient.addColorStop(0, 'rgba(37, 109, 74, 0.3)');
+            gradient.addColorStop(1, 'rgba(37, 109, 74, 0)');
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Donasi',
-                    data: data,
-                    borderColor: '#256D4A',
-                    borderWidth: 2,
-                    backgroundColor: gradient,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 0,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: '#256D4A'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return 'Rp ' + context.raw.toLocaleString('id-ID');
-                            }
-                        }
-                    }
+            const data = @json($stats['chart_data']);
+            const labels = @json($stats['chart_labels']);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Donasi',
+                        data: data,
+                        borderColor: '#256D4A',
+                        borderWidth: 2,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: '#256D4A'
+                    }]
                 },
-                scales: {
-                    x: {
-                        grid: {
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
                             display: false
                         },
-                        ticks: {
-                            color: '#888',
-                            font: {
-                                size: 10
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Rp ' + context.raw.toLocaleString('id-ID');
+                                }
                             }
                         }
                     },
-                    y: {
-                        grid: {
-                            color: '#eee',
-                            lineWidth: 1
-                        },
-                        border: {
-                            dash: [3, 3]
-                        },
-                        ticks: {
-                            color: '#888',
-                            font: {
-                                size: 10
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
                             },
-                            callback: function(value) {
-                                if (value >= 1000000) {
-                                    return 'Rp ' + (value / 1000000) + 'jt';
+                            ticks: {
+                                color: '#888',
+                                font: {
+                                    size: 10
                                 }
-                                return 'Rp ' + value.toLocaleString('id-ID');
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: '#eee',
+                                lineWidth: 1
+                            },
+                            border: {
+                                dash: [3, 3]
+                            },
+                            ticks: {
+                                color: '#888',
+                                font: {
+                                    size: 10
+                                },
+                                callback: function(value) {
+                                    if (value >= 1000000) {
+                                        return 'Rp ' + (value / 1000000) + 'jt';
+                                    }
+                                    return 'Rp ' + value.toLocaleString('id-ID');
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
     });
-
-    // Realtime Activity Live Feed Logic
-    const eventTemplates = [
-        { type: 'donation', message: 'Donasi baru masuk', detail: 'Rp 250.000 dari Budi Santoso', icon: 'dollar-sign', bg: 'bg-[#eaf4ee]', color: 'text-[#256D4A]' },
-        { type: 'donation', message: 'Donasi baru masuk', detail: 'Rp 500.000 dari Anonim', icon: 'dollar-sign', bg: 'bg-[#eaf4ee]', color: 'text-[#256D4A]' },
-        { type: 'donation', message: 'Donasi baru masuk', detail: 'Rp 100.000 dari Siti Rahayu', icon: 'dollar-sign', bg: 'bg-[#eaf4ee]', color: 'text-[#256D4A]' },
-        { type: 'comment', message: 'Komentar baru di Blog', detail: '"Artikel ini sangat informatif!" — Ahmad R.', icon: 'message-square', bg: 'bg-[#f0f5f0]', color: 'text-[#5C8D59]' },
-        { type: 'comment', message: 'Komentar baru di Siaran Pers', detail: '"Terima kasih atas informasinya." — Dewi S.', icon: 'message-square', bg: 'bg-[#f0f5f0]', color: 'text-[#5C8D59]' },
-        { type: 'pageview', message: 'Lonjakan pengunjung', detail: 'Halaman Laporan Tahunan +340 views', icon: 'trending-up', bg: 'bg-[#f5f0ea]', color: 'text-[#8B6B4A]' },
-        { type: 'pageview', message: 'Trafik meningkat', detail: 'Blog "Krisis Air Citarum" sedang viral', icon: 'trending-up', bg: 'bg-[#f5f0ea]', color: 'text-[#8B6B4A]' },
-        { type: 'submission', message: 'Form Kontak terkirim', detail: 'Dari: press@mediaindonesia.co.id', icon: 'send', bg: 'bg-[#fdf0ee]', color: 'text-[#D95C3F]' },
-        { type: 'submission', message: 'Pendaftaran Pekan Rakyat', detail: '3 peserta baru mendaftar', icon: 'send', bg: 'bg-[#fdf0ee]', color: 'text-[#D95C3F]' },
-        { type: 'publish', message: 'Artikel dipublikasikan', detail: '"Update Kasus Tambang Emas Pongkor"', icon: 'book-open', bg: 'bg-[#eaf4ee]', color: 'text-[#256D4A]' },
-        { type: 'login', message: 'Login admin baru', detail: 'admin@walhijabar.org dari Jakarta', icon: 'log-in', bg: 'bg-[#f5f5f5]', color: 'text-[#888]' },
-    ];
-
-    const feedContainer = document.getElementById('live-feed-container');
-    const loadedEvents = [];
-
-    // Populate initial 5 items
-    for(let i = 4; i >= 0; i--) {
-        const randTpl = eventTemplates[Math.floor(Math.random() * eventTemplates.length)];
-        const timeAgo = i * 2 + 1; // dummy minutes ago
-        loadedEvents.push({
-            ...randTpl,
-            id: 'init-' + i,
-            timeLabel: timeAgo + 'm lalu'
-        });
-    }
-
-    function renderFeed() {
-        feedContainer.innerHTML = '';
-        loadedEvents.forEach(ev => {
-            const itemHTML = `
-                <div class="flex items-start gap-2.5 p-2.5 rounded-lg border border-transparent ${ev.bg}">
-                    <div class="mt-0.5 shrink-0 ${ev.color}">
-                        <i data-lucide="${ev.icon}" class="w-3.5 h-3.5"></i>
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <div class="text-xs font-semibold text-[#1D1D1D] leading-snug">${ev.message}</div>
-                        <div class="text-xs text-[#666] truncate">${ev.detail}</div>
-                    </div>
-                    <div class="text-[10px] text-[#aaa] shrink-0 mt-0.5">${ev.timeLabel}</div>
-                </div>
-            `;
-            feedContainer.insertAdjacentHTML('beforeend', itemHTML);
-        });
-        if (typeof lucide !== 'undefined' && lucide.createIcons) {
-            lucide.createIcons();
-        }
-    }
-
-    // Schedule periodic feed updates
-    function addFeedItem() {
-        const randTpl = eventTemplates[Math.floor(Math.random() * eventTemplates.length)];
-        loadedEvents.unshift({
-            ...randTpl,
-            id: Date.now(),
-            timeLabel: 'baru saja'
-        });
-
-        // Limit to 50 items
-        if (loadedEvents.length > 50) loadedEvents.pop();
-
-        renderFeed();
-
-        // Update topbar notifications counter for demo consistency
-        const notifDot = document.getElementById('notif-dot');
-        const notifText = document.getElementById('notif-text');
-        if (notifDot) {
-            notifDot.style.display = 'block';
-        }
-        if (notifText) {
-            const count = loadedEvents.filter(x => x.timeLabel === 'baru saja').length;
-            notifText.innerText = `${count} aktivitas baru dalam sesi ini. Lihat Live Feed di Dashboard.`;
-        }
-
-        // Set next trigger
-        const nextTime = Math.floor(Math.random() * (9000 - 4000 + 1)) + 4000;
-        setTimeout(addFeedItem, nextTime);
-    }
-
-    // Run first render & start timers
-    renderFeed();
-    setTimeout(addFeedItem, 5000);
 </script>
 @endpush
