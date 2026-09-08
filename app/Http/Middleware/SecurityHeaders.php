@@ -36,8 +36,10 @@ class SecurityHeaders
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
         }
 
+        $loginPath = env('ADMIN_LOGIN_PATH', 'portal-jabar');
+
         // Prevent search engines from indexing admin, auth, and internal profile pages
-        if ($request->is('admin*') || $request->is('dashboard*') || $request->is('login') || $request->is('register') || $request->is('profile*') || $request->is('password/*') || $request->is('forgot-password*') || $request->is('reset-password*') || $request->is('verify-email*') || $request->is('confirm-password*')) {
+        if ($request->is('admin*') || $request->is('dashboard*') || $request->is('login') || $request->is($loginPath) || $request->is($loginPath.'/*') || $request->is('register') || $request->is('profile*') || $request->is('password/*') || $request->is('forgot-password*') || $request->is('reset-password*') || $request->is('verify-email*') || $request->is('confirm-password*')) {
             $response->headers->set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
         }
 

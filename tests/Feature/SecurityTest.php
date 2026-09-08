@@ -25,13 +25,19 @@ class SecurityTest extends TestCase
     public function test_unauthenticated_guest_cannot_access_admin_endpoints(): void
     {
         $response = $this->get('/admin');
-        $response->assertRedirect('/login');
+        $response->assertRedirect(route('login'));
 
         $response = $this->get('/admin/comments');
-        $response->assertRedirect('/login');
+        $response->assertRedirect(route('login'));
 
         $response = $this->get('/admin/subscribers');
-        $response->assertRedirect('/login');
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_default_login_url_is_hidden_and_returns_404(): void
+    {
+        $this->get('/login')->assertStatus(404);
+        $this->post('/login')->assertStatus(404);
     }
 
     public function test_normal_user_cannot_access_admin_dashboard_or_subscribers(): void
@@ -529,7 +535,7 @@ class SecurityTest extends TestCase
     public function test_auth_and_password_endpoints_have_noindex_headers(): void
     {
         $endpoints = [
-            '/login',
+            route('login'),
             '/forgot-password',
             '/reset-password/sample-token',
         ];

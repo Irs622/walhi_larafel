@@ -80,7 +80,7 @@ class CreateAdminUser extends Command
         $actionText = $isNew ? 'berhasil dibuat' : 'berhasil diperbarui';
         $this->newLine();
         $this->info("✅ Akun {$role} {$name} ({$email}) {$actionText}!");
-        $this->line("   Login URL : " . url('/login'));
+        $this->line("   Login URL : " . route('login'));
         $this->line("   Username  : " . explode('@', $email)[0]);
         $this->line("   Email     : {$email}");
         $this->newLine();

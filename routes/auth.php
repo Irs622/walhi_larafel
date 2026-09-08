@@ -17,11 +17,17 @@ Route::middleware('guest')->group(function () {
     //     ->name('register');
     // Route::post('register', [RegisteredUserController::class, 'store']);
 
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
+    $loginPath = env('ADMIN_LOGIN_PATH', 'portal-jabar');
+
+    Route::get($loginPath, [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
-    Route::post('login', [AuthenticatedSessionController::class, 'store'])
+    Route::post($loginPath, [AuthenticatedSessionController::class, 'store'])
         ->middleware('throttle:login');
+
+    if ($loginPath !== 'login') {
+        Route::any('login', fn () => abort(404));
+    }
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
