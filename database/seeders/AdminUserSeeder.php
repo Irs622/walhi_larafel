@@ -70,7 +70,7 @@ class AdminUserSeeder extends Seeder
                         $user->password = Hash::make($teamPassword);
                     }
                     $user->email_verified_at = $user->email_verified_at ?: now();
-                    $user->assignRole('admin');
+                    $user->assignRole($member['role'] ?? 'editor');
                     $user->save();
 
                     if ($this->command) {
