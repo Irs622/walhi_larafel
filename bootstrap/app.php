@@ -28,10 +28,12 @@ return Application::configure(basePath: dirname(__DIR__))
             at: function () {
                 $hosts = [
                     '^(.+\.)?walhi\-jabar\.org$',
+                    '^(.+\.)?walhijabar\.co\.id$',
                     '^(.+\.)?walhijabar\.or\.id$',
                     '^(.+\.)?walhijabar\.org$',
                     '^localhost$',
                     '^127\.0\.0\.1$',
+                    '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(:[0-9]+)?$',
                 ];
 
                 $appHost = parse_url(config('app.url'), PHP_URL_HOST);
