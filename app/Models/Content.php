@@ -34,6 +34,23 @@ class Content extends Model
         'views' => 'integer',
     ];
 
+    /**
+     * Categories containing sensitive organizational configurations that require admin role.
+     */
+    public const SENSITIVE_CATEGORIES = [
+        'kontak',
+        'kampanye-darurat',
+        'donasi',
+    ];
+
+    /**
+     * Determine if a category is considered sensitive organizational configuration.
+     */
+    public static function isSensitiveCategory(?string $category): bool
+    {
+        return in_array($category, self::SENSITIVE_CATEGORIES, true);
+    }
+
     // ──────────────────────────────────────────────────────────────────────────
     // Relationships
     // ──────────────────────────────────────────────────────────────────────────

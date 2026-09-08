@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Content;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
 
@@ -9,6 +10,11 @@ class StoreContentRequest extends FormRequest
 {
     public function authorize(): bool
     {
+        $category = (string) $this->route('category');
+        if (Content::isSensitiveCategory($category)) {
+            return $this->user() !== null && $this->user()->isAdmin();
+        }
+
         return $this->user() !== null && $this->user()->canManageContent();
     }
 

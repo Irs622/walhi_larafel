@@ -58,7 +58,8 @@ class LoginRequest extends FormRequest
             $lowerLogin = Str::lower($login);
 
             // Match username prefix, domain variations, or full name
-            $user = User::where('email', $lowerLogin . '@walhijabar.or.id')
+            $user = User::where('email', $lowerLogin . '@walhijabar.co.id')
+                ->orWhere('email', $lowerLogin . '@walhijabar.or.id')
                 ->orWhere('email', $lowerLogin . '@walhi-jabar.org')
                 ->orWhere('email', 'like', $lowerLogin . '@%')
                 ->orWhereRaw('LOWER(name) = ?', [$lowerLogin])

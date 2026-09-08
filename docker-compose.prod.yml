@@ -11,12 +11,15 @@ services:
       dockerfile: Dockerfile
     container_name: walhi_prod_app
     restart: always
+    env_file:
+      - path: .env
+        required: false
     environment:
       APP_NAME: "${APP_NAME:-WALHI Jawa Barat}"
       APP_ENV: "${APP_ENV:-production}"
       APP_KEY: "${APP_KEY}"
       APP_DEBUG: "${APP_DEBUG:-false}"
-      APP_URL: "${APP_URL:-https://walhijabar.or.id}"
+      APP_URL: "${APP_URL:-https://walhijabar.co.id}"
 
       # Database Configuration
       DB_CONNECTION: "${DB_CONNECTION:-mysql}"
@@ -31,25 +34,50 @@ services:
       SESSION_LIFETIME: "${SESSION_LIFETIME:-120}"
       SESSION_SECURE_COOKIE: "${SESSION_SECURE_COOKIE:-true}"
 
+      # Logging & Caching
+      LOG_CHANNEL: "${LOG_CHANNEL:-daily}"
+      LOG_LEVEL: "${LOG_LEVEL:-error}"
+      LOG_DAILY_DAYS: "${LOG_DAILY_DAYS:-30}"
+      FILESYSTEM_DISK: "${FILESYSTEM_DISK:-public}"
+      QUEUE_CONNECTION: "${QUEUE_CONNECTION:-sync}"
+      CACHE_STORE: "${CACHE_STORE:-file}"
+      CACHE_PREFIX: "${CACHE_PREFIX:-walhi_cache_}"
+
+      # Email (SMTP)
+      MAIL_MAILER: "${MAIL_MAILER:-smtp}"
+      MAIL_HOST: "${MAIL_HOST:-smtp.gmail.com}"
+      MAIL_PORT: "${MAIL_PORT:-587}"
+      MAIL_USERNAME: "${MAIL_USERNAME:-}"
+      MAIL_PASSWORD: "${MAIL_PASSWORD:-}"
+      MAIL_ENCRYPTION: "${MAIL_ENCRYPTION:-tls}"
+      MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS:-kontak@walhijabar.co.id}"
+      MAIL_FROM_NAME: "${MAIL_FROM_NAME:-WALHI Jawa Barat}"
+
       # Payment Gateway (Midtrans)
       MIDTRANS_SERVER_KEY: "${MIDTRANS_SERVER_KEY}"
       MIDTRANS_CLIENT_KEY: "${MIDTRANS_CLIENT_KEY}"
       MIDTRANS_IS_PRODUCTION: "${MIDTRANS_IS_PRODUCTION:-true}"
 
-      # Admin Seed & Migration Controls
-      ADMIN_EMAIL: "${ADMIN_EMAIL:-admin@walhijabar.or.id}"
+      # Admin & Editor Seed Credentials
+      ADMIN_EMAIL: "${ADMIN_EMAIL:-admin@walhijabar.co.id}"
       ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+      EDITOR_EMAIL: "${EDITOR_EMAIL:-editor@walhijabar.co.id}"
+      EDITOR_PASSWORD: "${EDITOR_PASSWORD}"
       TEAM_ADMIN_PASSWORD: "${TEAM_ADMIN_PASSWORD}"
+      FORCE_ADMIN_PASSWORD_RESET: "${FORCE_ADMIN_PASSWORD_RESET:-false}"
+
+      # Container Startup Controls
       SEED_ON_START: "${SEED_ON_START:-false}"
       MIGRATE_ON_START: "${MIGRATE_ON_START:-false}"
+      CLEAR_CACHE_ON_START: "${CLEAR_CACHE_ON_START:-false}"
     deploy:
       resources:
         limits:
-          cpus: '0.85'
-          memory: 1536M
+          cpus: '1.70'
+          memory: 3072M
         reservations:
-          cpus: '0.25'
-          memory: 384M
+          cpus: '0.50'
+          memory: 768M
     volumes:
       - walhi_prod_public:/var/www/html/public_shared
       - walhi_prod_storage:/var/www/html/storage/app/public
@@ -73,11 +101,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.75'
-          memory: 1280M
+          cpus: '1.50'
+          memory: 2560M
         reservations:
-          cpus: '0.20'
-          memory: 512M
+          cpus: '0.40'
+          memory: 1024M
     volumes:
       - walhi_prod_db:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
@@ -101,11 +129,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.25'
-          memory: 256M
+          cpus: '0.50'
+          memory: 512M
         reservations:
-          cpus: '0.05'
-          memory: 64M
+          cpus: '0.10'
+          memory: 128M
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - walhi_prod_public:/var/www/html/public:ro

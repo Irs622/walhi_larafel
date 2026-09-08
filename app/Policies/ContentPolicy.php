@@ -18,8 +18,12 @@ class ContentPolicy
     /**
      * Determine whether the user can create contents.
      */
-    public function create(User $user): bool
+    public function create(User $user, ?string $category = null): bool
     {
+        if ($category && Content::isSensitiveCategory($category)) {
+            return $user->isAdmin();
+        }
+
         return $user->canManageContent();
     }
 
@@ -28,6 +32,10 @@ class ContentPolicy
      */
     public function update(User $user, Content $content): bool
     {
+        if (Content::isSensitiveCategory($content->category)) {
+            return $user->isAdmin();
+        }
+
         return $user->canManageContent();
     }
 

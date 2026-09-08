@@ -17,10 +17,10 @@ Dokumen ini berisi panduan langkah-demi-langkah untuk mendeploy dan mengoperasik
 ## 💻 Spesifikasi Server Rekomendasi
 
 - **OS:** Ubuntu 22.04 LTS / 24.04 LTS atau Debian 12
-- **CPU:** 1 vCPU (atau 2 vCPU)
-- **RAM:** 4 GB (Telah di-tuning untuk alokasi MySQL 1.2 GB + PHP-FPM 1.5 GB + OS margin 1.3 GB)
-- **Disk:** 50 GB NVMe / SSD
-- **Bandwidth:** 4 TB / bulan
+- **CPU:** 2 vCPU core
+- **RAM:** 8 GB (Telah di-tuning untuk alokasi MySQL 2.5 GB + PHP-FPM 3.0 GB + OS margin 2.5 GB)
+- **Disk:** 100 GB NVMe / SSD
+- **Bandwidth:** 8 TB / bulan
 - **Software Terpasang:** Docker Engine & Docker Compose v2 (`docker-compose-plugin`)
 
 ---
@@ -56,7 +56,7 @@ nano .env
 ```
 
 **Konfigurasi Kunci yang Wajib Diisi:**
-- `APP_URL=https://walhijabar.or.id`
+- `APP_URL=https://walhijabar.co.id`
 - `DB_PASSWORD` & `DB_ROOT_PASSWORD` (Gunakan password acak kuat minimal 24 karakter — **DILARANG** menggunakan string default contoh)
 - `MIDTRANS_SERVER_KEY` & `MIDTRANS_CLIENT_KEY` (Kunci produksi akun Midtrans resmi)
 - `ADMIN_PASSWORD` (Password akun Super Admin)
@@ -81,22 +81,22 @@ Setelah perintah selesai, 3 container akan otomatis berjalan:
 - `walhi_prod_db` (Basis data MySQL 8.0)
 - `walhi_prod_nginx` (Web Server Nginx & Reverse Proxy)
 
----
-
 ## 🔒 Konfigurasi Domain & SSL (HTTPS)
 
-Untuk mengamankan website dengan sertifikat SSL gratis via Let's Encrypt / Certbot:
-
-### Menggunakan Certbot di Host Server:
+### Otomatis Menggunakan Skrip `setup-ssl.sh`:
 ```bash
-sudo apt update && sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d walhijabar.or.id -d www.walhijabar.or.id
+cd /var/www/walhi_app
+chmod +x setup-ssl.sh
+./setup-ssl.sh
 ```
+Skrip ini otomatis:
+1. Menginstal certbot.
+2. Menerbitkan sertifikat SSL resmi Let's Encrypt untuk `walhijabar.co.id` & `www.walhijabar.co.id`.
+3. Mengonfigurasi volume SSL di `docker-compose.prod.yml`.
+4. Mengonfigurasi Nginx untuk HTTPS & auto-redirect HTTP ke HTTPS.
+5. Memperbarui `APP_URL=https://walhijabar.co.id` dan `SESSION_SECURE_COOKIE=true` di `.env`.
+6. Menyetel auto-renewal sertifikat secara berkala via crontab.
 
-### Atau via Cloudflare SSL (Paling Praktis):
-1. Arahkan DNS domain `walhijabar.or.id` (A Record) ke IP Server VPS Anda.
-2. Aktifkan **Proxy Cloudflare (Orange Cloud ☁️)**.
-3. Set mode SSL/TLS di dashboard Cloudflare ke **Full (Strict)**.
 
 ---
 
@@ -127,12 +127,12 @@ gunzip < storage/backups/walhi_prod_mysql_YYYYMMDD_HHMMSS.sql.gz | docker exec -
 
 ## 📊 Monitoring, Alokasi RAM & Benchmark
 
-### Anggaran Memori pada VPS 4 GB RAM:
-Container produksi dibatasi secara ketat (*hard memory limit*) untuk mencegah crash akibat *Out of Memory (OOM)*:
-- **`walhi_prod_app` (PHP-FPM 8 workers + Laravel 12)**: Limit **1.536 MB** (Reservasi: 512 MB)
-- **`walhi_prod_db` (MySQL 8.0 tuned buffer pool)**: Limit **1.280 MB** (Reservasi: 512 MB)
-- **`walhi_prod_nginx` (Nginx Alpine Reverse Proxy)**: Limit **256 MB** (Reservasi: 64 MB)
-- **Headroom OS, Page Cache & Docker Daemon**: **~1.024 MB (1 GB)**
+### Anggaran Memori pada VPS 8 GB RAM:
+Container produksi dibatasi secara optimal (*resource limits*) untuk memaksimalkan throughput sekaligus mencegah crash akibat *Out of Memory (OOM)*:
+- **`walhi_prod_app` (PHP-FPM 18 workers + Laravel 12)**: Limit **3.072 MB (3 GB)** (Reservasi: 768 MB)
+- **`walhi_prod_db` (MySQL 8.0 tuned 1.5 GB buffer pool)**: Limit **2.560 MB (2.5 GB)** (Reservasi: 1.024 MB)
+- **`walhi_prod_nginx` (Nginx Alpine Reverse Proxy)**: Limit **512 MB** (Reservasi: 128 MB)
+- **Headroom OS, Page Cache & Linux Buffers**: **~2.048 MB (2 GB)** + Swap 4 GB NVMe
 
 ### Memeriksa Penggunaan CPU & RAM Realtime:
 ```bash
@@ -184,12 +184,12 @@ Sebelum promosi traffic masif, lakukan pengujian konkurensi bertahap dari workst
 ```bash
 # Menggunakan ApacheBench (ab) atau k6 / wrk
 # Uji coba 100 request dengan 10 concurrent users:
-ab -n 100 -c 10 https://walhijabar.or.id/
+ab -n 100 -c 10 https://walhijabar.co.id/
 
 # Uji coba 500 request dengan 25 concurrent users:
-ab -n 500 -c 25 https://walhijabar.or.id/
+ab -n 500 -c 25 https://walhijabar.co.id/
 
 # Uji coba 1000 request dengan 50 concurrent users:
-ab -n 1000 -c 50 https://walhijabar.or.id/
+ab -n 1000 -c 50 https://walhijabar.co.id/
 ```
 Amati keluaran `docker stats`. Jika penggunaan RAM per PHP-FPM worker stabil dan antrean request rendah, nilai `pm.max_children` di `docker/php/zz-docker.conf` dapat dinaikkan bertahap (8 ➔ 10 ➔ 12) berdasarkan data aktual.
