@@ -20,18 +20,32 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
-# 2. Install Certbot
-echo "📦 [1/6] Memeriksa & menginstal Certbot..."
+# Pastikan Nginx dinyalakan kembali jika terjadi kegagalan
+trap 'cd "$APP_DIR" && docker compose -f docker-compose.prod.yml start web >/dev/null 2>&1 || true' ERR
+
+# 2. Periksa apakah DNS domain sudah terpropagasi
+echo "🔍 [1/6] Memeriksa propagasi DNS untuk $DOMAIN..."
+RESOLVED_IP=$(getent ahostsv4 "$DOMAIN" 2>/dev/null | awk '{print $1}' | head -n 1 || true)
+if [ -z "$RESOLVED_IP" ]; then
+    echo "❌ Domain $DOMAIN belum terpropagasi di internet (masih NXDOMAIN / belum aktif di registry PANDI)."
+    echo "   Let's Encrypt hanya bisa menerbitkan SSL jika domain sudah mengarah ke IP server ini."
+    echo "   Silakan tunggu sampai domain aktif (biasanya 15-30 menit), lalu jalankan skrip ini kembali."
+    exit 1
+fi
+echo "   ✅ DNS terdeteksi mengarah ke: $RESOLVED_IP"
+
+# 3. Install Certbot
+echo "📦 [2/6] Memeriksa & menginstal Certbot..."
 apt-get update -y
 apt-get install -y certbot
 
-# 3. Matikan sementara container web agar port 80 dapat dipakai Certbot
-echo "🛑 [2/6] Mematikan sementara Nginx container..."
+# 4. Matikan sementara container web agar port 80 dapat dipakai Certbot
+echo "🛑 [3/6] Mematikan sementara Nginx container..."
 cd "$APP_DIR"
 docker compose -f docker-compose.prod.yml stop web || true
 
-# 4. Menerbitkan sertifikat SSL
-echo "📜 [3/6] Menerbitkan sertifikat SSL Let's Encrypt..."
+# 5. Menerbitkan sertifikat SSL
+echo "📜 [4/6] Menerbitkan sertifikat SSL Let's Encrypt..."
 certbot certonly --standalone \
     -d "$DOMAIN" \
     -d "www.$DOMAIN" \
