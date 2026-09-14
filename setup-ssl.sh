@@ -5,7 +5,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
-DOMAIN="walhijabar.co.id"
+DOMAIN="${1:-walhijabar.or.id}"
 EMAIL="irsalshydiq@gmail.com"
 APP_DIR="/var/www/walhi_app"
 
@@ -47,19 +47,19 @@ fi
 
 # 6. Konfigurasi Nginx untuk HTTPS
 echo "⚙️  [5/6] Mengonfigurasi Nginx untuk HTTPS (Port 443 + HTTP Redirect)..."
-cat > "$APP_DIR/docker/nginx/default.conf" <<'NGINX_EOF'
+cat > "$APP_DIR/docker/nginx/default.conf" <<NGINX_EOF
 # Redirect all HTTP to HTTPS
 server {
     listen 80;
     listen [::]:80;
-    server_name walhijabar.co.id www.walhijabar.co.id;
+    server_name ${DOMAIN} www.${DOMAIN};
 
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
     }
 
     location / {
-        return 301 https://$host$request_uri;
+        return 301 https://\$host\$request_uri;
     }
 }
 
@@ -67,10 +67,10 @@ server {
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name walhijabar.co.id www.walhijabar.co.id;
+    server_name ${DOMAIN} www.${DOMAIN};
 
-    ssl_certificate /etc/letsencrypt/live/walhijabar.co.id/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/walhijabar.co.id/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
     ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384';
@@ -115,7 +115,7 @@ server {
         add_header Cache-Control "public, no-transform";
         access_log off;
         log_not_found off;
-        try_files $uri =404;
+        try_files \$uri =404;
     }
 
     # Storage Symlink Access
@@ -128,7 +128,7 @@ server {
 
     # Main Application Route
     location / {
-        try_files $uri $uri/ /index.php?$query_string;
+        try_files \$uri \$uri/ /index.php?\$query_string;
     }
 
     # Prevent Access to Hidden Files (.env, .git, etc.)
@@ -140,7 +140,7 @@ server {
     location ~ \.php$ {
         fastcgi_pass app:9000;
         fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
         include fastcgi_params;
 
         fastcgi_connect_timeout 10s;
@@ -161,7 +161,7 @@ NGINX_EOF
 
 # 7. Perbarui .env untuk domain HTTPS
 echo "📝 [6/6] Menyesuaikan APP_URL dan SESSION_SECURE_COOKIE di .env..."
-sed -i 's|^APP_URL=.*|APP_URL=https://walhijabar.co.id|g' "$APP_DIR/.env"
+sed -i "s|^APP_URL=.*|APP_URL=https://$DOMAIN|g" "$APP_DIR/.env"
 sed -i 's|^SESSION_SECURE_COOKIE=.*|SESSION_SECURE_COOKIE=true|g' "$APP_DIR/.env"
 
 # Jalankan ulang stack docker
@@ -179,5 +179,6 @@ CRON_RENEW="0 3 * * 1 certbot renew --quiet --deploy-hook \"docker compose -f /v
 echo ""
 echo "==================================================================="
 echo "  🎉 SUKSES! SSL HTTPS BERHASIL DIAKTIFKAN!"
-echo "  Silakan buka: https://walhijabar.co.id"
+echo "  Silakan buka: https://$DOMAIN"
 echo "==================================================================="
+
