@@ -2,7 +2,7 @@
 
 # 🌿 WALHI Jawa Barat — Official Web Platform
 
-[![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Alpine.js](https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white)](https://alpinejs.dev)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com)
@@ -16,7 +16,7 @@
 
 **Portal Informasi, Advokasi Lingkungan, Publikasi Kebijakan, dan Gerakan Rakyat WALHI Jawa Barat**
 
-[Fitur Utama](#-fitur-utama) • [Panduan Cepat](#-panduan-menjalankan-aplikasi) • [Struktur Sistem](#-arsitektur--struktur-direktori) • [Kolaborasi & Tim](#-panduan-kolaborasi-tim) • [Lisensi](#-lisensi)
+[Fitur Utama](#-fitur-utama) • [Panduan Cepat](#-panduan-menjalankan-aplikasi) • [Struktur Sistem](#-arsitektur--struktur-direktori) • [Panduan AI Agents](AGENTS.md) • [Lisensi](#-lisensi)
 
 </div>
 
@@ -74,7 +74,8 @@ Metode ini paling praktis karena seluruh dependensi (PHP 8.4, Composer, Node.js 
 
 3. **Buka aplikasi di browser:**
    - 🌐 **Website Publik:** [http://localhost:8000](http://localhost:8000)
-   - 🔑 **Panel Admin:** [http://localhost:8000/admin](http://localhost:8000/admin)
+   - 🔑 **Login Admin:** [http://localhost:8000/portal-jabar](http://localhost:8000/portal-jabar) *(dapat disesuaikan via `ADMIN_LOGIN_PATH` di `.env`)*
+   - 📊 **Panel Admin:** [http://localhost:8000/admin](http://localhost:8000/admin) *(memerlukan login)*
 
 4. **Perintah Docker yang Berguna:**
    ```bash
@@ -92,7 +93,7 @@ Metode ini paling praktis karena seluruh dependensi (PHP 8.4, Composer, Node.js 
 
 ### 💻 Metode 2: Menjalankan Secara Manual (Lokal)
 
-Jika Anda ingin menjalankan langsung di lingkungan host (memerlukan PHP 8.2+, Composer, dan Node.js 18+):
+Jika Anda ingin menjalankan langsung di lingkungan host (memerlukan PHP 8.3+ / 8.4 rekomendasi, Composer, dan Node.js 20+):
 
 1. **Install dependensi PHP & Node.js:**
    ```bash

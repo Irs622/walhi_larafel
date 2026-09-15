@@ -12,7 +12,7 @@ Kami secara aktif memelihara dan memberikan pembaruan keamanan (*security patche
 
 | Versi | Didukung Pembaruan Keamanan |
 | :--- | :---: |
-| **v1.x (Laravel 12.x / PHP 8.4)** | :white_check_mark: Ya |
+| **v1.x (Laravel 13.x / PHP 8.4)** | :white_check_mark: Ya |
 | **< v1.0** | :x: Tidak |
 
 ---
