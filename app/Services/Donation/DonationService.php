@@ -82,31 +82,50 @@ class DonationService
     }
 
     /**
-     * Process an incoming Midtrans webhook payload in an idempotent manner.
-     * Once a donation reaches "success", it cannot be downgraded.
+     * Process an incoming Midtrans webhook payload in an atomic and idempotent manner.
+     * Enforces strict state transitions after normalizing provider status.
      *
-     * @return bool true if status was updated, false if already terminal/no change
+     * @return bool true if status was updated, false if rejected or no change (idempotent)
      */
     public function processWebhook(Donation $donation, string $transactionStatus, ?string $paymentType): bool
     {
-        // Guard: never downgrade a successfully completed donation
-        if ($donation->status === DonationStatus::Success->value) {
-            return false;
-        }
+        $targetStatus = DonationStatus::fromMidtrans($transactionStatus);
 
-        $newStatus = DonationStatus::fromMidtrans($transactionStatus);
+        return (bool) \Illuminate\Support\Facades\DB::transaction(function () use ($donation, $targetStatus, $paymentType, $transactionStatus) {
+            $locked = Donation::where('id', $donation->id)->lockForUpdate()->first();
+            if (! $locked) {
+                return false;
+            }
 
-        $changed = $donation->status !== $newStatus->value;
+            $currentStatus = DonationStatus::tryFrom($locked->status) ?? DonationStatus::Pending;
 
-        $donation->status = $newStatus->value;
+            if (! $currentStatus->canTransitionTo($targetStatus)) {
+                Log::warning('Midtrans webhook rejected: illegal state transition', [
+                    'donation_id' => $locked->id,
+                    'order_id' => $locked->order_id,
+                    'current_status' => $currentStatus->value,
+                    'attempted_status' => $targetStatus->value,
+                    'transaction_status' => $transactionStatus,
+                ]);
 
-        if ($paymentType) {
-            $donation->payment_type = $paymentType;
-        }
+                return false;
+            }
 
-        $donation->save();
+            // If already in target status, idempotent acknowledge
+            if ($currentStatus === $targetStatus) {
+                return false;
+            }
 
-        return $changed;
+            $locked->status = $targetStatus->value;
+            if ($paymentType) {
+                $locked->payment_type = $paymentType;
+            }
+            $locked->save();
+
+            $donation->refresh();
+
+            return true;
+        });
     }
 
     /**

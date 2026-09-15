@@ -58,6 +58,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if the user is an editor.
+     */
+    public function isEditor(): bool
+    {
+        return $this->roleEnum === UserRole::Editor;
+    }
+
+    /**
+     * Check if the user is a subscriber.
+     */
+    public function isSubscriber(): bool
+    {
+        return $this->roleEnum === UserRole::Subscriber;
+    }
+
+    /**
      * Check if the user can manage content (admin or editor).
      */
     public function canManageContent(): bool

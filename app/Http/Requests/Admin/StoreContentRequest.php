@@ -35,15 +35,30 @@ class StoreContentRequest extends FormRequest
                         return;
                     }
                     $val = trim($value);
+
+                    // Block dangerous URI schemes
                     if (preg_match('/^(javascript|vbscript|data):/i', $val)) {
                         $fail('URL gambar/berkas tidak valid atau menggunakan protokol yang dilarang.');
 
                         return;
                     }
-                    $isUrl = filter_var($val, FILTER_VALIDATE_URL) && preg_match('/^https?:\/\//i', $val);
-                    $isSafeRelative = preg_match('/^(\/|storage\/|uploads\/|assets\/)/i', $val);
-                    if (! $isUrl && ! $isSafeRelative) {
-                        $fail('URL gambar/berkas harus berupa tautan web yang valid (http/https) atau jalur berkas lokal yang aman.');
+
+                    // Strictly reject protocol-relative URLs (e.g. //evil.example or ///evil.example)
+                    if (str_starts_with($val, '//')) {
+                        $fail('URL gambar/berkas tidak boleh menggunakan protocol-relative URL.');
+
+                        return;
+                    }
+
+                    // Positive allowlist:
+                    // 1. Registered local paths: /storage/..., /uploads/..., /documents/..., /assets/...
+                    $isAllowedLocal = preg_match('/^(\/?(storage|uploads|documents|assets)\/)/i', $val);
+
+                    // 2. Valid external HTTP/HTTPS URLs
+                    $isAllowedExternal = filter_var($val, FILTER_VALIDATE_URL) && preg_match('/^https?:\/\//i', $val);
+
+                    if (! $isAllowedLocal && ! $isAllowedExternal) {
+                        $fail('URL gambar/berkas harus berupa tautan web yang valid (http/https) atau jalur berkas lokal yang terdaftar (/storage/, /uploads/, /documents/, /assets/).');
                     }
                 },
             ],
@@ -56,7 +71,7 @@ class StoreContentRequest extends FormRequest
                     if ($value instanceof UploadedFile) {
                         $ext = strtolower($value->getClientOriginalExtension());
                         $dangerousExts = ['php', 'phtml', 'phar', 'php3', 'php4', 'php5', 'phps', 'cgi', 'pl', 'py', 'sh', 'bat', 'exe', 'svg', 'htaccess'];
-                        if (in_array($ext, $dangerousExts)) {
+                        if (in_array($ext, $dangerousExts, true)) {
                             $fail('Ekstensi file yang diunggah tidak diizinkan demi alasan keamanan.');
 
                             return;
@@ -71,8 +86,29 @@ class StoreContentRequest extends FormRequest
                             'application/vnd.ms-excel',
                             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                         ];
-                        if (! in_array($mime, $allowedMimes)) {
+                        if (! in_array($mime, $allowedMimes, true)) {
                             $fail('File yang diunggah memiliki tipe MIME asli yang tidak valid.');
+
+                            return;
+                        }
+
+                        // Inspect actual file content for executable PHP tags and image integrity
+                        $realPath = $value->getRealPath();
+                        if ($realPath && file_exists($realPath)) {
+                            $contentSample = @file_get_contents($realPath, false, null, 0, 4096);
+                            if ($contentSample && (str_contains($contentSample, '<?php') || str_contains($contentSample, '<?='))) {
+                                $fail('File yang diunggah mengandung kode skrip yang dilarang.');
+
+                                return;
+                            }
+
+                            if (in_array($ext, ['jpeg', 'jpg', 'png', 'webp', 'gif'], true)) {
+                                if (@getimagesize($realPath) === false) {
+                                    $fail('File gambar tidak valid atau rusak.');
+
+                                    return;
+                                }
+                            }
                         }
                     }
                 },

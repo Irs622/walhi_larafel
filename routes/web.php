@@ -98,8 +98,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             // WYSIWYG Editor image upload (Quill)
             Route::post('/upload-image', [ContentController::class, 'uploadEditorImage'])->name('upload-image');
 
+            $categoryPattern = implode('|', array_map(fn (\App\Enums\ContentCategory $c) => $c->value, \App\Enums\ContentCategory::cases()));
+
             // "Tentang" sub-prefix (sejarah, visi-misi, dewan-nasional, etc.)
-            Route::prefix('tentang')->where(['category' => '[a-zA-Z0-9\-]+'])->group(function () {
+            Route::prefix('tentang')->where(['category' => $categoryPattern])->group(function () {
                 Route::get('/{category}', [ContentController::class, 'index'])->name('content.tentang.index');
                 Route::post('/{category}', [ContentController::class, 'store'])->name('content.tentang.store');
                 Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.tentang.update');
@@ -107,7 +109,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             });
 
             // Root categories
-            Route::where(['category' => '[a-zA-Z0-9\-]+'])->group(function () {
+            Route::where(['category' => $categoryPattern])->group(function () {
                 Route::get('/{category}', [ContentController::class, 'index'])->name('content.index');
                 Route::post('/{category}', [ContentController::class, 'store'])->name('content.store');
                 Route::put('/{category}/{content}', [ContentController::class, 'update'])->name('content.update');
@@ -117,11 +119,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Destructive / Export actions restricted to admin role only
         Route::middleware('role:admin')->group(function () {
+            $categoryPattern = implode('|', array_map(fn (\App\Enums\ContentCategory $c) => $c->value, \App\Enums\ContentCategory::cases()));
+
             Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
             Route::get('/subscribers/export', [AdminSubscriberController::class, 'export'])->name('subscribers.export');
             Route::delete('/subscribers/{subscriber}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
-            Route::delete('/tentang/{category}/{content}', [ContentController::class, 'destroy'])->where(['category' => '[a-zA-Z0-9\-]+'])->name('content.tentang.destroy');
-            Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->where(['category' => '[a-zA-Z0-9\-]+'])->name('content.destroy');
+            Route::delete('/tentang/{category}/{content}', [ContentController::class, 'destroy'])->where(['category' => $categoryPattern])->name('content.tentang.destroy');
+            Route::delete('/{category}/{content}', [ContentController::class, 'destroy'])->where(['category' => $categoryPattern])->name('content.destroy');
         });
     });
 });

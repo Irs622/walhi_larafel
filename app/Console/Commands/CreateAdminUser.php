@@ -6,7 +6,9 @@ use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class CreateAdminUser extends Command
 {
@@ -18,7 +20,6 @@ class CreateAdminUser extends Command
     protected $signature = 'walhi:create-admin
                             {--name= : Nama lengkap admin}
                             {--email= : Alamat email atau username}
-                            {--password= : Password untuk akun baru}
                             {--role=admin : Peran user (admin atau editor)}';
 
     /**
@@ -59,13 +60,34 @@ class CreateAdminUser extends Command
             $role = $this->choice('Pilih Peran Akun', ['admin', 'editor'], 0);
         }
 
-        $password = $this->option('password');
-        if (empty($password)) {
-            $password = $this->secret('Password (minimal 8 karakter)');
-            while (empty($password) || strlen($password) < 8) {
-                $this->error('Password minimal harus 8 karakter.');
-                $password = $this->secret('Password (minimal 8 karakter)');
+        $password = null;
+        while (! $password) {
+            $pwd = $this->secret('Password (min. 12 karakter, huruf besar/kecil, angka, simbol)');
+            $pwdConfirmation = $this->secret('Ulangi Password');
+
+            $validator = Validator::make(
+                [
+                    'password' => $pwd,
+                    'password_confirmation' => $pwdConfirmation,
+                ],
+                [
+                    'password' => ['required', 'string', 'confirmed', PasswordRule::defaults()],
+                ],
+                [
+                    'password.required' => 'Password wajib diisi.',
+                    'password.confirmed' => 'Konfirmasi password tidak cocok.',
+                ]
+            );
+
+            if ($validator->fails()) {
+                foreach ($validator->errors()->all() as $error) {
+                    $this->error('  • ' . $error);
+                }
+                $this->newLine();
+                continue;
             }
+
+            $password = $pwd;
         }
 
         $user = User::firstOrNew(['email' => $email]);

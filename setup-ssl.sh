@@ -132,12 +132,19 @@ server {
         try_files \$uri =404;
     }
 
-    # Storage Symlink Access
+    # Storage Symlink Access - Static Serving Only, Execution Blocked
     location ^~ /storage/ {
         alias /var/www/html/storage/app/public/;
         expires 30d;
         add_header Cache-Control "public";
+        add_header X-Content-Type-Options "nosniff" always;
         access_log off;
+
+        # Strictly block script execution inside storage directory
+        location ~* \.(php|php[0-9]|phtml|phar|sh|pl|py|cgi|htaccess|bat|exe)$ {
+            deny all;
+            return 404;
+        }
     }
 
     # Main Application Route

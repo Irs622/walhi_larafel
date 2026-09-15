@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\ContentCategory;
 use App\Models\Content;
 use App\Models\User;
 
@@ -20,8 +21,15 @@ class ContentPolicy
      */
     public function create(User $user, ?string $category = null): bool
     {
-        if ($category && Content::isSensitiveCategory($category)) {
-            return $user->isAdmin();
+        if ($category !== null) {
+            $catEnum = ContentCategory::tryFrom($category);
+            if (! $catEnum) {
+                return false;
+            }
+
+            if (Content::isSensitiveCategory($category)) {
+                return $user->isAdmin();
+            }
         }
 
         return $user->canManageContent();
@@ -32,6 +40,10 @@ class ContentPolicy
      */
     public function update(User $user, Content $content): bool
     {
+        if (! ContentCategory::tryFrom($content->category)) {
+            return false;
+        }
+
         if (Content::isSensitiveCategory($content->category)) {
             return $user->isAdmin();
         }
@@ -44,6 +56,10 @@ class ContentPolicy
      */
     public function delete(User $user, Content $content): bool
     {
+        if (! ContentCategory::tryFrom($content->category)) {
+            return false;
+        }
+
         return $user->canDelete();
     }
 }

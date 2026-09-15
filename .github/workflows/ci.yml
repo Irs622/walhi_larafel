@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - prod
+      - production
   pull_request:
     branches:
       - main
       - prod
+      - production
 
 jobs:
   # ── 1. Backend & Unit/Feature Tests ──

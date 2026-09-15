@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ContentCategory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreContentRequest;
 use App\Http\Requests\Admin\UpdateContentRequest;
@@ -19,6 +20,17 @@ use Illuminate\Support\Str;
 class ContentController extends Controller
 {
     public function __construct(private readonly SlugService $slugService) {}
+
+    /**
+     * Validate category string against ContentCategory enum cases.
+     */
+    private function validateCategory(string $category): ContentCategory
+    {
+        $enum = ContentCategory::tryFrom($category);
+        abort_if(! $enum, 404, 'Kategori tidak valid atau tidak ditemukan.');
+
+        return $enum;
+    }
 
     /**
      * Map of category slugs to display titles and descriptions.
@@ -56,6 +68,7 @@ class ContentController extends Controller
 
     public function index(Request $request, string $category)
     {
+        $this->validateCategory($category);
         $config = $this->getCategoryConfig($category);
         $search = $request->input('search');
 
@@ -116,6 +129,7 @@ class ContentController extends Controller
 
     public function store(StoreContentRequest $request, string $category)
     {
+        $this->validateCategory($category);
         $this->authorize('create', [Content::class, $category]);
 
         $validated = $request->validated();
@@ -125,9 +139,13 @@ class ContentController extends Controller
         $rawSlug = ! empty($validated['slug']) ? $validated['slug'] : $validated['title'];
         $validated['slug'] = $this->slugService->makeUnique(Str::slug($rawSlug));
 
-        // Image upload / URL
+        // Image / document upload or URL
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('uploads', 'public');
+            $file = $request->file('image');
+            $ext = strtolower($file->getClientOriginalExtension());
+            $isDoc = in_array($ext, ['pdf', 'doc', 'docx', 'xls', 'xlsx'], true);
+            $folder = $isDoc ? 'documents' : 'uploads';
+            $path = $file->store($folder, 'public');
             $validated['image_url'] = '/storage/'.$path;
         } elseif (! empty($validated['image_url'])) {
             $validated['image_url'] = trim($validated['image_url']);
@@ -155,6 +173,7 @@ class ContentController extends Controller
 
     public function update(UpdateContentRequest $request, string $category, Content $content)
     {
+        $this->validateCategory($category);
         abort_if($content->category !== $category, 404, 'Kategori tidak sesuai dengan entri konten.');
 
         $this->authorize('update', $content);
@@ -168,10 +187,14 @@ class ContentController extends Controller
             $content->id
         );
 
-        // Image upload / removal / retention
+        // Image / document upload / removal / retention
         if ($request->hasFile('image')) {
             $this->deleteOldImage($content);
-            $path = $request->file('image')->store('uploads', 'public');
+            $file = $request->file('image');
+            $ext = strtolower($file->getClientOriginalExtension());
+            $isDoc = in_array($ext, ['pdf', 'doc', 'docx', 'xls', 'xlsx'], true);
+            $folder = $isDoc ? 'documents' : 'uploads';
+            $path = $file->store($folder, 'public');
             $validated['image_url'] = '/storage/'.$path;
         } elseif ($request->filled('image_url')) {
             $newUrl = trim($validated['image_url']);
@@ -207,6 +230,7 @@ class ContentController extends Controller
 
     public function destroy(string $category, Content $content)
     {
+        $this->validateCategory($category);
         abort_if($content->category !== $category, 404, 'Kategori tidak sesuai dengan entri konten.');
 
         $this->authorize('delete', $content);
@@ -228,6 +252,7 @@ class ContentController extends Controller
 
     public function toggleStatus(string $category, Content $content)
     {
+        $this->validateCategory($category);
         abort_if($content->category !== $category, 404, 'Kategori tidak sesuai dengan entri konten.');
 
         $this->authorize('update', $content);
@@ -357,17 +382,26 @@ class ContentController extends Controller
     {
         $raw = (string) $content->getRawOriginal('image_url');
         if ($raw !== '') {
+            $folder = null;
             $filename = null;
             if (str_starts_with($raw, '/storage/uploads/')) {
+                $folder = 'uploads/';
                 $filename = substr($raw, strlen('/storage/uploads/'));
             } elseif (str_starts_with($raw, 'uploads/')) {
+                $folder = 'uploads/';
                 $filename = substr($raw, strlen('uploads/'));
+            } elseif (str_starts_with($raw, '/storage/documents/')) {
+                $folder = 'documents/';
+                $filename = substr($raw, strlen('/storage/documents/'));
+            } elseif (str_starts_with($raw, 'documents/')) {
+                $folder = 'documents/';
+                $filename = substr($raw, strlen('documents/'));
             }
 
-            if ($filename !== null && $filename !== '') {
+            if ($filename !== null && $filename !== '' && $folder !== null) {
                 $cleanFilename = basename($filename);
                 if ($cleanFilename !== '' && ! in_array($cleanFilename, ['.', '..'], true)) {
-                    Storage::disk('public')->delete('uploads/'.$cleanFilename);
+                    Storage::disk('public')->delete($folder.$cleanFilename);
                 }
             }
         }

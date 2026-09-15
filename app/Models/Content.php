@@ -130,16 +130,35 @@ class Content extends Model
             return null;
         }
 
-        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
-            return $value;
+        // Strictly block protocol-relative URLs (//evil.example, ///evil.example)
+        if (str_starts_with($value, '//')) {
+            return null;
         }
 
+        // Valid external HTTP / HTTPS URLs
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return filter_var($value, FILTER_VALIDATE_URL) ? $value : null;
+        }
+
+        // Positive allowlist for local storage and static assets
         if (str_starts_with($value, '/storage/')) {
             return $value;
         }
 
         if (str_starts_with($value, 'storage/')) {
             return '/'.$value;
+        }
+
+        if (str_starts_with($value, '/documents/')) {
+            return '/storage'.$value;
+        }
+
+        if (str_starts_with($value, 'documents/')) {
+            return '/storage/'.$value;
+        }
+
+        if (str_starts_with($value, '/uploads/')) {
+            return '/storage'.$value;
         }
 
         if (str_starts_with($value, 'uploads/')) {
@@ -154,12 +173,8 @@ class Content extends Model
             return '/'.$value;
         }
 
-        if (str_starts_with($value, '/')) {
-            return $value;
-        }
-
-        // Only allow clean alphanumeric filename paths for fallback storage prefix
-        if (preg_match('/^[a-zA-Z0-9_\-\.\/]+$/', $value)) {
+        // Safe alphanumeric relative file path fallback (without leading slash)
+        if (preg_match('/^[a-zA-Z0-9_\-\.\/]+$/', $value) && ! str_starts_with($value, '/')) {
             return '/storage/'.$value;
         }
 

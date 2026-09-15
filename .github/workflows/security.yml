@@ -3,15 +3,21 @@ name: Security Audit
 on:
   schedule:
     - cron: '0 0 * * 1' # Setiap hari Senin jam 00:00 UTC
+  push:
+    branches:
+      - main
+      - prod
+      - production
   pull_request:
     branches:
       - main
       - prod
+      - production
   workflow_dispatch:
 
 jobs:
   security-audit:
-    name: Dependency Security Scan
+    name: Dependency Security Scan & Security Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -22,15 +28,40 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
+          extensions: mbstring, dom, fileinfo, sqlite, pdo_sqlite, pdo_mysql, bcmath, gd, intl, zip, pcntl
           coverage: none
 
-      - name: Run Composer Security Audit
-        run: composer audit --abandoned=ignore || true
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Setup Application Key & Database
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run Application & Security Tests
+        run: php artisan test
+
+      - name: Run Composer Security Audit (Fail-Closed)
+        run: composer audit --abandoned=ignore
 
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
-      - name: Run NPM Security Audit
-        run: npm audit --audit-level=high || true
+      - name: Install NPM Dependencies
+        run: npm ci || npm install
+
+      - name: Run NPM Security Audit (Fail-Closed High/Critical)
+        run: npm audit --audit-level=high
+

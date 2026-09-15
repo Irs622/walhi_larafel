@@ -31,6 +31,24 @@ enum DonationStatus: string
     }
 
     /**
+     * Strict state transition matrix to prevent illegal status transitions.
+     */
+    public function canTransitionTo(self $target): bool
+    {
+        if ($this === $target) {
+            // Idempotent webhook replay is permitted
+            return true;
+        }
+
+        return match ($this) {
+            self::Pending => in_array($target, [self::Success, self::Failed, self::Expired], true),
+            self::Success => false, // Terminal: cannot be downgraded or altered
+            self::Failed => false,  // Terminal: cannot transition to any other status
+            self::Expired => false, // Terminal: cannot transition to any other status
+        };
+    }
+
+    /**
      * Determine the status from a Midtrans transaction_status string.
      */
     public static function fromMidtrans(string $transactionStatus): self

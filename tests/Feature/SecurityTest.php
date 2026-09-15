@@ -520,7 +520,7 @@ class SecurityTest extends TestCase
 
         $csp = $response->headers->get('Content-Security-Policy');
         $this->assertStringContainsString("default-src 'self'", $csp);
-        $this->assertStringContainsString("script-src 'self' 'unsafe-inline'", $csp);
+        $this->assertStringContainsString("script-src 'self' 'nonce-", $csp);
         $this->assertStringContainsString("style-src 'self' 'unsafe-inline'", $csp);
     }
 
@@ -655,13 +655,45 @@ class SecurityTest extends TestCase
         ]);
         $response3->assertSessionHasErrors('image_url');
 
-        // Safe relative and absolute URLs are accepted
+        // Protocol-relative //evil.example must be rejected
+        $responseProto = $this->actingAs($admin)->post('/admin/blog', [
+            'title' => 'Protocol Relative Attack',
+            'status' => 'published',
+            'image_url' => '//evil.example/photo.jpg',
+        ]);
+        $responseProto->assertSessionHasErrors('image_url');
+
+        // Triple-slash ///evil.example must be rejected
+        $responseTriple = $this->actingAs($admin)->post('/admin/blog', [
+            'title' => 'Triple Slash Attack',
+            'status' => 'published',
+            'image_url' => '///evil.example/photo.jpg',
+        ]);
+        $responseTriple->assertSessionHasErrors('image_url');
+
+        // Arbitrary unwhitelisted local path must be rejected
+        $responseArbitrary = $this->actingAs($admin)->post('/admin/blog', [
+            'title' => 'Arbitrary Path',
+            'status' => 'published',
+            'image_url' => '/etc/passwd',
+        ]);
+        $responseArbitrary->assertSessionHasErrors('image_url');
+
+        // Positive allowlist: valid HTTPS external URL
         $responseSafe = $this->actingAs($admin)->post('/admin/blog', [
             'title' => 'Safe Article',
             'status' => 'published',
             'image_url' => 'https://images.unsplash.com/photo-sample.jpg',
         ]);
         $responseSafe->assertSessionHasNoErrors();
+
+        // Positive allowlist: valid /storage/uploads/ path
+        $responseLocal = $this->actingAs($admin)->post('/admin/blog', [
+            'title' => 'Safe Local Article',
+            'status' => 'published',
+            'image_url' => '/storage/uploads/photo.jpg',
+        ]);
+        $responseLocal->assertSessionHasNoErrors();
     }
 
     public function test_content_model_sanitizes_dangerous_image_url_schemes(): void
@@ -672,11 +704,25 @@ class SecurityTest extends TestCase
         $contentData = new Content(['image_url' => 'data:text/html,<script>alert(1)</script>']);
         $this->assertNull($contentData->image_url);
 
+        // Protocol-relative URLs must sanitize to null
+        $contentProto = new Content(['image_url' => '//evil.example/photo.jpg']);
+        $this->assertNull($contentProto->image_url);
+
+        $contentTriple = new Content(['image_url' => '///evil.example/photo.jpg']);
+        $this->assertNull($contentTriple->image_url);
+
+        // Arbitrary path outside whitelist must sanitize to null
+        $contentArbitrary = new Content(['image_url' => '/var/log/app.log']);
+        $this->assertNull($contentArbitrary->image_url);
+
         $contentSafe = new Content(['image_url' => 'https://example.com/safe.jpg']);
         $this->assertSame('https://example.com/safe.jpg', $contentSafe->image_url);
 
         $contentRelative = new Content(['image_url' => '/storage/uploads/safe.jpg']);
         $this->assertSame('/storage/uploads/safe.jpg', $contentRelative->image_url);
+
+        $contentDoc = new Content(['image_url' => '/storage/documents/report.pdf']);
+        $this->assertSame('/storage/documents/report.pdf', $contentDoc->image_url);
     }
 
     public function test_delete_old_image_prevents_path_traversal(): void
@@ -732,5 +778,76 @@ class SecurityTest extends TestCase
         $legitRes->assertSessionHasNoErrors();
 
         Storage::disk('public')->assertMissing('uploads/valid.jpg');
+    }
+
+    public function test_upload_rejects_dangerous_extensions_and_mime_spoofing(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->admin()->create();
+
+        $dangerousFiles = [
+            'shell.php' => '<?php echo "evil"; ?>',
+            'shell.php5' => '<?php echo "evil"; ?>',
+            'shell.phtml' => '<?php echo "evil"; ?>',
+            'payload.phar' => '<?php echo "evil"; ?>',
+            'exploit.svg' => '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>',
+            '.htaccess' => 'SetHandler application/x-httpd-php',
+            'script.sh' => "#!/bin/bash\nrm -rf /",
+            'binary.exe' => 'MZ..........',
+        ];
+
+        foreach ($dangerousFiles as $filename => $content) {
+            $file = UploadedFile::fake()->createWithContent($filename, $content);
+
+            $response = $this->actingAs($admin)->post('/admin/blog', [
+                'title' => 'Dangerous File Test '.$filename,
+                'status' => 'published',
+                'image' => $file,
+            ]);
+
+            $response->assertSessionHasErrors('image');
+        }
+
+        // Test MIME spoofing: PHP payload with spoofed image name
+        $spoofedFile = UploadedFile::fake()->createWithContent('malicious.jpg', '<?php system($_GET["cmd"]); ?>');
+        $spoofedResponse = $this->actingAs($admin)->post('/admin/blog', [
+            'title' => 'Spoofed Mime Test',
+            'status' => 'published',
+            'image' => $spoofedFile,
+        ]);
+        $spoofedResponse->assertSessionHasErrors('image');
+    }
+
+    public function test_upload_separates_documents_and_images_storage(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->admin()->create();
+
+        // 1. Upload valid image (should be stored in /storage/uploads/)
+        $image = UploadedFile::fake()->image('nature.jpg', 640, 480);
+        $imageRes = $this->actingAs($admin)->post('/admin/blog', [
+            'title' => 'Article with Image',
+            'status' => 'published',
+            'image' => $image,
+        ]);
+        $imageRes->assertSessionHasNoErrors();
+
+        $contentWithImage = Content::where('title', 'Article with Image')->first();
+        $this->assertNotNull($contentWithImage);
+        $this->assertStringStartsWith('/storage/uploads/', $contentWithImage->image_url);
+
+        // 2. Upload valid PDF document (should be stored in /storage/documents/)
+        $pdfContent = "%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj\nxref\n0 3\ntrailer<</Size 3/Root 1 0 R>>\nstartxref\n100\n%%EOF";
+        $pdf = UploadedFile::fake()->createWithContent('laporan.pdf', $pdfContent);
+        $docRes = $this->actingAs($admin)->post('/admin/laporan-tahunan', [
+            'title' => 'Laporan Tahunan 2025',
+            'status' => 'published',
+            'image' => $pdf,
+        ]);
+        $docRes->assertSessionHasNoErrors();
+
+        $contentWithDoc = Content::where('title', 'Laporan Tahunan 2025')->first();
+        $this->assertNotNull($contentWithDoc);
+        $this->assertStringStartsWith('/storage/documents/', $contentWithDoc->image_url);
     }
 }

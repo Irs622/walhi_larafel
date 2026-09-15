@@ -100,4 +100,101 @@ class DonationTest extends TestCase
             ->assertSee('Gugatan Izin Lingkungan Cirebon')
             ->assertSee('Isi berita gugatan izin lingkungan di Cirebon.');
     }
+
+    /**
+     * Test strict donation state transition matrix and webhook replay security (SEC-009 & SEC-013).
+     */
+    public function test_donation_state_transitions_and_webhook_replay_security(): void
+    {
+        $donationService = app(\App\Services\Donation\DonationService::class);
+
+        // 1. Pending -> Success (Allowed)
+        $d1 = Donation::create([
+            'order_id' => 'WALHI-DON-TEST-1',
+            'donor_name' => 'Donatur 1',
+            'donor_email' => 'd1@example.com',
+            'donor_phone' => '08123456781',
+            'amount' => 50000,
+            'status' => 'pending',
+        ]);
+        $res1 = $donationService->processWebhook($d1, 'settlement', 'qris');
+        $this->assertTrue($res1);
+        $this->assertSame('success', $d1->fresh()->status);
+
+        // 2. Success -> Pending (Rejected)
+        $res2 = $donationService->processWebhook($d1, 'pending', 'qris');
+        $this->assertFalse($res2);
+        $this->assertSame('success', $d1->fresh()->status);
+
+        // 3. Success -> Failed (Rejected)
+        $res3 = $donationService->processWebhook($d1, 'deny', 'qris');
+        $this->assertFalse($res3);
+        $this->assertSame('success', $d1->fresh()->status);
+
+        // 4. Success -> Expired (Rejected)
+        $res4 = $donationService->processWebhook($d1, 'expire', 'qris');
+        $this->assertFalse($res4);
+        $this->assertSame('success', $d1->fresh()->status);
+
+        // 5. Success -> Success (Idempotent replay allowed, no status alteration)
+        $res5 = $donationService->processWebhook($d1, 'capture', 'qris');
+        $this->assertFalse($res5); // No state mutation
+        $this->assertSame('success', $d1->fresh()->status);
+
+        // 6. Pending -> Failed (Allowed)
+        $d2 = Donation::create([
+            'order_id' => 'WALHI-DON-TEST-2',
+            'donor_name' => 'Donatur 2',
+            'donor_email' => 'd2@example.com',
+            'donor_phone' => '08123456782',
+            'amount' => 25000,
+            'status' => 'pending',
+        ]);
+        $res6 = $donationService->processWebhook($d2, 'cancel', 'bank_transfer');
+        $this->assertTrue($res6);
+        $this->assertSame('failed', $d2->fresh()->status);
+
+        // 7. Failed -> Pending (Rejected)
+        $res7 = $donationService->processWebhook($d2, 'pending', 'bank_transfer');
+        $this->assertFalse($res7);
+        $this->assertSame('failed', $d2->fresh()->status);
+
+        // 8. Failed -> Success (Rejected)
+        $res8 = $donationService->processWebhook($d2, 'settlement', 'bank_transfer');
+        $this->assertFalse($res8);
+        $this->assertSame('failed', $d2->fresh()->status);
+
+        // 9. Failed -> Failed (Idempotent replay allowed)
+        $res9 = $donationService->processWebhook($d2, 'deny', 'bank_transfer');
+        $this->assertFalse($res9);
+        $this->assertSame('failed', $d2->fresh()->status);
+
+        // 10. Pending -> Expired (Allowed)
+        $d3 = Donation::create([
+            'order_id' => 'WALHI-DON-TEST-3',
+            'donor_name' => 'Donatur 3',
+            'donor_email' => 'd3@example.com',
+            'donor_phone' => '08123456783',
+            'amount' => 100000,
+            'status' => 'pending',
+        ]);
+        $res10 = $donationService->processWebhook($d3, 'expire', 'echannel');
+        $this->assertTrue($res10);
+        $this->assertSame('expired', $d3->fresh()->status);
+
+        // 11. Expired -> Pending (Rejected)
+        $res11 = $donationService->processWebhook($d3, 'pending', 'echannel');
+        $this->assertFalse($res11);
+        $this->assertSame('expired', $d3->fresh()->status);
+
+        // 12. Expired -> Success (Rejected)
+        $res12 = $donationService->processWebhook($d3, 'settlement', 'echannel');
+        $this->assertFalse($res12);
+        $this->assertSame('expired', $d3->fresh()->status);
+
+        // 13. Expired -> Expired (Idempotent replay allowed)
+        $res13 = $donationService->processWebhook($d3, 'expire', 'echannel');
+        $this->assertFalse($res13);
+        $this->assertSame('expired', $d3->fresh()->status);
+    }
 }
