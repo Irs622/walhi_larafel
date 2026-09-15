@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DocumentDownloadController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
@@ -54,6 +55,11 @@ Route::get('/publikasi/laporan-tahunan', [PageController::class, 'laporanTahunan
 Route::get('/publikasi/kertas-posisi', [PageController::class, 'kertasPosisi'])->name('kertas-posisi');
 Route::get('/publikasi/catatan-kritis', [PageController::class, 'catatanKritis'])->name('catatan-kritis');
 Route::get('/dukung-kami/donasi-publik', [PageController::class, 'donasi'])->name('donasi');
+
+// Authorized Document Download (SEC-008)
+Route::get('/dokumen/{content:slug}/unduh', [DocumentDownloadController::class, 'download'])
+    ->middleware('throttle:60,1')
+    ->name('documents.download');
 
 // SEO
 Route::get('/sitemap.xml', [PageController::class, 'sitemap'])->name('sitemap');

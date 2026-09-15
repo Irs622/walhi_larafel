@@ -17,6 +17,33 @@ class ContentPolicy
     }
 
     /**
+     * Determine whether the user (or guest) can view the content.
+     */
+    public function view(?User $user, Content $content): bool
+    {
+        if (! ContentCategory::tryFrom($content->category)) {
+            return false;
+        }
+
+        // Published content is accessible to anyone, including guests
+        if ($content->status === 'published') {
+            return true;
+        }
+
+        // Non-published content (draft/archived) requires an authenticated user
+        if ($user === null) {
+            return false;
+        }
+
+        // Sensitive categories require admin privileges even for non-published content
+        if (Content::isSensitiveCategory($content->category)) {
+            return $user->isAdmin();
+        }
+
+        return $user->canManageContent();
+    }
+
+    /**
      * Determine whether the user can create contents.
      */
     public function create(User $user, ?string $category = null): bool

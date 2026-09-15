@@ -144,9 +144,15 @@ class ContentController extends Controller
             $file = $request->file('image');
             $ext = strtolower($file->getClientOriginalExtension());
             $isDoc = in_array($ext, ['pdf', 'doc', 'docx', 'xls', 'xlsx'], true);
-            $folder = $isDoc ? 'documents' : 'uploads';
-            $path = $file->store($folder, 'public');
-            $validated['image_url'] = '/storage/'.$path;
+            if ($isDoc) {
+                // Store documents in private storage (local disk -> storage/app/private/documents/)
+                $path = $file->store('documents', 'local');
+                $validated['image_url'] = $path;
+            } else {
+                // Store media in public disk -> storage/app/public/uploads/
+                $path = $file->store('uploads', 'public');
+                $validated['image_url'] = '/storage/'.$path;
+            }
         } elseif (! empty($validated['image_url'])) {
             $validated['image_url'] = trim($validated['image_url']);
         } else {
@@ -193,9 +199,15 @@ class ContentController extends Controller
             $file = $request->file('image');
             $ext = strtolower($file->getClientOriginalExtension());
             $isDoc = in_array($ext, ['pdf', 'doc', 'docx', 'xls', 'xlsx'], true);
-            $folder = $isDoc ? 'documents' : 'uploads';
-            $path = $file->store($folder, 'public');
-            $validated['image_url'] = '/storage/'.$path;
+            if ($isDoc) {
+                // Store documents in private storage (local disk -> storage/app/private/documents/)
+                $path = $file->store('documents', 'local');
+                $validated['image_url'] = $path;
+            } else {
+                // Store media in public disk -> storage/app/public/uploads/
+                $path = $file->store('uploads', 'public');
+                $validated['image_url'] = '/storage/'.$path;
+            }
         } elseif ($request->filled('image_url')) {
             $newUrl = trim($validated['image_url']);
             $oldRaw = (string) $content->getRawOriginal('image_url');
@@ -375,8 +387,9 @@ class ContentController extends Controller
     }
 
     /**
-     * Delete a locally uploaded image file if it exists.
+     * Delete a locally uploaded file if it exists.
      * Sanitizes filename with basename() to strictly prevent path traversal.
+     * Checks both private 'local' disk and legacy 'public' disk.
      */
     private function deleteOldImage(Content $content): void
     {
@@ -401,7 +414,12 @@ class ContentController extends Controller
             if ($filename !== null && $filename !== '' && $folder !== null) {
                 $cleanFilename = basename($filename);
                 if ($cleanFilename !== '' && ! in_array($cleanFilename, ['.', '..'], true)) {
-                    Storage::disk('public')->delete($folder.$cleanFilename);
+                    if ($folder === 'documents/') {
+                        Storage::disk('local')->delete('documents/'.$cleanFilename);
+                        Storage::disk('public')->delete('documents/'.$cleanFilename);
+                    } else {
+                        Storage::disk('public')->delete('uploads/'.$cleanFilename);
+                    }
                 }
             }
         }

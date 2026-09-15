@@ -144,7 +144,7 @@
                                             </a>
 
                                             @if($isPdf)
-                                                <a href="{{ $item->image_url }}" target="_blank"
+                                                <a href="{{ $item->download_url ?: $item->image_url }}" target="_blank"
                                                    style="width: 100%; height: 40px; background: white; color: #1D1D1D; border: 2px solid #1D1D1D; font-family: Aspekta, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.35px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; box-sizing: border-box; transition: background 0.2s;"
                                                    class="hover-action-light-btn">
                                                     <i data-lucide="download" style="width: 14px; height: 14px;"></i>

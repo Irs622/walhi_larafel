@@ -182,6 +182,55 @@ class Content extends Model
     }
 
     /**
+     * Check whether the attached media is a document rather than a display image.
+     */
+    public function isDocument(): bool
+    {
+        $raw = (string) $this->getRawOriginal('image_url');
+        if ($raw === '') {
+            return false;
+        }
+
+        $clean = parse_url($raw, PHP_URL_PATH) ?? $raw;
+        $ext = strtolower(pathinfo($clean, PATHINFO_EXTENSION));
+        $docExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'odt', 'rtf', 'csv', 'txt'];
+
+        if (in_array($ext, $docExtensions, true)) {
+            return true;
+        }
+
+        if (str_starts_with($raw, 'documents/') || str_starts_with($raw, '/storage/documents/')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the download URL for documents, or direct external/image URL.
+     * Guardrail: External URLs are rendered directly (no open redirector).
+     */
+    public function getDownloadUrlAttribute(): ?string
+    {
+        $raw = (string) $this->getRawOriginal('image_url');
+        if ($raw === '') {
+            return null;
+        }
+
+        // If external URL, return direct validated URL (never through redirector)
+        if (str_starts_with($raw, 'http://') || str_starts_with($raw, 'https://')) {
+            return filter_var($raw, FILTER_VALIDATE_URL) ? $raw : null;
+        }
+
+        // If it's a local document, route through the authorized download endpoint
+        if ($this->isDocument()) {
+            return route('documents.download', $this);
+        }
+
+        return $this->image_url;
+    }
+
+    /**
      * Return a plain-text excerpt (max 155 chars) stripped of HTML.
      */
     public function getExcerptAttribute($value = null, int $length = 155): string
