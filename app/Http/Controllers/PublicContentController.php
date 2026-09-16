@@ -44,7 +44,13 @@ class PublicContentController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
-        return view('welcome', compact('featuredNews', 'newsCards', 'reports', 'sejarah', 'stats', 'issues'));
+        $banners = Content::ofCategory(ContentCategory::Banner)
+            ->published()
+            ->orderBy('is_promoted', 'desc')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return view('welcome', compact('featuredNews', 'newsCards', 'reports', 'sejarah', 'stats', 'issues', 'banners'));
     }
 
     public function blog(Request $request)

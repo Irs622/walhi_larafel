@@ -72,37 +72,228 @@
             $reports = (isset($reports) && $reports->isNotEmpty()) ? $reports : $fallbackReports;
             $featuredNews = (isset($featuredNews) && $featuredNews) ? $featuredNews : $fallbackFeaturedNews;
             $newsCards = (isset($newsCards) && $newsCards->isNotEmpty()) ? $newsCards : $fallbackNewsCards;
+
+            $fallbackBanners = [
+                [
+                    'title' => 'PULIHKAN JAWA BARAT',
+                    'subtitle' => '#Sehari Menjadi Lebih Peduli',
+                    'image' => asset('iqon/Container.png'),
+                    'btn1_text' => 'Isu Strategis',
+                    'btn1_url' => '#isu',
+                    'btn2_text' => 'Lihat Publikasi',
+                    'btn2_url' => route('siaran-pers'),
+                ],
+                [
+                    'title' => 'SELAMATKAN HUTAN & AIR',
+                    'subtitle' => 'Hentikan Tambang Ilegal & Perusakan Sumber Kehidupan',
+                    'image' => asset('iqon/causes-1-1.jpg'),
+                    'btn1_text' => 'Isu Lingkungan',
+                    'btn1_url' => '#isu',
+                    'btn2_text' => 'Dukung Donasi',
+                    'btn2_url' => route('donasi'),
+                ],
+                [
+                    'title' => 'KEADILAN RUANG HIDUP',
+                    'subtitle' => 'Bersama Komunitas Melindungi Wilayah Kelola Rakyat',
+                    'image' => asset('iqon/causes-1-2.jpg'),
+                    'btn1_text' => 'Tentang Kami',
+                    'btn1_url' => route('about'),
+                    'btn2_text' => 'Laporan Tahunan',
+                    'btn2_url' => route('laporan-tahunan'),
+                ],
+            ];
+
+            $bannerSlides = [];
+            if (isset($banners) && $banners->isNotEmpty()) {
+                foreach ($banners as $b) {
+                    $parts = explode('|', $b->tags ?? '');
+                    $btn1Text = !empty($parts[0]) ? $parts[0] : 'Isu Strategis';
+                    $btn1Url  = !empty($parts[1]) ? $parts[1] : '#isu';
+                    $btn2Text = !empty($parts[2]) ? $parts[2] : 'Lihat Publikasi';
+                    $btn2Url  = !empty($parts[3]) ? $parts[3] : route('siaran-pers');
+
+                    $img = asset('iqon/Container.png');
+                    if ($b->image_url) {
+                        $img = str_starts_with($b->image_url, 'http') ? $b->image_url : asset(ltrim($b->image_url, '/'));
+                    }
+
+                    $subtitle = trim(strip_tags($b->body ?? ''));
+                    if (empty($subtitle)) {
+                        $subtitle = '#Sehari Menjadi Lebih Peduli';
+                    }
+
+                    $bannerSlides[] = [
+                        'title' => $b->title,
+                        'subtitle' => $subtitle,
+                        'image' => $img,
+                        'btn1_text' => $btn1Text,
+                        'btn1_url' => $btn1Url,
+                        'btn2_text' => $btn2Text,
+                        'btn2_url' => $btn2Url,
+                    ];
+                }
+            } else {
+                $bannerSlides = $fallbackBanners;
+            }
         @endphp
 
         @include('partials.site-header')
 
         <main class="w-full">
-            <!-- Hero Section -->
-            <section class="relative min-h-[600px] md:h-[836px] w-full overflow-hidden bg-brand-dark text-brand-cream flex items-center py-20 px-6 sm:px-12 md:px-24">
-                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('iqon/Container.png') }}');"></div>
-                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(29,29,29,0.70)_0%,rgba(29,29,29,0.50)_50%,rgba(29,29,29,0.80)_100%)]"></div>
-                <div class="relative w-full max-w-6xl mx-auto z-10 flex flex-col gap-6 md:gap-8 items-start">
-                    <!-- Main Heading -->
-                    <h1 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-extrabold uppercase leading-none tracking-wide text-brand-cream">
-                        PULIHKAN JAWA BARAT
-                    </h1>
-                    <!-- Divider Orange -->
-                    <div class="w-32 sm:w-64 md:w-[578px] h-2 bg-brand-orange"></div>
-                    <!-- Subheading -->
-                    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-extrabold uppercase leading-tight tracking-wider text-brand-green-light">
-                        #Sehari Menjadi Lebih Peduli
-                    </h2>
-                    <!-- Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                        <a href="#isu" class="flex h-[60px] sm:w-[208px] px-6 items-center justify-center border-2 border-brand-cream bg-brand-dark text-[16px] font-bold uppercase tracking-[0.40px] text-brand-cream hover:bg-brand-cream hover:text-brand-dark transition-colors">
-                            Isu Strategis
-                        </a>
-                        <a href="{{ route('siaran-pers') }}" class="flex h-[60px] sm:w-[227px] px-6 items-center justify-center border-2 border-brand-orange bg-brand-orange text-[16px] font-bold uppercase tracking-[0.40px] text-brand-cream hover:bg-transparent hover:text-brand-orange transition-colors">
-                            lihat publikasi
-                        </a>
+            <!-- Hero Banner Slider Section -->
+            <section 
+                x-data="{
+                    active: 0,
+                    total: {{ count($bannerSlides) }},
+                    timer: null,
+                    touchStartX: 0,
+                    touchEndX: 0,
+                    autoplay() {
+                        this.stop();
+                        if (this.total > 1) {
+                            this.timer = setInterval(() => { this.next(); }, 6000);
+                        }
+                    },
+                    stop() {
+                        if (this.timer) clearInterval(this.timer);
+                    },
+                    next() {
+                        this.active = (this.active + 1) % this.total;
+                    },
+                    prev() {
+                        this.active = (this.active - 1 + this.total) % this.total;
+                    },
+                    goTo(idx) {
+                        this.active = idx;
+                    },
+                    handleTouchStart(e) {
+                        this.touchStartX = e.changedTouches[0].screenX;
+                    },
+                    handleTouchEnd(e) {
+                        this.touchEndX = e.changedTouches[0].screenX;
+                        if (this.touchStartX - this.touchEndX > 40) {
+                            this.next();
+                        } else if (this.touchEndX - this.touchStartX > 40) {
+                            this.prev();
+                        }
+                    }
+                }"
+                x-init="autoplay()"
+                @mouseenter="stop()"
+                @mouseleave="autoplay()"
+                @touchstart="handleTouchStart($event)"
+                @touchend="handleTouchEnd($event)"
+                class="relative min-h-[600px] md:h-[836px] w-full overflow-hidden bg-brand-dark text-brand-cream flex items-center select-none"
+                aria-label="Hero Banner Slider"
+            >
+                <!-- Slides Container -->
+                @foreach($bannerSlides as $index => $slide)
+                    <div 
+                        x-show="active === {{ $index }}"
+                        x-transition:enter="transition ease-out duration-700"
+                        x-transition:enter-start="opacity-0 scale-[1.02]"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-400"
+                        x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-[0.98]"
+                        class="absolute inset-0 w-full h-full flex items-center py-20 px-6 sm:px-12 md:px-24"
+                        @if($index === 0) style="display: flex;" @else style="display: none;" @endif
+                    >
+                        <!-- Background Image -->
+                        <div 
+                            class="absolute inset-0 bg-cover bg-center transition-all duration-1000"
+                            style="background-image: url('{{ $slide['image'] }}');"
+                        ></div>
+
+                        <!-- High-Contrast Gradient Overlay -->
+                        <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(29,29,29,0.75)_0%,rgba(29,29,29,0.55)_50%,rgba(29,29,29,0.85)_100%)]"></div>
+
+                        <!-- Content Container -->
+                        <div class="relative w-full max-w-6xl mx-auto z-10 flex flex-col gap-6 md:gap-8 items-start">
+                            <!-- Main Heading -->
+                            <h1 class="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-extrabold uppercase leading-none tracking-wide text-brand-cream drop-shadow-sm">
+                                {{ $slide['title'] }}
+                            </h1>
+
+                            <!-- Divider Orange -->
+                            <div class="w-24 sm:w-48 md:w-[480px] h-2 bg-brand-orange"></div>
+
+                            <!-- Subheading -->
+                            <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heading font-bold uppercase leading-tight tracking-wider text-brand-green-light max-w-3xl">
+                                {{ $slide['subtitle'] }}
+                            </h2>
+
+                            <!-- Action Buttons -->
+                            <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-2">
+                                @if(!empty($slide['btn1_text']))
+                                    <a 
+                                        href="{{ $slide['btn1_url'] }}" 
+                                        class="flex h-[56px] md:h-[60px] sm:w-[208px] px-6 items-center justify-center border-2 border-brand-cream bg-brand-dark text-[15px] md:text-[16px] font-bold uppercase tracking-[0.40px] text-brand-cream hover:bg-brand-cream hover:text-brand-dark transition-all duration-200 shadow-[4px_4px_0px_0px_#256D4A]"
+                                    >
+                                        {{ $slide['btn1_text'] }}
+                                    </a>
+                                @endif
+
+                                @if(!empty($slide['btn2_text']))
+                                    <a 
+                                        href="{{ $slide['btn2_url'] }}" 
+                                        class="flex h-[56px] md:h-[60px] sm:w-[227px] px-6 items-center justify-center border-2 border-brand-orange bg-brand-orange text-[15px] md:text-[16px] font-bold uppercase tracking-[0.40px] text-brand-cream hover:bg-transparent hover:text-brand-orange transition-all duration-200 shadow-[4px_4px_0px_0px_#1D1D1D]"
+                                    >
+                                        {{ $slide['btn2_text'] }}
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.1em] text-brand-cream">
+                @endforeach
+
+                <!-- Prev & Next Controls (Neo-Brutalist) -->
+                @if(count($bannerSlides) > 1)
+                    <div class="absolute inset-y-0 left-3 sm:left-6 flex items-center z-20 pointer-events-none">
+                        <button 
+                            type="button"
+                            @click="prev()" 
+                            class="pointer-events-auto w-11 h-11 md:w-13 md:h-13 bg-brand-dark/80 hover:bg-brand-orange border-2 border-brand-cream text-brand-cream flex items-center justify-center transition-all duration-200 shadow-[3px_3px_0px_0px_#256D4A] hover:-translate-x-0.5 cursor-pointer"
+                            aria-label="Slide Sebelumnya"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        </button>
+                    </div>
+                    <div class="absolute inset-y-0 right-3 sm:right-6 flex items-center z-20 pointer-events-none">
+                        <button 
+                            type="button"
+                            @click="next()" 
+                            class="pointer-events-auto w-11 h-11 md:w-13 md:h-13 bg-brand-dark/80 hover:bg-brand-orange border-2 border-brand-cream text-brand-cream flex items-center justify-center transition-all duration-200 shadow-[3px_3px_0px_0px_#256D4A] hover:translate-x-0.5 cursor-pointer"
+                            aria-label="Slide Selanjutnya"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Slide Indicators / Pagination Bar -->
+                    <div class="absolute bottom-8 right-6 sm:right-12 z-20 flex items-center gap-3 bg-brand-dark/85 border border-brand-cream/30 px-3.5 py-2 backdrop-blur-sm shadow-[2px_2px_0px_0px_#256D4A]">
+                        <!-- Slide Counter -->
+                        <span class="text-xs font-mono font-bold tracking-widest text-brand-green-light">
+                            <span x-text="String(active + 1).padStart(2, '0')">01</span> / <span class="text-brand-cream/60">{{ str_pad(count($bannerSlides), 2, '0', STR_PAD_LEFT) }}</span>
+                        </span>
+
+                        <!-- Indicator Dots / Lines -->
+                        <div class="flex items-center gap-1.5 ml-1">
+                            @foreach($bannerSlides as $idx => $s)
+                                <button 
+                                    type="button"
+                                    @click="goTo({{ $idx }})"
+                                    class="h-2 transition-all duration-300 cursor-pointer"
+                                    :class="active === {{ $idx }} ? 'w-6 bg-brand-orange' : 'w-2 bg-brand-cream/40 hover:bg-brand-cream/80'"
+                                    aria-label="Menuju Slide {{ $idx + 1 }}"
+                                ></button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Scroll Indicator (Center Bottom) -->
+                <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.1em] text-brand-cream z-10 pointer-events-none opacity-80">
                     <span>Scroll</span>
                     <span class="h-10 w-px bg-brand-cream"></span>
                 </div>

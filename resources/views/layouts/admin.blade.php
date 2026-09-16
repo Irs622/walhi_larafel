@@ -115,7 +115,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
 
                 <!-- Halaman Beranda Dropdown Group -->
                 @php
-                    $berandaActive = request()->is('admin/statistik*') || request()->is('admin/isu-kritis*') || request()->is('admin/kampanye-darurat*');
+                    $berandaActive = request()->is('admin/banner*') || request()->is('admin/statistik*') || request()->is('admin/isu-kritis*') || request()->is('admin/kampanye-darurat*');
                 @endphp
                 <div class="group-container" id="group-beranda">
                     <button onclick="toggleGroup('beranda')" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ $berandaActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
@@ -124,6 +124,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                         <i data-lucide="chevron-down" class="w-3 h-3 group-chevron nav-label" id="chevron-beranda"></i>
                     </button>
                     <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav" id="sub-beranda">
+                        <a href="{{ route('admin.content.index', 'banner') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/banner*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Banner Beranda</a>
                         <a href="{{ route('admin.content.index', 'statistik') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/statistik*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Statistik Utama</a>
                         <a href="{{ route('admin.content.index', 'isu-kritis') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/isu-kritis*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Isu Kritis</a>
                         <a href="{{ route('admin.content.index', 'kampanye-darurat') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/kampanye-darurat*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Kampanye Darurat</a>

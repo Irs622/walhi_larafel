@@ -28,7 +28,7 @@ Tabel polimorfik yang menampung seluruh artikel, siaran pers, dokumen resmi, reg
 | `status` | `VARCHAR(50)` | Tidak | Enum `ContentStatus`: `published`, `draft`, `archived` (Default: `draft`). |
 | `image_url` | `VARCHAR(255)` | Ya | Path berkas (`documents/uuid.pdf` atau `/storage/uploads/img.jpg`). |
 | `publish_date`| `DATE` | Ya | Tanggal rilis konten (`Y-m-d`). |
-| `category` | `VARCHAR(50)` | Tidak | Enum `ContentCategory` (20 kategori resmi). |
+| `category` | `VARCHAR(50)` | Tidak | Enum `ContentCategory` (21 kategori resmi). |
 | `is_promoted` | `BOOLEAN` | Tidak | Sorotan/Headline pada beranda (Default: `false`). |
 | `author` | `VARCHAR(255)` | Ya | Nama penulis atau unit kerja WALHI. |
 | `views` | `INTEGER UNSIGNED` | Tidak | Metrik jumlah pembaca/unduhan (Default: `0`). |

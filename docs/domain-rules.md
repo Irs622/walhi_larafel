@@ -27,7 +27,7 @@ Tabel `contents` adalah entitas pusat yang menampung seluruh artikel, siaran per
    - Pengguna dengan hak kelola (`canManageContent()`) dapat melihat pratinjau konten non-publik saat terautentikasi.
 
 ### B. Kategori Konten (`ContentCategory`)
-Seluruh konten terikat pada 20 nilai Enum resmi (`App\Enums\ContentCategory`):
+Seluruh konten terikat pada 21 nilai Enum resmi (`App\Enums\ContentCategory`):
 
 | Kelompok | Kategori Enum (`value`) | Karakteristik / Penanganan Khusus |
 | :--- | :--- | :--- |
@@ -36,18 +36,21 @@ Seluruh konten terikat pada 20 nilai Enum resmi (`App\Enums\ContentCategory`):
 | **Terbitan Berkala** | `newsletter`, `buletin-bumi`, `jurnal` | Publikasi periodik organisasi. |
 | **Profil Organisasi**| `sejarah`, `visi-misi`, `dewan-nasional`, `eksekutif-nasional`, `eksekutif-daerah`, `kontak` | Kategori `kontak` adalah **kategori sensitif** (khusus Admin). Cache view dibersihkan otomatis saat diupdate. |
 | **Kampanye & Event** | `donasi`, `pekan-rakyat`, `kampanye-darurat` | Kategori `donasi` dan `kampanye-darurat` adalah **kategori sensitif** (khusus Admin). Cache view dibersihkan otomatis. |
-| **Beranda** | `statistik`, `isu-kritis` | Statistik angka capaian dan isu lingkungan strategis. |
+| **Beranda** | `banner`, `statistik`, `isu-kritis` | Hero banner slider interaktif, angka capaian, dan isu strategis. |
 
 ### C. Format Khusus Kolom `tags`
 Beberapa kategori meng-encode metadata struktural ke dalam kolom `tags`:
-1. **Kategori `isu-kritis`:**
+1. **Kategori `banner`:**
+   - Format: `{btn1_text}|{btn1_url}|{btn2_text}|{btn2_url}`
+   - Contoh: `Isu Strategis|#isu|Lihat Publikasi|/publikasi/siaran-pers`
+2. **Kategori `isu-kritis`:**
    - Format: `{nama_icon}|{badge_text}`
    - Contoh: `Icon-4.svg|Isu Air & Pesisir`
    - Default jika kosong: `Icon-4.svg|Isu`
-2. **Kategori `regulasi`:**
+3. **Kategori `regulasi`:**
    - Format: `{kategori_regulasi}, {penerbit}, {status}`
    - Contoh: `undang-undang, Pemerintah RI, berlaku`
-3. **Kategori lainnya:**
+4. **Kategori lainnya:**
    - String tag teks biasa dipisahkan koma (contoh: `advokasi, cirebon, pltu`).
 
 ### D. Sanitasi Konten HTML (Rich Text)

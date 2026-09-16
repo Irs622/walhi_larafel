@@ -57,6 +57,7 @@ class ContentController extends Controller
         'statistik' => ['title' => 'Statistik Utama',    'desc' => 'Kelola angka-angka statistik utama di halaman Beranda.'],
         'isu-kritis' => ['title' => 'Isu Kritis',         'desc' => 'Kelola 5 isu kritis lingkungan di halaman Beranda.'],
         'kampanye-darurat' => ['title' => 'Kampanye Darurat',   'desc' => 'Kelola teks & link Kampanye Darurat di bar navigasi atas.'],
+        'banner' => ['title' => 'Banner Beranda',     'desc' => 'Kelola slide banner hero interaktif di halaman utama Beranda.'],
     ];
 
     private function getCategoryConfig(string $category): array
@@ -369,6 +370,19 @@ class ContentController extends Controller
             $regStatus = $request->input('reg_status', 'berlaku');
 
             return implode(', ', [$regCategory, $regIssuer, $regStatus]);
+        }
+
+        if ($category === 'banner') {
+            $btn1Text = trim((string) $request->input('banner_btn1_text', ''));
+            $btn1Url  = trim((string) $request->input('banner_btn1_url', ''));
+            $btn2Text = trim((string) $request->input('banner_btn2_text', ''));
+            $btn2Url  = trim((string) $request->input('banner_btn2_url', ''));
+
+            if ($btn1Text !== '' || $btn1Url !== '' || $btn2Text !== '' || $btn2Url !== '') {
+                return implode('|', [$btn1Text, $btn1Url, $btn2Text, $btn2Url]);
+            }
+
+            return $defaultTags;
         }
 
         return $defaultTags;

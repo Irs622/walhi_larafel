@@ -37,6 +37,12 @@ class AdminTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_admin_banner_loads(): void
+    {
+        $response = $this->get('/admin/banner');
+        $response->assertStatus(200);
+    }
+
     public function test_admin_donasi_loads(): void
     {
         $response = $this->get('/admin/donasi');

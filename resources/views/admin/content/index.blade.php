@@ -49,6 +49,8 @@
                             <th class="text-left px-4 py-3 text-xs font-semibold text-[#888] uppercase tracking-wide hidden md:table-cell">
                                 @if($category === 'kampanye-darurat')
                                     Tautan Aksi
+                                @elseif($category === 'banner')
+                                    Tombol Aksi
                                 @elseif($category === 'isu-kritis' || $category === 'statistik')
                                     Badge/Ikon
                                 @elseif($category === 'regulasi')
@@ -96,6 +98,27 @@
                                             <a href="{{ $item->tags }}" target="_blank" class="text-[#256D4A] hover:underline text-xs break-all">
                                                 {{ $item->tags }}
                                             </a>
+                                        @elseif($category === 'banner')
+                                            @php
+                                                $bParts = explode('|', $item->tags ?? '');
+                                                $btn1T = $bParts[0] ?? '';
+                                                $btn2T = $bParts[2] ?? '';
+                                            @endphp
+                                            <div class="flex flex-wrap gap-1">
+                                                @if($btn1T)
+                                                    <span class="px-1.5 py-0.5 bg-[#f0ede8] text-[#1D1D1D] font-medium text-[10px] rounded border border-[#ddd]">
+                                                        {{ $btn1T }}
+                                                    </span>
+                                                @endif
+                                                @if($btn2T)
+                                                    <span class="px-1.5 py-0.5 bg-[#256D4A]/10 text-[#256D4A] font-medium text-[10px] rounded border border-[#256D4A]/20">
+                                                        {{ $btn2T }}
+                                                    </span>
+                                                @endif
+                                                @if(!$btn1T && !$btn2T)
+                                                    <span class="text-xs text-[#aaa] italic">Tombol default</span>
+                                                @endif
+                                            </div>
                                         @elseif($category === 'isu-kritis')
                                             @php
                                                 $parts = explode('|', $item->tags);
@@ -274,6 +297,8 @@
                 <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">
                     @if($category === 'laporan-tahunan' || $category === 'regulasi')
                         Berkas / Dokumen Lampiran (PDF / Excel / Image)
+                    @elseif($category === 'banner')
+                        Gambar Latar Belakang Banner (Rekomendasi: 1920x800 px)
                     @else
                         Gambar Utama / Cover
                     @endif
@@ -306,6 +331,31 @@
             <div>
                 <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">Tautan Aksi Kampanye (Action URL) *</label>
                 <input type="text" id="form-tags" name="tags" required class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A]" placeholder="Contoh: https://example.com/petisi" />
+            </div>
+            @elseif($category === 'banner')
+            <div class="space-y-3 p-3.5 bg-[#fbfaf8] border border-[#eee] rounded-lg">
+                <span class="text-xs font-bold text-[#1D1D1D] uppercase tracking-wide block">Pengaturan Tombol Aksi Banner (CTA)</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#666] mb-1 uppercase tracking-wide">Tombol 1: Teks Label</label>
+                        <input type="text" id="form-banner-btn1-text" name="banner_btn1_text" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white" placeholder="Contoh: Isu Strategis" />
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#666] mb-1 uppercase tracking-wide">Tombol 1: Tautan URL</label>
+                        <input type="text" id="form-banner-btn1-url" name="banner_btn1_url" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white" placeholder="Contoh: #isu atau /tentang-kami" />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#666] mb-1 uppercase tracking-wide">Tombol 2: Teks Label</label>
+                        <input type="text" id="form-banner-btn2-text" name="banner_btn2_text" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white" placeholder="Contoh: Lihat Publikasi" />
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#666] mb-1 uppercase tracking-wide">Tombol 2: Tautan URL</label>
+                        <input type="text" id="form-banner-btn2-url" name="banner_btn2_url" class="w-full px-3 py-2 border border-[#ddd] rounded text-sm focus:outline-none focus:border-[#256D4A] bg-white" placeholder="Contoh: /publikasi/siaran-pers" />
+                    </div>
+                </div>
+                <input type="hidden" id="form-tags" name="tags" />
             </div>
             @elseif($category === 'isu-kritis')
             <div class="grid grid-cols-2 gap-4">
@@ -369,6 +419,8 @@
                 <label class="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide">
                     @if($category === 'kampanye-darurat')
                         Deskripsi Singkat Aksi
+                    @elseif($category === 'banner')
+                        Subjudul / Tagline Banner (Heading 2)
                     @elseif($category === 'regulasi')
                         Ringkasan / Abstrak Regulasi
                     @else
@@ -637,6 +689,10 @@
         if(document.getElementById('form-reg-category')) document.getElementById('form-reg-category').value = 'undang-undang';
         if(document.getElementById('form-reg-issuer')) document.getElementById('form-reg-issuer').value = '';
         if(document.getElementById('form-reg-status')) document.getElementById('form-reg-status').value = 'berlaku';
+        if(document.getElementById('form-banner-btn1-text')) document.getElementById('form-banner-btn1-text').value = '';
+        if(document.getElementById('form-banner-btn1-url')) document.getElementById('form-banner-btn1-url').value = '';
+        if(document.getElementById('form-banner-btn2-text')) document.getElementById('form-banner-btn2-text').value = '';
+        if(document.getElementById('form-banner-btn2-url')) document.getElementById('form-banner-btn2-url').value = '';
 
         hidePreview();
         setImageInputMode('upload');
@@ -676,9 +732,20 @@
         if(document.getElementById('form-author')) document.getElementById('form-author').value = item.author || '';
         if(document.getElementById('form-is-promoted')) document.getElementById('form-is-promoted').checked = !!item.is_promoted;
 
+        if(document.getElementById('form-banner-btn1-text')) document.getElementById('form-banner-btn1-text').value = '';
+        if(document.getElementById('form-banner-btn1-url')) document.getElementById('form-banner-btn1-url').value = '';
+        if(document.getElementById('form-banner-btn2-text')) document.getElementById('form-banner-btn2-text').value = '';
+        if(document.getElementById('form-banner-btn2-url')) document.getElementById('form-banner-btn2-url').value = '';
+
         // Handle tags parsing for specific categories
         if (item.tags) {
-            if ('{{ $category }}' === 'isu-kritis') {
+            if ('{{ $category }}' === 'banner') {
+                const parts = item.tags.split('|');
+                if (document.getElementById('form-banner-btn1-text')) document.getElementById('form-banner-btn1-text').value = parts[0] || '';
+                if (document.getElementById('form-banner-btn1-url')) document.getElementById('form-banner-btn1-url').value = parts[1] || '';
+                if (document.getElementById('form-banner-btn2-text')) document.getElementById('form-banner-btn2-text').value = parts[2] || '';
+                if (document.getElementById('form-banner-btn2-url')) document.getElementById('form-banner-btn2-url').value = parts[3] || '';
+            } else if ('{{ $category }}' === 'isu-kritis') {
                 if (item.tags.includes('|')) {
                     const parts = item.tags.split('|');
                     if (document.getElementById('form-isu-icon')) document.getElementById('form-isu-icon').value = parts[0];

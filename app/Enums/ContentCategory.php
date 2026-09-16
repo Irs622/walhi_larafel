@@ -36,6 +36,7 @@ enum ContentCategory: string
     // ── Beranda ───────────────────────────────────────────────────
     case Statistik = 'statistik';
     case IsuKritis = 'isu-kritis';
+    case Banner = 'banner';
 
     /**
      * Human-readable label in Indonesian.
@@ -64,6 +65,7 @@ enum ContentCategory: string
             self::KampanyeDarurat => 'Kampanye Darurat',
             self::Statistik => 'Statistik Utama',
             self::IsuKritis => 'Isu Kritis',
+            self::Banner => 'Banner Beranda',
         };
     }
 

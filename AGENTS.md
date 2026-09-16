@@ -125,7 +125,7 @@ An AI agent must preserve the following business rules:
    - Guests requesting unpublished content MUST receive **`404 Not Found`** (anti-resource enumeration).
    - Sensitive categories (`kontak`, `kampanye-darurat`, `donasi`) require `UserRole::Admin`.
 3. **Category Integrity:**
-   - 20 allowed categories defined strictly in `App\Enums\ContentCategory`.
+   - 21 allowed categories defined strictly in `App\Enums\ContentCategory`.
    - Arbitrary category strings are rejected at the HTTP route boundary with `404`.
 4. **Category-Specific Tags Encoding:**
    - Category `isu-kritis`: tags encoded as `icon|badge` (e.g. `Icon-4.svg|Isu Lingkungan`).
