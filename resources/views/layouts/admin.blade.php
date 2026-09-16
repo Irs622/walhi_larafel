@@ -21,6 +21,7 @@ $breadcrumbMap = [
     'admin/tentang/eksekutif-nasional' => 'Tentang Kami › Eksekutif Nasional',
     'admin/tentang/eksekutif-daerah' => 'Tentang Kami › Eksekutif Daerah',
     'admin/tentang/kontak' => 'Tentang Kami › Kontak',
+    'admin/banner' => 'Beranda › Banner Beranda',
     'admin/statistik' => 'Beranda › Statistik Utama',
     'admin/isu-kritis' => 'Beranda › Isu Kritis',
     'admin/kampanye-darurat' => 'Header › Kampanye Darurat',
