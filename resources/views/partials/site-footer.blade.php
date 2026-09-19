@@ -45,12 +45,13 @@
                 </div>
                 <ul class="flex flex-col gap-3 text-sm md:text-base text-[#F4F1EA]/80 font-sans">
                     <li><a href="{{ route('about') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Tentang Kami</a></li>
+                    <li><a href="{{ route('kontak') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Kontak Kami</a></li>
                     <li><a href="{{ route('home') }}#isu" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Isu Lingkungan</a></li>
                     <li><a href="{{ route('home') }}#kabar" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Siaran Pers & Investigasi</a></li>
                     <li><a href="{{ route('blog') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Berita & Artikel</a></li>
                     <li><a href="{{ route('laporan-tahunan') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Laporan Tahunan</a></li>
                     <li><a href="{{ route('kertas-posisi') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Kertas Posisi</a></li>
-                    <li><a href="{{ route('home') }}#pengaduan" class="hover:text-[#5C8D59] transition-colors text-decoration-none font-bold text-[#D95C3F]">Pengaduan Kasus</a></li>
+                    <li><a href="{{ route('pengaduan') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none font-bold text-[#D95C3F]">Pengaduan Kasus</a></li>
                 </ul>
             </div>
 
@@ -94,8 +95,8 @@
         <div class="border-t-2 border-[#256D4A] pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs md:text-sm text-[#F4F1EA]/80 font-sans">
             <p class="text-center md:text-left">© 2026 WALHI Jawa Barat. Organisasi Independen. Tidak Berafiliasi dengan Korporasi atau Pemerintah.</p>
             <div class="flex gap-6 uppercase tracking-wider font-semibold">
-                <a href="#" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Kebijakan Privasi</a>
-                <a href="#" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Transparansi Dana</a>
+                <a href="{{ route('privacy') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Kebijakan Privasi</a>
+                <a href="{{ route('transparency') }}" class="hover:text-[#5C8D59] transition-colors text-decoration-none">Transparansi Dana</a>
             </div>
         </div>
     </div>

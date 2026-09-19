@@ -16,10 +16,9 @@ Disallow: /password/
 Disallow: /forgot-password
 Disallow: /reset-password
 Disallow: /profile
-
 # Disallow Webhook & Background Endpoints
 Disallow: /donasi/webhook
 Disallow: /donasi/mock-payment-status
 
-Sitemap: /sitemap.xml
+Sitemap: https://walhijabar.or.id/sitemap.xml
 

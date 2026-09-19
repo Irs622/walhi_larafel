@@ -24,10 +24,11 @@
     @php
         $isHome = request()->routeIs('home');
         $isBlog = request()->routeIs('blog');
-        $isAbout = request()->routeIs('about');
+        $isAbout = request()->routeIs('about') || request()->routeIs('kontak');
         $isRegulasi = request()->routeIs('regulasi');
         $isPublikasi = request()->routeIs('siaran-pers') || request()->routeIs('infografis') || request()->routeIs('laporan-tahunan') || request()->routeIs('kertas-posisi') || request()->routeIs('catatan-kritis');
         $isDonasi = request()->routeIs('donasi');
+        $isPengaduan = request()->routeIs('pengaduan');
  
         $navLinkStyle = function (bool $active): string {
             return 'color: '.($active ? '#256D4A' : '#1D1D1D').'; font-size: 14px; font-family: Aspekta, sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.70px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;';
@@ -43,7 +44,7 @@
                     {{ $globalCampaign->title }}
                 </a>
                 <span style="color: #256D4A; font-size: 14px; user-select: none;">•</span>
-                <a href="{{ route('home') }}#pengaduan" style="color: #D95C3F; text-decoration: none; font-weight: 700;" class="hover:text-white transition-colors">
+                <a href="{{ route('pengaduan') }}" style="color: #D95C3F; text-decoration: none; font-weight: 700;" class="hover:text-white transition-colors">
                     📢 Pengaduan Kasus
                 </a>
             </div>
@@ -57,7 +58,7 @@
                 <span style="color: #256D4A; font-size: 16px; font-family: Montserrat, sans-serif; user-select: none;">|</span>
                 <a href="{{ $globalContact->youtube }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">YouTube</a>
                 <span style="color: #256D4A; font-size: 16px; font-family: Montserrat, sans-serif; user-select: none;">|</span>
-                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $globalContact->whatsapp) }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">WA: +62-82-1982-1159</a>
+                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $globalContact->whatsapp) }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">WA: +62 821-1982-1159</a>
             </div>
         </div>
     </div>
@@ -134,7 +135,7 @@
                     </summary>
                     <div class="site-nav-dropdown-panel" style="width: 492px; left: -340px; top: 37px; position: absolute; background: #F4F1EA; border-top: 4px solid #256D4A; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14); z-index: 30;">
                         <a href="{{ route('about') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; border-bottom: 1px solid rgba(37, 109, 74, 0.18); background: {{ request()->routeIs('about') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('about') ? '#FFFFFF' : '#F4F1EA' }}'">Profil & Sejarah</a>
-                        <a href="{{ route('about') }}#kontak" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; background: #F4F1EA; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='#F4F1EA'">Kontak Kami</a>
+                        <a href="{{ route('kontak') }}" style="display: flex; align-items: center; min-height: 74px; padding: 0 32px; color: #1D1D1D; font-size: 24px; font-family: Aspekta, sans-serif; font-weight: 700; line-height: 32px; text-decoration: none; background: {{ request()->routeIs('kontak') ? '#FFFFFF' : '#F4F1EA' }}; transition: background 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='{{ request()->routeIs('kontak') ? '#FFFFFF' : '#F4F1EA' }}'">Kontak Kami</a>
                     </div>
                     @if ($isAbout)
                         <div style="width: 100%; height: 2px; left: 0; bottom: 0; position: absolute; background: #256D4A;"></div>
@@ -146,12 +147,18 @@
             <div class="desktop-icons" style="display: flex; align-items: center; gap: 20px; color: #1D1D1D; position: relative;">
                 <!-- Language Selector / Globe (ID) -->
                 <div style="position: relative;">
-                    <button type="button" id="lang-toggle-btn" title="Ganti Bahasa / Switch Language" style="background: transparent; border: none; cursor: pointer; color: #1D1D1D; display: flex; align-items: center; justify-content: center; transition: color 0.2s; padding: 4px;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
+                    <button type="button" id="lang-toggle-btn" title="Pilih Bahasa / Language Selector" style="background: transparent; border: none; cursor: pointer; color: #1D1D1D; display: flex; align-items: center; justify-content: center; transition: color 0.2s; padding: 4px;" onmouseover="this.style.color='#256D4A'" onmouseout="this.style.color='#1D1D1D'">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                     </button>
-                    <div id="lang-dropdown" style="display: none; position: absolute; right: 0; top: 32px; background: #FFFFFF; border: 2px solid #1D1D1D; box-shadow: 4px 4px 0px 0px #1D1D1D; z-index: 50; width: 140px; flex-direction: column;">
-                        <span style="display: block; padding: 10px 16px; font-size: 13px; font-weight: 700; font-family: Montserrat, sans-serif; color: #256D4A; background: #F4F1EA; border-bottom: 1px solid #1D1D1D;">🇮🇩 Indonesia</span>
-                        <span style="display: block; padding: 10px 16px; font-size: 13px; font-weight: 600; font-family: Montserrat, sans-serif; color: #888;">🇬🇧 English (Soon)</span>
+                    <div id="lang-dropdown" style="display: none; position: absolute; right: 0; top: 32px; background: #FFFFFF; border: 2px solid #1D1D1D; box-shadow: 4px 4px 0px 0px #1D1D1D; z-index: 50; width: 175px; flex-direction: column;">
+                        <span style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; font-size: 13px; font-weight: 700; font-family: Montserrat, sans-serif; color: #256D4A; background: #F4F1EA; border-bottom: 1px solid #1D1D1D;">
+                            <span>🇮🇩 Indonesia</span>
+                            <span style="font-size: 10px; background: #256D4A; color: white; padding: 2px 6px; font-weight: 700;">AKTIF</span>
+                        </span>
+                        <span style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; font-size: 13px; font-weight: 600; font-family: Montserrat, sans-serif; color: #888; cursor: not-allowed; opacity: 0.65;" title="Bahasa Inggris sedang disiapkan / In preparation">
+                            <span>🇬🇧 English</span>
+                            <span style="font-size: 9px; background: #e5e5e5; color: #666; padding: 2px 5px; font-weight: 700; text-transform: uppercase;">SEGERA</span>
+                        </span>
                     </div>
                 </div>
 
@@ -202,11 +209,11 @@
             </div>
  
             <a href="{{ route('donasi') }}" class="mobile-nav-link" style="color: {{ $isDonasi ? '#256D4A' : '#D95C3F' }}; text-decoration: none; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; font-weight: 700;">DUKUNG KAMI</a>
-            <a href="{{ route('home') }}#pengaduan" class="mobile-nav-link" style="color: #D95C3F; text-decoration: none; font-weight: 700;">📢 PENGADUAN KASUS</a>
+            <a href="{{ route('pengaduan') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('pengaduan') ? '#256D4A' : '#D95C3F' }}; text-decoration: none; font-weight: 700;">📢 PENGADUAN KASUS</a>
             <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px;">
                 <span style="font-size: 13px; color: #666; font-family: Montserrat, sans-serif; font-weight: 700; letter-spacing: 0.5px;">TENTANG KAMI</span>
-                <a href="{{ route('about') }}" class="mobile-nav-link" style="color: {{ $isAbout ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Profil & Sejarah</a>
-                <a href="{{ route('about') }}#kontak" class="mobile-nav-link" style="color: #1D1D1D; text-decoration: none; padding-left: 12px; font-size: 18px;">Kontak Kami</a>
+                <a href="{{ route('about') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('about') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Profil & Sejarah</a>
+                <a href="{{ route('kontak') }}" class="mobile-nav-link" style="color: {{ request()->routeIs('kontak') ? '#256D4A' : '#1D1D1D' }}; text-decoration: none; padding-left: 12px; font-size: 18px;">Kontak Kami</a>
             </div>
         </nav>
     </div>

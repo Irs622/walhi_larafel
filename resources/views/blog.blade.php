@@ -45,6 +45,14 @@
                 <!-- Content Section -->
                 <section id="daftar-artikel" style="background: #F4F1EA; color: #1D1D1D; border-bottom: 4px #1D1D1D solid;" class="py-16 md:py-20 scroll-mt-12">
                     <div class="w-full max-w-5xl mx-auto px-4 sm:px-8 flex flex-col gap-10">
+                        <!-- Archive Status / Information Banner (QA-016) -->
+                        <div style="background: white; border: 2px solid #1D1D1D; box-shadow: 4px 4px 0px 0px #256D4A; padding: 14px 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; font-family: Montserrat, sans-serif;">
+                            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                <span style="background: #256D4A; color: white; font-size: 11px; font-weight: 700; padding: 4px 10px; text-transform: uppercase; letter-spacing: 0.5px;">Arsip Dokumentasi</span>
+                                <span style="font-size: 13px; color: #1D1D1D; font-weight: 500;">Kanal Blog memuat arsip opini, riset, dan analisis mendalam. Untuk rilis sikap dan pembaruan cepat terkini, buka <a href="{{ route('siaran-pers') }}" style="color: #256D4A; font-weight: 700; text-decoration: underline;">Siaran Pers Resmi &rarr;</a></span>
+                            </div>
+                        </div>
+
                         <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: flex-start;">
                             @foreach ($blogCategories as $category)
                                 @php

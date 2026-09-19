@@ -331,16 +331,34 @@
                 var notesInput = document.getElementById('donor-notes');
                 
                 var name = (nameInput && nameInput.value) ? nameInput.value.trim() : '';
-                var amount = (amountInput && amountInput.value) ? amountInput.value.trim() : '';
+                var rawAmount = (amountInput && amountInput.value) ? amountInput.value.toString().trim().replace(/[^0-9]/g, '') : '';
                 var notes = (notesInput && notesInput.value) ? notesInput.value.trim() : '';
+                
+                var amount = rawAmount ? parseInt(rawAmount, 10) : 0;
+
+                // Validation checks (TC-DON-006, TC-DON-007, TC-DON-008)
+                if (amountInput && amountInput.value.trim() !== '' && (isNaN(amount) || amount <= 0)) {
+                    alert('Mohon masukkan nominal donasi yang valid (minimal Rp 1.000).');
+                    amountInput.focus();
+                    return;
+                }
+
+                if (amount > 1000000000) {
+                    alert('Untuk donasi atau hibah institusional di atas Rp 1.000.000.000, silakan hubungi tim kemitraan kami secara langsung melalui kontak resmi.');
+                    return;
+                }
                 
                 var waNumber = "{{ preg_replace('/[^0-9]/', '', $globalContact->whatsapp ?? '6282119821159') }}";
                 var message = "Halo Tim WALHI Jawa Barat,\n\n" +
                     "Saya ingin berdonasi untuk mendukung advokasi lingkungan hidup dan gerakan keadilan ekologis di Jawa Barat.\n\n";
                 
-                if (amount && parseInt(amount) > 0) {
+                if (amount > 0) {
                     message += "📌 *Rencana Donasi:*\n";
-                    if (name) message += "• Nama: " + name + "\n";
+                    if (name) {
+                        message += "• Nama: " + name + "\n";
+                    } else {
+                        message += "• Nama: Anonim (Hamba Allah / Sahabat Lingkungan)\n";
+                    }
                     message += "• Nominal Donasi: " + formatRupiah(amount) + "\n";
                     if (notes) message += "• Pesan/Doa: " + notes + "\n";
                     message += "\n";

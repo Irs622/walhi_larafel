@@ -159,7 +159,7 @@
                                         <span class="flex-shrink-0">▪</span>
                                         <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
                                             <i data-lucide="calendar" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
-                                            <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('F j, Y') : $item->created_at->translatedFormat('F j, Y') }}</span>
+                                            <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('d F Y') : $item->created_at->translatedFormat('d F Y') }}</span>
                                         </div>
                                         <span class="flex-shrink-0">▪</span>
                                         <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
@@ -168,13 +168,13 @@
                                                 @php
                                                     $approvedCommentsCount = $item->comments()->where('status', 'approved')->count();
                                                 @endphp
-                                                {{ $approvedCommentsCount === 0 ? 'No Comments' : ($approvedCommentsCount === 1 ? '1 Comment' : $approvedCommentsCount . ' Comments') }}
+                                                {{ $approvedCommentsCount === 0 ? 'Belum ada komentar' : $approvedCommentsCount . ' Komentar' }}
                                             </span>
                                         </div>
                                         <span class="flex-shrink-0">▪</span>
                                         <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
                                             <i data-lucide="clock" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
-                                            <span>{{ $readTime }} Min Read</span>
+                                            <span>{{ $readTime }} menit baca</span>
                                         </div>
                                     </div>
                                 </div>
@@ -260,7 +260,7 @@
                                         <span class="flex-shrink-0">▪</span>
                                         <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
                                             <i data-lucide="calendar" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
-                                            <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('F j, Y') : $item->created_at->translatedFormat('F j, Y') }}</span>
+                                            <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('d F Y') : $item->created_at->translatedFormat('d F Y') }}</span>
                                         </div>
                                         <span class="flex-shrink-0">▪</span>
                                         <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
@@ -269,13 +269,13 @@
                                                 @php
                                                     $approvedCommentsCount = $item->comments()->where('status', 'approved')->count();
                                                 @endphp
-                                                {{ $approvedCommentsCount === 0 ? 'No Comments' : ($approvedCommentsCount === 1 ? '1 Comment' : $approvedCommentsCount . ' Comments') }}
+                                                {{ $approvedCommentsCount === 0 ? 'Belum ada komentar' : $approvedCommentsCount . ' Komentar' }}
                                             </span>
                                         </div>
                                         <span class="flex-shrink-0">▪</span>
                                         <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
                                             <i data-lucide="clock" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
-                                            <span>{{ $readTime }} Min Read</span>
+                                            <span>{{ $readTime }} menit baca</span>
                                         </div>
                                     </div>
                                 </div>
@@ -357,7 +357,7 @@
                                                 <span class="flex-shrink-0">▪</span>
                                                 <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
                                                     <i data-lucide="calendar" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
-                                                    <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('F j, Y') : $item->created_at->translatedFormat('F j, Y') }}</span>
+                                                    <span>{{ $item->publish_date ? \Carbon\Carbon::parse($item->publish_date)->translatedFormat('d F Y') : $item->created_at->translatedFormat('d F Y') }}</span>
                                                 </div>
                                                 <span class="flex-shrink-0">▪</span>
                                                 <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
@@ -366,13 +366,13 @@
                                                         @php
                                                             $approvedCommentsCount = (int) ($item->approved_comments_count ?? 0);
                                                         @endphp
-                                                        {{ $approvedCommentsCount === 0 ? 'No Comments' : ($approvedCommentsCount === 1 ? '1 Comment' : $approvedCommentsCount . ' Comments') }}
+                                                        {{ $approvedCommentsCount === 0 ? 'Belum ada komentar' : $approvedCommentsCount . ' Komentar' }}
                                                     </span>
                                                 </div>
                                                 <span class="flex-shrink-0">▪</span>
                                                 <div style="display: flex; align-items: center; gap: 2px;" class="flex-shrink-0">
                                                     <i data-lucide="clock" class="w-2.5 h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 flex-shrink-0"></i>
-                                                    <span>{{ $readTime }} Min Read</span>
+                                                    <span>{{ $readTime }} menit baca</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -390,6 +390,41 @@
                                         <div class="post-content" style="font-size: 17px; line-height: 1.85; color: #1D1D1D; font-family: Montserrat, sans-serif; max-width: 820px; width: 100%;">
                                             {!! $item->sanitized_body !!}
                                         </div>
+
+                                        <!-- Document / Infographic Download & Action Card (QA-002, QA-018) -->
+                                        @if($item->isDocument() || in_array($item->category, ['infografis', 'kertas-posisi', 'catatan-kritis']))
+                                            @php
+                                                $ext = $item->image_url ? strtoupper(pathinfo($item->image_url, PATHINFO_EXTENSION)) : 'PDF';
+                                                $docLabel = $item->category === 'infografis' ? 'Infografis Publikasi' : ($item->category === 'kertas-posisi' ? 'Kertas Posisi Kebijakan' : 'Dokumen Advokasi');
+                                            @endphp
+                                            <div style="background: #F4F1EA; border: 3px solid #1D1D1D; box-shadow: 4px 4px 0px 0px #256D4A; padding: 24px; display: flex; flex-direction: column; gap: 16px; margin: 16px 0;">
+                                                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-bottom: 2px solid #1D1D1D; padding-bottom: 12px;">
+                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                        <span style="background: #256D4A; color: white; padding: 3px 8px; font-size: 11px; font-weight: 700; text-transform: uppercase;">{{ $ext ?: 'PDF' }}</span>
+                                                        <span style="font-size: 13px; font-weight: 700; text-transform: uppercase; color: #1D1D1D;">{{ $docLabel }}</span>
+                                                    </div>
+                                                    <span style="font-size: 12px; font-weight: 600; color: #5C8D59;">WALHI Jawa Barat</span>
+                                                </div>
+
+                                                <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #333;">
+                                                    Dokumen publik ini dapat diakses dan diunduh secara bebas untuk kepentingan riset, edukasi publik, dan advokasi keadilan ekologis.
+                                                </p>
+
+                                                <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding-top: 6px;">
+                                                    @if($item->download_url)
+                                                        <a href="{{ $item->download_url }}" target="_blank" rel="noopener noreferrer" style="height: 46px; padding: 0 24px; background: #1D1D1D; color: #F4F1EA; border: none; font-weight: 700; font-size: 13px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;" class="btn-action">
+                                                            <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                                                            Unduh Dokumen Lengkap ({{ $ext ?: 'PDF' }})
+                                                        </a>
+                                                    @else
+                                                        <button disabled style="height: 46px; padding: 0 24px; background: #ddd; color: #888; border: none; font-weight: 700; font-size: 13px; text-transform: uppercase; cursor: not-allowed; display: inline-flex; align-items: center; gap: 8px;">
+                                                            <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
+                                                            Berkas Digital Dalam Proses Digitalisasi
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
 
                                         <!-- Share Buttons -->
                                         <div style="border-top: 2px solid #1D1D1D; padding-top: 24px; display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">

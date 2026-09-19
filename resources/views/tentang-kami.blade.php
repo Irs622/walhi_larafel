@@ -389,7 +389,7 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-sans">
                                     <!-- Kesekretariatan -->
                                     <div class="p-4 bg-white border border-[#1D1D1D]">
-                                        <div class="text-[10px] uppercase font-bold text-[#256D4A] tracking-wider">Manajer Kesekertariatan</div>
+                                        <div class="text-[10px] uppercase font-bold text-[#256D4A] tracking-wider">Manajer Kesekretariatan</div>
                                         <div class="font-bold text-base mt-1 text-[#1D1D1D]">Hari Kristanto</div>
                                     </div>
 

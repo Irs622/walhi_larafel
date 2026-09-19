@@ -363,9 +363,15 @@
                                     </div>
                                 </div>
                             @empty
-                                <div style="background: white; border: 4px solid #1D1D1D; padding: 48px; text-align: center; font-size: 18px; font-family: Montserrat, sans-serif; color: #888;">
+                                <div style="background: white; border: 4px solid #1D1D1D; padding: 48px; text-align: center; font-size: 16px; font-family: Montserrat, sans-serif; color: #555; line-height: 1.6;">
                                     <i data-lucide="alert-circle" style="width: 48px; height: 48px; margin: 0 auto 16px; color: #8B6B4A; display: block;"></i>
-                                    Tidak ada regulasi yang ditemukan. Coba hapus filter atau cari kata kunci lain.
+                                    @if(isset($totalRegulasi) && $totalRegulasi === 0)
+                                        <strong style="color: #1D1D1D; font-size: 18px; display: block; margin-bottom: 8px;">Arsip Regulasi Sedang Diperbarui</strong>
+                                        Basis data regulasi lingkungan hidup Jawa Barat sedang dalam proses sinkronisasi dan digitalisasi oleh Tim Riset & Advokasi WALHI Jawa Barat.
+                                    @else
+                                        <strong style="color: #1D1D1D; font-size: 18px; display: block; margin-bottom: 8px;">Tidak Ada Regulasi yang Cocok</strong>
+                                        Tidak ditemukan regulasi yang sesuai dengan kata kunci atau filter yang Anda pilih. Coba bersihkan filter kategori atau gunakan kata kunci lain.
+                                    @endif
                                 </div>
                             @endforelse
                         </div>

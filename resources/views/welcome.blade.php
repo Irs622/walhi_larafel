@@ -34,19 +34,19 @@
             ];
 
             $fallbackIssues = [
-                ['title' => 'Pertambangan Ilegal', 'image' => 'causes-1-1.jpg', 'icon' => 'Icon-4.svg', 'badge' => '200+ Titik', 'badgeColor' => '#D95C3F', 'copy' => 'Ratusan titik tambang ilegal di Jawa Barat merusak hutan, air, dan ruang hidup masyarakat.'],
-                ['title' => 'Deforestasi', 'image' => 'causes-1-2.jpg', 'icon' => 'Icon-5.svg', 'badge' => '15.000 Ha/Tahun', 'badgeColor' => '#8B6B4A', 'copy' => 'Alih fungsi hutan untuk perkebunan dan properti menggerus tutupan hijau dan memicu bencana ekologis.'],
-                ['title' => 'Pencemaran Sungai', 'image' => 'causes-1-3.jpg', 'icon' => 'Icon-6.svg', 'badge' => '75% Tercemar', 'badgeColor' => '#256D4A', 'copy' => 'Limbah industri dan rumah tangga mencemari sungai-sungai utama serta mengancam kesehatan warga.'],
-                ['title' => 'Konflik Agraria', 'image' => 'causes-1-4.jpg', 'icon' => 'Icon-7.svg', 'badge' => '2.500+ Kasus', 'badgeColor' => '#5C8D59', 'copy' => 'Ribuan keluarga petani kehilangan tanah akibat perampasan lahan dan proyek skala besar.'],
-                ['title' => 'Krisis Iklim', 'image' => 'causes-1-5.jpg', 'icon' => 'Icon-8.svg', 'badge' => '+2.5°C Target', 'badgeColor' => '#D95C3F', 'copy' => 'Banjir bandang, kekeringan ekstrem, dan cuaca tak menentu semakin sering melanda Jawa Barat.'],
-                ['title' => 'Krisis Iklim', 'image' => 'causes-1-6.jpg', 'icon' => 'Icon-9.svg', 'badge' => '+2.5°C Target', 'badgeColor' => '#D95C3F', 'copy' => 'Banjir bandang, kekeringan ekstrem, dan cuaca tak menentu semakin sering melanda Jawa Barat.'],
+                ['title' => 'Pertambangan Ilegal', 'slug' => 'pertambangan-ilegal-isu', 'image' => 'causes-1-1.jpg', 'icon' => 'Icon-4.svg', 'badge' => '200+ Titik', 'badgeColor' => '#D95C3F', 'copy' => 'Ratusan titik tambang ilegal di Jawa Barat merusak hutan, air, dan ruang hidup masyarakat.'],
+                ['title' => 'Deforestasi', 'slug' => 'deforestasi-isu', 'image' => 'causes-1-2.jpg', 'icon' => 'Icon-5.svg', 'badge' => '15.000 Ha/Tahun', 'badgeColor' => '#8B6B4A', 'copy' => 'Alih fungsi hutan untuk perkebunan dan properti menggerus tutupan hijau dan memicu bencana ekologis.'],
+                ['title' => 'Pencemaran Sungai', 'slug' => 'pencemaran-sungai-isu', 'image' => 'causes-1-3.jpg', 'icon' => 'Icon-6.svg', 'badge' => '75% Tercemar', 'badgeColor' => '#256D4A', 'copy' => 'Limbah industri dan rumah tangga mencemari sungai-sungai utama serta mengancam kesehatan warga.'],
+                ['title' => 'Konflik Agraria', 'slug' => 'konflik-agraria-isu', 'image' => 'causes-1-4.jpg', 'icon' => 'Icon-7.svg', 'badge' => '2.500+ Kasus', 'badgeColor' => '#5C8D59', 'copy' => 'Ribuan keluarga petani kehilangan tanah akibat perampasan lahan dan proyek skala besar.'],
+                ['title' => 'Krisis Iklim', 'slug' => 'krisis-iklim-isu', 'image' => 'causes-1-5.jpg', 'icon' => 'Icon-8.svg', 'badge' => '+2.5°C Target', 'badgeColor' => '#D95C3F', 'copy' => 'Banjir bandang, kekeringan ekstrem, dan cuaca tak menentu semakin sering melanda Jawa Barat.'],
+                ['title' => 'Energi Kotor & PLTU', 'slug' => 'energi-kotor-pltu-isu', 'image' => 'causes-1-6.jpg', 'icon' => 'Icon-9.svg', 'badge' => '5 PLTU Raksasa', 'badgeColor' => '#8B6B4A', 'copy' => 'Ekspansi pembangkit batubara di pesisir Jawa Barat memicu polusi udara kronis dan merusak mata pencaharian nelayan.'],
             ];
 
             $fallbackStats = [
-                ['value' => '21', 'label' => 'Wilayah Advokasi', 'icon' => 'Icon-10.svg', 'color' => '#256D4A'],
-                ['value' => '2.800+', 'label' => 'Kasus yang Ditangani', 'icon' => 'Icon-11.svg', 'color' => '#D95C3F'],
-                ['value' => '15.000+', 'label' => 'Wilayah Kelola Rakyat', 'icon' => 'Icon-12.svg', 'color' => '#5C8D59'],
-                ['value' => '9', 'label' => 'Isu Mandat', 'icon' => 'Icon-13.svg', 'color' => '#8B6B4A'],
+                ['value' => '21', 'label' => 'Wilayah Advokasi Kab/Kota', 'icon' => 'Icon-10.svg', 'color' => '#256D4A'],
+                ['value' => '2.800+', 'label' => 'Kasus Dampingan (Akumulatif)', 'icon' => 'Icon-11.svg', 'color' => '#D95C3F'],
+                ['value' => '15.000+', 'label' => 'Wilayah Kelola Rakyat (Ha)', 'icon' => 'Icon-12.svg', 'color' => '#5C8D59'],
+                ['value' => '9', 'label' => 'Isu Mandat Strategis', 'icon' => 'Icon-13.svg', 'color' => '#8B6B4A'],
             ];
 
             $fallbackReports = [
@@ -63,7 +63,7 @@
                 ['image' => 'news-1-3.jpg', 'tag' => 'Kampanye', 'title' => 'Ratusan Aktivis Turun ke Jalan Tolak Pembangunan Pabrik di DAS', 'copy' => 'Aksi bersama menolak izin pembangunan pabrik semen di kawasan penyangga Daerah Aliran Sungai. Massa menuntut pencabutan izin lingkungan.', 'date' => '5 Mei 2026', 'read' => '5 menit'],
                 ['image' => 'news-4-2.jpg', 'tag' => 'Pendidikan', 'title' => 'Peluncuran Sekolah Lapang: Petani Belajar Pertanian Ekologis', 'copy' => 'Program pendampingan petani untuk transisi dari metode konvensional ke pertanian ramah lingkungan. Hasil panen meningkat tanpa merusak tanah.', 'date' => '1 Mei 2026', 'read' => '7 menit'],
                 ['image' => 'news-4-3.jpg', 'tag' => 'Opini', 'title' => "Mengapa Kita Harus Menolak 'Green Capitalism' dalam Krisis Iklim", 'copy' => 'Analisis kritis terhadap solusi pasar dalam menghadapi krisis ekologis. Apa yang dibutuhkan adalah transformasi sistem, bukan sekadar greenwashing.', 'date' => '28 Apr 2026', 'read' => '10 menit'],
-                ['image' => 'news-2-1.jpg', 'tag' => 'Opini', 'title' => "Mengapa Kita Harus Menolak 'Green Capitalism' dalam Krisis Iklim", 'copy' => 'Analisis kritis terhadap solusi pasar dalam menghadapi krisis ekologis. Apa yang dibutuhkan adalah transformasi sistem, bukan sekadar greenwashing.', 'date' => '28 Apr 2026', 'read' => '10 menit'],
+                ['image' => 'news-2-1.jpg', 'tag' => 'Catatan Kritis', 'title' => 'Refleksi Kerusakan Ekologis Jawa Barat: Menolak Normalisasi Bencana', 'copy' => 'Tinjauan kritis WALHI Jawa Barat atas rentetan bencana banjir bandang dan longsor yang dipicu alih fungsi lahan dan lemahnya penegakan tata ruang.', 'date' => '20 Apr 2026', 'read' => '8 menit'],
             ];
 
             // Use database values if present, otherwise fallback
@@ -392,7 +392,7 @@
                                     $issueBadgeColor = $issue['badgeColor'];
                                     $issueIcon = $issue['icon'];
                                     $issueImage = asset('assets/images/resources/' . $issue['image']);
-                                    $issueUrl = '#';
+                                    $issueUrl = !empty($issue['slug']) ? route('content.show', $issue['slug']) : '#';
                                 }
 
                                 $cleanBody = strip_tags($issueCopy);
@@ -416,7 +416,9 @@
                                             <div class="flex h-10 w-10 items-center justify-center bg-brand-dark p-2 flex-shrink-0">
                                                 <img src="{{ $iqon($issueIcon) }}" alt="{{ $issueTitle }}" class="h-6 w-6 object-contain">
                                             </div>
-                                            <h3 class="text-xl sm:text-2xl font-heading font-bold uppercase leading-snug tracking-wide text-brand-dark">{{ $issueTitle }}</h3>
+                                            <h3 class="text-xl sm:text-2xl font-heading font-bold uppercase leading-snug tracking-wide text-brand-dark">
+                                                <a href="{{ $issueUrl }}" class="hover:text-brand-green transition-colors">{{ $issueTitle }}</a>
+                                            </h3>
                                         </div>
                                         <p class="text-sm md:text-base leading-relaxed text-brand-dark/95 font-sans">
                                             {{ $issueCopyLimited }}
@@ -428,6 +430,11 @@
                                 </div>
                             </article>
                         @endforeach
+                    </div>
+
+                    <!-- Provenance Disclaimer Note -->
+                    <div class="border-t border-brand-cream/20 pt-6 text-center text-xs md:text-sm font-sans text-brand-cream/80 max-w-3xl mx-auto leading-relaxed">
+                        <strong class="text-brand-green-light uppercase tracking-wider">Sumber &amp; Metodologi Data:</strong> Data dihimpun dari laporan advokasi &amp; investigasi WALHI Jawa Barat (2020–2025), konsolidasi Konsorsium Pembaruan Agraria (KPA), analisis Forest Watch Indonesia (FWI), serta pemantauan baku mutu air sungai DLH/KLHK.
                     </div>
                 </div>
             </section>
@@ -472,6 +479,11 @@
                                 <div class="text-sm font-semibold uppercase tracking-wider text-brand-dark font-sans">{{ $statLabel }}</div>
                             </div>
                         @endforeach
+                    </div>
+
+                    <!-- Clarification Note on Historical Cumulative Cases vs Annual Reports -->
+                    <div class="text-xs md:text-sm text-brand-cream/80 font-sans text-center -mt-8 max-w-3xl mx-auto leading-relaxed">
+                        <span class="font-bold text-brand-orange uppercase tracking-wide">* Catatan Periode Kasus:</span> Angka <strong>2.800+ Kasus</strong> merupakan akumulasi historis pendampingan rakyat sejak berdirinya WALHI Jawa Barat (1980–sekarang), sedangkan Laporan Tahunan menyajikan data kasus spesifik tahun berjalan (e.g. 289 kasus kerusakan lingkungan yang ditangani pada tahun 2025).
                     </div>
 
                     <!-- Reports list -->

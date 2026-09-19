@@ -48,6 +48,10 @@ Route::post('/donasi/webhook', [DonationController::class, 'webhook'])
 
 // Public Pages (moved from inline closures to PageController)
 Route::get('/tentang-kami', [PageController::class, 'about'])->name('about');
+Route::get('/kontak', [PageController::class, 'kontak'])->name('kontak');
+Route::get('/pengaduan', [PageController::class, 'pengaduan'])->name('pengaduan');
+Route::get('/kebijakan-privasi', [PageController::class, 'privacy'])->name('privacy');
+Route::get('/transparansi-dana', [PageController::class, 'transparency'])->name('transparency');
 Route::get('/regulasi', [PageController::class, 'regulasi'])->middleware('throttle:search')->name('regulasi');
 Route::get('/publikasi/siaran-pers', [PageController::class, 'siaranPers'])->name('siaran-pers');
 Route::get('/publikasi/infografis', [PageController::class, 'infografis'])->name('infografis');

@@ -98,7 +98,7 @@ class AppServiceProvider extends ServiceProvider
         // Only inject global data into the two partials that actually need it.
         // Bound specifically to header and footer partials instead of wildcard '*'.
         view()->composer(
-            ['welcome', 'partials.site-header', 'partials.site-footer'],
+            ['welcome', 'kontak', 'donasi', 'partials.site-header', 'partials.site-footer'],
             function ($view) {
                 $contactData = Cache::remember('global_contact', 3600, fn () => $this->resolveContactData());
                 $campaignData = Cache::remember('global_campaign', 3600, fn () => $this->resolveCampaignData());

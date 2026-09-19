@@ -30,7 +30,7 @@ class SEOAndResponsiveTest extends TestCase
             ->assertHeader('Content-Type', 'text/xml; charset=UTF-8')
             ->assertSee('<urlset', false)
             ->assertSee('<loc>http://localhost</loc>', false)
-            ->assertSee('krisis-air-citarum');
+            ->assertSee('memadamkan-bara');
     }
 
     /**

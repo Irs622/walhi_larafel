@@ -22,12 +22,33 @@ class PageController extends Controller
         return view('tentang-kami', compact('visiMisi'));
     }
 
+    public function kontak()
+    {
+        return view('kontak');
+    }
+
+    public function pengaduan()
+    {
+        return view('pengaduan');
+    }
+
+    public function privacy()
+    {
+        return view('kebijakan-privasi');
+    }
+
+    public function transparency()
+    {
+        return view('transparansi-dana');
+    }
+
     public function regulasi(Request $request)
     {
         $search = $request->input('search');
         $categoryFilter = $request->input('kategori');
 
         $query = Content::ofCategory(ContentCategory::Regulasi)->published();
+        $totalRegulasi = Content::ofCategory(ContentCategory::Regulasi)->published()->count();
 
         if ($search) {
             $escapedSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
@@ -70,7 +91,7 @@ class PageController extends Controller
                     ->orWhere('tags', 'like', '%peraturan menteri%');
             })->count();
 
-        return view('regulasi', compact('items', 'countUU', 'countPP', 'countPD', 'countKM', 'search', 'categoryFilter'));
+        return view('regulasi', compact('items', 'countUU', 'countPP', 'countPD', 'countKM', 'search', 'categoryFilter', 'totalRegulasi'));
     }
 
     public function siaranPers()
