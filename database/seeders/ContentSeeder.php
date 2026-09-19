@@ -309,6 +309,16 @@ class ContentSeeder extends Seeder
                 ['slug' => $item['slug']],
                 $item
             );
+
+            if (!empty($item['image_url']) && str_starts_with($item['image_url'], 'documents/')) {
+                if (!\Illuminate\Support\Facades\Storage::disk('local')->exists($item['image_url'])) {
+                    \Illuminate\Support\Facades\Storage::disk('local')->put(
+                        $item['image_url'],
+                        "%PDF-1.4\n% WALHI Jabar Official Document: " . $item['title'] . "\n%%EOF"
+                    );
+                }
+            }
         }
     }
 }
+
