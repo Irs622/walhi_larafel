@@ -78,7 +78,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                     WALHI Jabar<br />
                     <span class="text-[#256D4A] text-xs font-normal">Admin Panel</span>
                 </span>
-                <button onclick="toggleSidebar()" class="ml-auto text-[#888] hover:text-[#F4F1EA] transition-colors">
+                <button type="button" id="sidebar-toggle-btn" class="ml-auto text-[#888] hover:text-[#F4F1EA] transition-colors cursor-pointer" title="Toggle Sidebar">
                     <i data-lucide="panel-left-close" id="sidebar-toggle-icon" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -119,12 +119,12 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                     $berandaActive = request()->is('admin/banner*') || request()->is('admin/statistik*') || request()->is('admin/isu-kritis*') || request()->is('admin/kampanye-darurat*');
                 @endphp
                 <div class="group-container" id="group-beranda">
-                    <button onclick="toggleGroup('beranda')" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ $berandaActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
+                    <button type="button" data-group-toggle="beranda" id="btn-group-beranda" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors cursor-pointer {{ $berandaActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
                         <i data-lucide="home" class="w-4 h-4 shrink-0"></i>
                         <span class="flex-1 text-left nav-label font-medium">Halaman Beranda</span>
-                        <i data-lucide="chevron-down" class="w-3 h-3 group-chevron nav-label" id="chevron-beranda"></i>
+                        <i data-lucide="chevron-down" id="chevron-beranda" class="w-3.5 h-3.5 group-chevron nav-label transition-transform duration-200 {{ $berandaActive ? 'rotate-0' : '-rotate-90' }}"></i>
                     </button>
-                    <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav" id="sub-beranda">
+                    <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav {{ $berandaActive ? '' : 'hidden' }}" id="sub-beranda">
                         <a href="{{ route('admin.content.index', 'banner') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/banner*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Banner Beranda</a>
                         <a href="{{ route('admin.content.index', 'statistik') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/statistik*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Statistik Utama</a>
                         <a href="{{ route('admin.content.index', 'isu-kritis') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/isu-kritis*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Isu Kritis</a>
@@ -137,12 +137,12 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                     $publikasiActive = request()->is('admin/siaran-pers*') || request()->is('admin/infografis*') || request()->is('admin/kertas-posisi*') || request()->is('admin/catatan-kritis*') || request()->is('admin/newsletter*') || request()->is('admin/buletin-bumi*') || request()->is('admin/jurnal*') || request()->is('admin/laporan-tahunan*');
                 @endphp
                 <div class="group-container" id="group-publikasi">
-                    <button onclick="toggleGroup('publikasi')" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ $publikasiActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
+                    <button type="button" data-group-toggle="publikasi" id="btn-group-publikasi" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors cursor-pointer {{ $publikasiActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
                         <i data-lucide="newspaper" class="w-4 h-4 shrink-0"></i>
                         <span class="flex-1 text-left nav-label">Publikasi</span>
-                        <i data-lucide="chevron-down" class="w-3 h-3 group-chevron nav-label" id="chevron-publikasi"></i>
+                        <i data-lucide="chevron-down" id="chevron-publikasi" class="w-3.5 h-3.5 group-chevron nav-label transition-transform duration-200 {{ $publikasiActive ? 'rotate-0' : '-rotate-90' }}"></i>
                     </button>
-                    <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav" id="sub-publikasi">
+                    <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav {{ $publikasiActive ? '' : 'hidden' }}" id="sub-publikasi">
                         <a href="{{ route('admin.content.index', 'siaran-pers') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/siaran-pers*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Siaran Pers</a>
                         <a href="{{ route('admin.content.index', 'infografis') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/infografis*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Infografis</a>
                         <a href="{{ route('admin.content.index', 'kertas-posisi') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/kertas-posisi*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Kertas Posisi</a>
@@ -159,12 +159,12 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                     $dukungActive = request()->is('admin/donasi*') || request()->is('admin/pekan-rakyat*');
                 @endphp
                 <div class="group-container" id="group-dukung">
-                    <button onclick="toggleGroup('dukung')" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ $dukungActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
+                    <button type="button" data-group-toggle="dukung" id="btn-group-dukung" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors cursor-pointer {{ $dukungActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
                         <i data-lucide="heart" class="w-4 h-4 shrink-0"></i>
                         <span class="flex-1 text-left nav-label">Dukung Kami</span>
-                        <i data-lucide="chevron-down" class="w-3 h-3 group-chevron nav-label" id="chevron-dukung"></i>
+                        <i data-lucide="chevron-down" id="chevron-dukung" class="w-3.5 h-3.5 group-chevron nav-label transition-transform duration-200 {{ $dukungActive ? 'rotate-0' : '-rotate-90' }}"></i>
                     </button>
-                    <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav" id="sub-dukung">
+                    <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav {{ $dukungActive ? '' : 'hidden' }}" id="sub-dukung">
                         <a href="{{ route('admin.content.index', 'donasi') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/donasi*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Donasi Publik</a>
                         <a href="{{ route('admin.content.index', 'pekan-rakyat') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/pekan-rakyat*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Pekan Rakyat</a>
                     </div>
@@ -175,12 +175,12 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
                     $tentangActive = request()->is('admin/tentang*');
                 @endphp
                 <div class="group-container" id="group-tentang">
-                    <button onclick="toggleGroup('tentang')" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors {{ $tentangActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
+                    <button type="button" data-group-toggle="tentang" id="btn-group-tentang" class="w-full flex items-center gap-2.5 px-2 py-2 rounded text-sm transition-colors cursor-pointer {{ $tentangActive ? 'text-[#5C8D59]' : 'text-[#aaa] hover:text-[#F4F1EA] hover:bg-[#2a2a2a]' }}">
                         <i data-lucide="building-2" class="w-4 h-4 shrink-0"></i>
                         <span class="flex-1 text-left nav-label">Tentang Kami</span>
-                        <i data-lucide="chevron-down" class="w-3 h-3 group-chevron nav-label" id="chevron-tentang"></i>
+                        <i data-lucide="chevron-down" id="chevron-tentang" class="w-3.5 h-3.5 group-chevron nav-label transition-transform duration-200 {{ $tentangActive ? 'rotate-0' : '-rotate-90' }}"></i>
                     </button>
-                    <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav" id="sub-tentang">
+                    <div class="ml-4 mt-0.5 space-y-0.5 border-l border-[#2a2a2a] pl-3 sub-nav {{ $tentangActive ? '' : 'hidden' }}" id="sub-tentang">
                         <a href="{{ route('admin.content.tentang.index', 'sejarah') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/tentang/sejarah*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Sejarah</a>
                         <a href="{{ route('admin.content.tentang.index', 'visi-misi') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/tentang/visi-misi*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Visi & Misi</a>
                         <a href="{{ route('admin.content.tentang.index', 'dewan-nasional') }}" class="block px-2 py-1.5 rounded text-xs transition-colors {{ request()->is('admin/tentang/dewan-nasional*') ? 'text-[#5C8D59] font-semibold' : 'text-[#888] hover:text-[#F4F1EA]' }}">Dewan Nasional</a>
@@ -217,7 +217,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
 
                     <!-- Notifications Dropdown -->
                     <div class="relative" id="notification-dropdown">
-                        <button onclick="toggleNotifs()" class="p-2 rounded hover:bg-[#e8e5de] transition-colors text-[#666] relative">
+                        <button type="button" id="notif-toggle-btn" class="p-2 rounded hover:bg-[#e8e5de] transition-colors text-[#666] relative cursor-pointer" title="Notifikasi">
                             <i data-lucide="bell" class="w-4 h-4"></i>
                             <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#D95C3F]" id="notif-dot" style="display: none;"></span>
                         </button>
@@ -229,7 +229,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
 
                     <!-- User Profile Dropdown -->
                     <div class="relative" id="user-profile-dropdown">
-                        <button type="button" onclick="toggleUserMenu()" class="flex items-center gap-2 pl-2 border-l border-[#ddd] hover:opacity-85 transition-opacity cursor-pointer text-left">
+                        <button type="button" id="user-menu-btn" class="flex items-center gap-2 pl-2 border-l border-[#ddd] hover:opacity-85 transition-opacity cursor-pointer text-left">
                             <div class="w-7 h-7 rounded-full bg-[#256D4A] flex items-center justify-center text-white">
                                 <i data-lucide="user" class="w-3.5 h-3.5"></i>
                             </div>
@@ -276,7 +276,7 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
 
     <!-- Scripting for UI Collapsible / Toggles -->
     <script nonce="{{ Vite::cspNonce() }}">
-        // Sidebar collapse logic
+        // Sidebar collapse state & logic
         let sidebarCollapsed = false;
         function toggleSidebar() {
             sidebarCollapsed = !sidebarCollapsed;
@@ -289,74 +289,51 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
             if (sidebarCollapsed) {
                 sidebar.classList.remove('w-56');
                 sidebar.classList.add('w-14');
-                logoText.style.display = 'none';
-                toggleIcon.setAttribute('data-lucide', 'panel-left');
+                if (logoText) logoText.style.display = 'none';
+                if (toggleIcon) toggleIcon.setAttribute('data-lucide', 'panel-left');
                 labels.forEach(el => el.style.display = 'none');
-                subNavs.forEach(el => el.style.display = 'none');
+                subNavs.forEach(el => el.classList.add('hidden'));
             } else {
                 sidebar.classList.remove('w-14');
                 sidebar.classList.add('w-56');
-                logoText.style.display = 'block';
-                toggleIcon.setAttribute('data-lucide', 'panel-left-close');
+                if (logoText) logoText.style.display = 'block';
+                if (toggleIcon) toggleIcon.setAttribute('data-lucide', 'panel-left-close');
                 labels.forEach(el => el.style.display = '');
-                // restore group states
-                Object.keys(groupStates).forEach(key => {
-                    if (groupStates[key]) {
-                        document.getElementById('sub-' + key).style.display = 'block';
-                        document.getElementById('chevron-' + key).setAttribute('data-lucide', 'chevron-down');
-                    }
-                });
             }
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 lucide.createIcons();
             }
         }
 
-        // Submenu groups toggling
-        const groupStates = {
-            publikasi: {{ $publikasiActive ? 'true' : 'false' }},
-            dukung: {{ $dukungActive ? 'true' : 'false' }},
-            tentang: {{ $tentangActive ? 'true' : 'false' }},
-            beranda: {{ $berandaActive ? 'true' : 'false' }}
-        };
-
+        // Submenu groups toggling using pure CSS classes (smooth & CSP-safe)
         function toggleGroup(groupName) {
-            if (sidebarCollapsed) return; // don't toggle if collapsed
-            groupStates[groupName] = !groupStates[groupName];
+            if (sidebarCollapsed) return; // don't toggle if sidebar is collapsed
             const sub = document.getElementById('sub-' + groupName);
             const chevron = document.getElementById('chevron-' + groupName);
-            
-            if (groupStates[groupName]) {
-                sub.style.display = 'block';
-                chevron.setAttribute('data-lucide', 'chevron-down');
+            if (!sub) return;
+
+            const isCurrentlyHidden = sub.classList.contains('hidden');
+            if (isCurrentlyHidden) {
+                sub.classList.remove('hidden');
+                if (chevron) {
+                    chevron.classList.remove('-rotate-90');
+                    chevron.classList.add('rotate-0');
+                }
             } else {
-                sub.style.display = 'none';
-                chevron.setAttribute('data-lucide', 'chevron-right');
-            }
-            if (typeof lucide !== 'undefined' && lucide.createIcons) {
-                lucide.createIcons();
+                sub.classList.add('hidden');
+                if (chevron) {
+                    chevron.classList.remove('rotate-0');
+                    chevron.classList.add('-rotate-90');
+                }
             }
         }
 
-        // Initialize group visibilities
-        Object.keys(groupStates).forEach(key => {
-            const sub = document.getElementById('sub-' + key);
-            const chevron = document.getElementById('chevron-' + key);
-            if (groupStates[key]) {
-                sub.style.display = 'block';
-                chevron.setAttribute('data-lucide', 'chevron-down');
-            } else {
-                sub.style.display = 'none';
-                chevron.setAttribute('data-lucide', 'chevron-right');
-            }
-        });
-
-        // Notifications toggling
+        // Notifications dropdown toggling
         let showNotifs = false;
         function toggleNotifs() {
             showNotifs = !showNotifs;
             const menu = document.getElementById('notif-menu');
-            menu.style.display = showNotifs ? 'block' : 'none';
+            if (menu) menu.style.display = showNotifs ? 'block' : 'none';
             if (showNotifs) {
                 showUserMenu = false;
                 const uMenu = document.getElementById('user-menu');
@@ -377,29 +354,71 @@ $dateStr = now()->locale('id')->isoFormat('dddd, D MMMM YYYY');
             }
         }
 
-        // Click outside closes dropdowns
-        window.addEventListener('click', function(e) {
-            const notifDropdown = document.getElementById('notification-dropdown');
-            if (notifDropdown && !notifDropdown.contains(e.target)) {
-                showNotifs = false;
-                const nMenu = document.getElementById('notif-menu');
-                if (nMenu) nMenu.style.display = 'none';
-            }
+        // Expose functions globally for any legacy / inline callers
+        window.toggleSidebar = toggleSidebar;
+        window.toggleGroup = toggleGroup;
+        window.toggleNotifs = toggleNotifs;
+        window.toggleUserMenu = toggleUserMenu;
 
-            const userDropdown = document.getElementById('user-profile-dropdown');
-            if (userDropdown && !userDropdown.contains(e.target)) {
-                showUserMenu = false;
-                const uMenu = document.getElementById('user-menu');
-                if (uMenu) uMenu.style.display = 'none';
-            }
-        });
+        function initAdminLayout() {
+            // Bind all group toggle buttons via addEventListener (100% CSP safe)
+            document.querySelectorAll('[data-group-toggle]').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const groupName = this.getAttribute('data-group-toggle');
+                    toggleGroup(groupName);
+                });
+            });
 
-        // Initialize Lucide icons on boot
-        document.addEventListener('DOMContentLoaded', () => {
+            // Bind sidebar toggle button
+            document.getElementById('sidebar-toggle-btn')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleSidebar();
+            });
+
+            // Bind notification toggle button
+            document.getElementById('notif-toggle-btn')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleNotifs();
+            });
+
+            // Bind user profile menu toggle button
+            document.getElementById('user-menu-btn')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleUserMenu();
+            });
+
+            // Click outside closes dropdowns
+            window.addEventListener('click', function(e) {
+                const notifDropdown = document.getElementById('notification-dropdown');
+                if (notifDropdown && !notifDropdown.contains(e.target)) {
+                    showNotifs = false;
+                    const nMenu = document.getElementById('notif-menu');
+                    if (nMenu) nMenu.style.display = 'none';
+                }
+
+                const userDropdown = document.getElementById('user-profile-dropdown');
+                if (userDropdown && !userDropdown.contains(e.target)) {
+                    showUserMenu = false;
+                    const uMenu = document.getElementById('user-menu');
+                    if (uMenu) uMenu.style.display = 'none';
+                }
+            });
+
+            // Initialize Lucide icons on boot
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 lucide.createIcons();
             }
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAdminLayout);
+        } else {
+            initAdminLayout();
+        }
     </script>
     @stack('scripts')
 </body>

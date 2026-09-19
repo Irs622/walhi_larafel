@@ -170,4 +170,34 @@ class AdminTest extends TestCase
         $response->assertViewHas('recentActivities');
         $response->assertViewHas('stats');
     }
+
+    public function test_admin_sidebar_accordion_menus_and_buttons_render_properly(): void
+    {
+        $response = $this->get('/admin');
+        $response->assertStatus(200);
+
+        // Submenu accordion triggers
+        $response->assertSee('data-group-toggle="beranda"', false);
+        $response->assertSee('data-group-toggle="publikasi"', false);
+        $response->assertSee('data-group-toggle="dukung"', false);
+        $response->assertSee('data-group-toggle="tentang"', false);
+
+        // Submenu containers
+        $response->assertSee('id="sub-beranda"', false);
+        $response->assertSee('id="sub-publikasi"', false);
+        $response->assertSee('id="sub-dukung"', false);
+        $response->assertSee('id="sub-tentang"', false);
+
+        // Chevrons with rotation
+        $response->assertSee('id="chevron-beranda"', false);
+        $response->assertSee('id="chevron-publikasi"', false);
+        $response->assertSee('id="chevron-dukung"', false);
+        $response->assertSee('id="chevron-tentang"', false);
+
+        // CSP contains script-src-attr for inline event compatibility
+        $response->assertHeader('Content-Security-Policy');
+        $csp = $response->headers->get('Content-Security-Policy');
+        $this->assertStringContainsString("script-src-attr 'unsafe-inline'", $csp);
+    }
 }
+
