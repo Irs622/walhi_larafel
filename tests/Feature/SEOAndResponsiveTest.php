@@ -139,4 +139,18 @@ class SEOAndResponsiveTest extends TestCase
             ->assertSee('walhijabar@gmail.com')
             ->assertDontSee('walhijabar@walhijabar.id');
     }
+
+    /**
+     * Test mobile viewport meta and horizontal overflow prevention styling.
+     */
+    public function test_mobile_viewport_and_horizontal_overflow_protection(): void
+    {
+        $response = $this->get('/');
+        $response->assertStatus(200)
+            ->assertSee('<meta name="viewport" content="width=device-width, initial-scale=1">', false)
+            ->assertSee('overflow-x: hidden', false)
+            ->assertSee('.topbar-socials', false)
+            ->assertSee('.topbar-wrapper', false);
+    }
 }
+

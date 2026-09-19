@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth overflow-x-hidden" style="overflow-x: hidden; max-width: 100vw;">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +17,7 @@
         
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-[#F4F1EA] text-[#1D1D1D] font-sans antialiased overflow-x-clip" style="overflow-x: clip;">
+    <body class="bg-[#F4F1EA] text-[#1D1D1D] font-sans antialiased overflow-x-hidden" style="overflow-x: hidden; max-width: 100vw; width: 100%;">
         @include('partials.site-header')
 
         <!-- Hero Section -->

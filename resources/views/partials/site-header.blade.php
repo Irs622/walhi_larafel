@@ -1,4 +1,4 @@
-<header style="width: 100%; z-index: 1000; position: -webkit-sticky; position: sticky; top: 0;">
+<header style="width: 100%; max-width: 100vw; z-index: 1000; position: -webkit-sticky; position: sticky; top: 0; overflow-x: clip;">
     <style>
         @media (max-width: 1024px) {
             .desktop-nav {
@@ -9,6 +9,16 @@
             }
             .mobile-menu-btn {
                 display: flex !important;
+            }
+            .topbar-socials {
+                display: none !important;
+            }
+            .topbar-wrapper {
+                padding: 0 16px !important;
+                justify-content: center !important;
+            }
+            .nav-container-inner {
+                padding: 0 16px !important;
             }
         }
         @media (min-width: 1025px) {
@@ -36,20 +46,20 @@
     @endphp
  
     <!-- Top Bar -->
-    <div style="width: 100%; height: 41px; background: #1D1D1D; border-bottom: 1px #256D4A solid; display: flex; justify-content: center;">
-        <div style="width: 100%; max-width: 1280px; height: 100%; padding: 0 32px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;">
+    <div style="width: 100%; height: 41px; background: #1D1D1D; border-bottom: 1px #256D4A solid; display: flex; justify-content: center; overflow: hidden;">
+        <div class="topbar-wrapper" style="width: 100%; max-width: 1280px; height: 100%; padding: 0 32px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; overflow: hidden;">
             <!-- Left Side -->
-            <div style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; font-weight: 500; display: flex; align-items: center; gap: 12px;">
-                <a href="{{ $globalCampaign->url }}" style="color: #F4F1EA; text-decoration: none;" class="hover:text-[#5C8D59] transition-colors">
+            <div style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; font-weight: 500; display: flex; align-items: center; gap: 10px; min-width: 0; max-width: 100%; overflow: hidden; white-space: nowrap;">
+                <a href="{{ $globalCampaign->url }}" style="color: #F4F1EA; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="hover:text-[#5C8D59] transition-colors truncate">
                     {{ $globalCampaign->title }}
                 </a>
-                <span style="color: #256D4A; font-size: 14px; user-select: none;">•</span>
-                <a href="{{ route('pengaduan') }}" style="color: #D95C3F; text-decoration: none; font-weight: 700;" class="hover:text-white transition-colors">
+                <span style="color: #256D4A; font-size: 14px; user-select: none; flex-shrink: 0;">•</span>
+                <a href="{{ route('pengaduan') }}" style="color: #D95C3F; text-decoration: none; font-weight: 700; white-space: nowrap; flex-shrink: 0;" class="hover:text-white transition-colors">
                     📢 Pengaduan Kasus
                 </a>
             </div>
             <!-- Right Side -->
-            <div style="display: flex; align-items: center; gap: 14px;">
+            <div class="topbar-socials" style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;">
                 <a href="https://x.com/walhijabar" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">X (@walhijabar)</a>
                 <span style="color: #256D4A; font-size: 16px; font-family: Montserrat, sans-serif; user-select: none;">|</span>
                 <a href="{{ $globalContact->facebook }}" target="_blank" style="color: #F4F1EA; font-size: 12px; font-family: Montserrat, sans-serif; text-decoration: none; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">Facebook</a>
@@ -64,8 +74,8 @@
     </div>
  
     <!-- Main Navigation Bar -->
-    <div style="width: 100%; height: 80px; background: #F4F1EA; box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.10), 0px 1px 3px rgba(0, 0, 0, 0.10); display: flex; justify-content: center;">
-        <div style="width: 100%; max-width: 1280px; height: 100%; padding: 0 32px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;">
+    <div style="width: 100%; height: 80px; background: #F4F1EA; box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.10), 0px 1px 3px rgba(0, 0, 0, 0.10); display: flex; justify-content: center; overflow: hidden;">
+        <div class="nav-container-inner" style="width: 100%; max-width: 1280px; height: 100%; padding: 0 32px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;">
             <!-- Logo -->
             <div style="height: 48px; display: flex; align-items: center;">
                 <a href="{{ route('home') }}" style="display: block; height: 48px;">

@@ -1,4 +1,4 @@
-<footer class="w-full bg-[#1D1D1D] border-t-4 border-[#F4F1EA] py-12 px-6 sm:px-12 md:px-24 text-[#F4F1EA]">
+<footer class="w-full bg-[#1D1D1D] border-t-4 border-[#F4F1EA] py-12 px-6 sm:px-12 md:px-24 text-[#F4F1EA] overflow-hidden">
     <div class="max-w-6xl mx-auto flex flex-col gap-12">
         <!-- Top Section: Grid 3 Kolom -->
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
