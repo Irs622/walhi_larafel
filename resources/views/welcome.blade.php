@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth overflow-x-hidden" style="overflow-x: hidden; max-width: 100vw;">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,7 +12,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-brand-cream antialiased text-brand-dark overflow-x-hidden" style="font-family: Montserrat, sans-serif; overflow-x: hidden; max-width: 100vw; width: 100%;">
+    <body class="bg-brand-cream antialiased text-brand-dark overflow-x-clip" style="font-family: Montserrat, sans-serif; overflow-x: clip;">
         @php
             $iqon = function (string $name): string {
                 return asset('iqon/'.$name);

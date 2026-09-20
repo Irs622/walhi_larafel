@@ -1,4 +1,4 @@
-<header style="width: 100%; max-width: 100vw; z-index: 1000; position: -webkit-sticky; position: sticky; top: 0; overflow-x: clip;">
+<header style="width: 100%; z-index: 1000; position: -webkit-sticky; position: sticky; top: 0;">
     <style>
         @media (max-width: 1024px) {
             .desktop-nav {
@@ -74,7 +74,7 @@
     </div>
  
     <!-- Main Navigation Bar -->
-    <div style="width: 100%; height: 80px; background: #F4F1EA; box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.10), 0px 1px 3px rgba(0, 0, 0, 0.10); display: flex; justify-content: center; overflow: hidden;">
+    <div style="width: 100%; height: 80px; background: #F4F1EA; box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.10), 0px 1px 3px rgba(0, 0, 0, 0.10); display: flex; justify-content: center;">
         <div class="nav-container-inner" style="width: 100%; max-width: 1280px; height: 100%; padding: 0 32px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;">
             <!-- Logo -->
             <div style="height: 48px; display: flex; align-items: center;">
